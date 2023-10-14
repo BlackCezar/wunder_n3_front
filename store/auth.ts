@@ -8,6 +8,7 @@ import {
 } from "~/types/auth.interface";
 import { IContract } from "~/types/contract.interface";
 import { ICustomerSettings, IRegionSettings } from "~/types/region.interface";
+import { useNuxtApp } from "#imports";
 
 export const useAuthStore = defineStore("auth-custom", {
     state: (): AuthStoreState => ({
@@ -40,6 +41,9 @@ export const useAuthStore = defineStore("auth-custom", {
         },
         getSettings(state) {
             return state.settings;
+        },
+        getSystemSettings(state) {
+            return [];
         },
     },
     actions: {
@@ -117,5 +121,8 @@ export const useAuthStore = defineStore("auth-custom", {
             }
         },
     },
-    persist: true,
+    persist: {
+        storage: sessionStorage,
+        paths: ["tokens"],
+    },
 });

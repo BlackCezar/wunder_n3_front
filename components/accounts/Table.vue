@@ -233,12 +233,10 @@ const accountEdit = (id: number, customerId: number) => {
                         v-if="data.value.isActive && isActive"
                     >
                         <IBiPlusSquare
-                            @click="
-                                $emit('openTopUpAccountModal', {
-                                    system,
-                                    accountId: data.value.accountId,
-                                })
-                            "
+                            @click="useEvent('modal:popup-account', {
+                                system,
+                                accountId: data.value.accountId
+                            })"
                         />
                     </div>
                     <div class="action-icon" v-else>

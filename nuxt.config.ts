@@ -5,22 +5,37 @@ import IconsResolver from "unplugin-icons/resolver";
 import Components from "unplugin-vue-components/vite";
 
 export default defineNuxtConfig({
-    css: [
-        "~/assets/css/main.css",
-        "~/assets/css/ui.css",
-    ],
+    css: ["~/assets/css/main.css", "~/assets/css/ui.css"],
     runtimeConfig: {
         public: {
             gtmId: process.env.GTM_ID,
             gtmEnabled: false,
         },
     },
+    typescript: {
+        includeWorkspace: true,
+        tsConfig: {
+            include: ["../store/*.ts"],
+            compilerOptions: {
+                types: [
+                    "~/types/*.ts",
+                    "bun-types",
+                    "@nuxt/types",
+                    "vue3-toastify/global",
+                    "unplugin-icons/types/vue",
+                ],
+                paths: {
+                    "~/stores/*": ["./stores/*"],
+                },
+            },
+        },
+    },
     nitro: {
         routeRules: {
-            '/api/**': {
-                proxy:  process.env.BACKEND_HOST + '/api/**',      // 配置你要请求的 API 服务器地址
-            }
-        }
+            "/api/**": {
+                proxy: process.env.BACKEND_HOST + "/api/**", // 配置你要请求的 API 服务器地址
+            },
+        },
     },
     vite: {
         server: {
@@ -99,7 +114,7 @@ export default defineNuxtConfig({
             },
         ],
         "@pinia/nuxt",
-        '@pinia-plugin-persistedstate/nuxt',
+        "@pinia-plugin-persistedstate/nuxt",
         "@bootstrap-vue-next/nuxt",
         [
             "@nuxtjs/google-fonts",
@@ -114,9 +129,9 @@ export default defineNuxtConfig({
     ],
     piniaPersistedstate: {
         cookieOptions: {
-          sameSite: 'strict',
+            sameSite: "strict",
         },
-        storage: 'cookies'
+        storage: "cookies",
     },
 
     // io: {

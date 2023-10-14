@@ -1,10 +1,11 @@
 import mitt from "mitt";
-import { IContract } from "types/contract.interface";
+import { IContract } from "~/types/contract.interface";
 import { SystemName } from "~/types/region.interface";
 import { ICustomerCandidate } from "~/types/user.interface";
 import { IAccount } from "~/types/account.interface";
 
 export type ApplicationEvents = {
+    "modal:popup-account": void;
     "modal:edit-documents": void;
     "modal:edit-client": void;
     "modal:edit-contracts": void;

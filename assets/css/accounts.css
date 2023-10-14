@@ -5,6 +5,12 @@
     width: fit-content;
     margin-bottom: var(--blockMargin);
 }
+.accounts-buttons-container button {
+    border: 0;
+}
+.accounts-buttons-container button:disabled {
+    cursor: not-allowed;
+}
 @media screen and (max-width: 768px) {
     .accounts-buttons-container {
         margin-left: 0;
