@@ -1,0 +1,278 @@
+@layer bootstrap, app, components;
+
+@import url("/node_modules/bootstrap/dist/css/bootstrap.min.css")
+layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-reboot.min.css")
+layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-grid.min.css")
+layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-utilities.min.css")
+layer(bootstrap.remote);
+@import url("_variables.css");
+
+@layer bootstrap.local {
+    .page-item.disabled {
+        cursor: not-allowed;
+    }
+    .nav-tabs .nav-link {
+        border: 0;
+        padding: 0;
+    }
+}
+
+@layer components {
+    .tab-content {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .nav-tabs .nav-link {
+        color: var(--paragraphColor);
+    }
+    .nav-tabs {
+        border-bottom: 0;
+        height: auto;
+        overflow-y: hidden;
+    }
+    .nav-tabs .nav-item {
+        border: 0;
+        margin: 0;
+    }
+    .min-w-none {
+        min-width: unset;
+    }
+    .w-full {
+        width: 100%;
+    }
+}
+
+body {
+    font-family: Jost, sans-serif;
+    font-size: 16px;
+    line-height: 1.35;
+}
+
+.not-visible {
+    display: none;
+}
+
+.general-button {
+    height: 60px;
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #851210;
+    border-color: #79110f;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    width: 100%;
+}
+
+.table {
+    font-size: 16px;
+    font-weight: 400 !important;
+    color: #8f8f90;
+}
+
+.table-container {
+    padding-right: 2.2em;
+    padding-left: 2.2em;
+    background: white;
+}
+@media screen and (max-width: 768px) {
+    .table-container {
+        padding: 0;
+    }
+}
+.table-container .table th {
+    border-top: none;
+    font-weight: 500 !important;
+    text-align: center;
+    line-height: 1;
+    padding-bottom: 1.5em;
+    padding-top: 1.5em;
+    vertical-align: middle;
+}
+@media screen and (max-width: 768px) {
+    .table-container .table th {
+        padding: 8px 15px;
+    }
+}
+@media screen and (max-width: 768px) {
+    .table-container .table td {
+        padding: 8px 15px;
+    }
+}
+
+.form-input {
+    border: 1px solid var(--primary) !important;
+    border-radius: 0;
+    height: var(--inputHeight);
+    padding-left: 22px;
+    margin-top: 22px;
+    max-height: var(--inputMaxHeight);
+}
+.form-input:focus,
+.form-input:focus-visible {
+    box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
+}
+
+.custom-select {
+    height: var(--inputHeight);
+}
+
+.custom-file-input,
+.custom-file-label {
+    height: var(--inputHeight);
+}
+
+.custom-file-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+.custom-file-label::after {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.form-input-period fieldset > div,
+.finances-search-filter fieldset > div {
+    display: flex;
+    align-items: center;
+}
+
+.form-input-search > div {
+    display: flex;
+    align-items: center;
+}
+
+.form-group {
+    margin: 0;
+}
+
+.form-input::placeholder {
+    line-height: 1.2;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--lightGray);
+}
+
+.form-control {
+    padding: 10px 12px;
+}
+
+.custom-select {
+    border: 1px solid var(--primary);
+}
+
+.custom-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(205, 205, 205, 0.25);
+}
+
+.text-clip {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.no-clients {
+    margin-left: var(--blockMargin);
+    font-size: large;
+}
+
+.form-checkbox {
+    margin-top: 22px;
+    text-align: left;
+}
+.form-checkbox
+    .was-validated
+    .custom-control-input:valid
+    ~ .custom-control-label,
+.form-checkbox .custom-control-input.is-valid ~ .custom-control-label {
+    color: inherit;
+}
+
+.a-link {
+    color: var(--link);
+}
+
+.search-filter {
+    margin-bottom: var(--blockMargin);
+    max-width: 260px;
+}
+.search-filter .form-input {
+    margin-top: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .navbar-nav.rate {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        align-items: start;
+        text-align: center;
+    }
+    .navbar-nav.rate .currency-symbol {
+        margin: 0;
+        grid-row-start: 1;
+    }
+    .navbar-nav.rate .currency-value {
+        font-size: 18px;
+    }
+    .modal-dialog {
+        margin: 0;
+        width: 100%;
+        max-width: unset;
+    }
+    .p-4 {
+        padding: 15px !important;
+    }
+    .top-up-tab {
+        padding: 10px !important;
+    }
+    .table-container {
+        overflow-x: auto;
+    }
+    #edit-region-modal {
+        padding-left: 0;
+    }
+}
+
+.modal-close {
+    display: none;
+}
+@media screen and (max-width: 768px) {
+    .modal-close {
+        width: 100%;
+        height: 60px;
+        margin-bottom: 10px;
+        display: block;
+    }
+}
+
+.text-sm-right {
+    text-align: right;
+}
+
+.form-check-input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin-left: -1.5em !important;
+}
+
+.danger {
+    color: var(--accent);
+}
+
+.success {
+    color: var(--success);
+}

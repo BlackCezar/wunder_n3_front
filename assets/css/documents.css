@@ -1,0 +1,192 @@
+@import "_variables.css";
+
+.page-header-3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: calc(4.68rem - 24px);
+}
+
+.documents > .row {
+    margin: 0 2.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+@media screen and (max-width: 768px) {
+    .documents > .row {
+        margin: 0;
+    }
+    .documents > .row .documents-links {
+        margin-bottom: 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .documents .documents-filters {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .documents .documents-filters form {
+        width: 100%;
+        margin-bottom: 20px;
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: start;
+        grid-gap: 15px;
+    }
+    .documents .documents-filters .closure-contract-filter {
+        margin: 0;
+    }
+    .documents .documents-filters .closure-period-filter {
+        margin-right: 0;
+    }
+    .documents .documents-filters .date-input-container > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 20px;
+        width: 100%;
+    }
+}
+
+.documents .closure-period-filter svg {
+    fill: var(--accent);
+}
+
+.documents .closure-period-filter fieldset > div {
+    display: flex;
+}
+.documents .closure-period-filter fieldset > div .form-input {
+    width: 142px;
+}
+@media screen and (max-width: 768px) {
+    .documents .closure-period-filter fieldset > div .form-input {
+        width: 100%;
+    }
+}
+.documents .closure-period-filter fieldset > div .form-input:last-child {
+    margin-left: var(--elementMargin);
+}
+@media screen and (max-width: 768px) {
+    .documents .closure-period-filter fieldset > div .form-input:last-child {
+        margin-left: 0;
+    }
+}
+
+.documents table tr {
+    position: relative;
+}
+
+.documents .textline {
+    position: absolute;
+    width: 100%;
+    background-color: black;
+    height: 1px;
+    top: 50%;
+}
+
+.documents-links ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.documents-links li {
+    list-style-type: none;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 35px;
+    font-weight: bold;
+    padding-right: 30px;
+    position: relative;
+    text-transform: initial;
+}
+.documents-links li span {
+    border-bottom: 3px solid #101010;
+}
+.documents-links li.active {
+    color: var(--accent);
+}
+.documents-links li.active span {
+    border-bottom-color: transparent;
+}
+.documents-links li::after {
+    content: "|";
+    position: absolute;
+    color: initial;
+    right: 7px;
+    top: 0;
+}
+.documents-links li:last-child {
+    padding-right: 0;
+}
+.documents-links li:last-child::after {
+    display: none;
+}
+
+.documents .form-input {
+    height: var(--inputHeight);
+    margin-top: 0;
+}
+
+.documents .invalid-feedback {
+    position: absolute;
+    width: auto;
+}
+
+.documents-filters {
+    display: flex;
+    margin-left: auto;
+    align-items: flex-start;
+    margin-bottom: 45px;
+}
+.documents-filters form {
+    display: flex;
+}
+
+.documents-container .nav-tabs {
+    display: none;
+}
+
+.finances-buttons {
+    margin-left: auto;
+    margin-right: calc(4.68rem - 24px);
+    display: flex;
+}
+.finances-buttons button {
+    width: auto;
+    min-width: 160px;
+    margin-left: 16px;
+}
+
+.finances-contract-filter {
+    display: flex;
+    align-items: flex-start;
+    margin: 0 40px;
+    margin-right: 16px;
+}
+
+.finances-period-filter {
+    margin-right: 16px;
+}
+
+.contracts-contract-filter {
+    display: flex;
+    align-items: flex-start;
+    margin: 0 40px;
+    margin-right: 16px;
+}
+
+.contracts-period-filter {
+    margin-right: 16px;
+}
+
+.closure-contract-filter {
+    display: flex;
+    align-items: flex-start;
+    margin: 0 40px;
+    margin-right: 16px;
+}
+
+.closure-period-filter {
+    margin-right: 16px;
+}

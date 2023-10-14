@@ -1,0 +1,27 @@
+<template>
+    <div>
+        <client-only>
+            <div>
+                <UiTableInput
+                    :label="$t('registration.ResponsiblePersonFullName')"
+                    :placeholder="$t('registration.ResponsiblePersonFullName')"
+                    name="responsiblePersonFullName"
+                    type="text"
+                />
+                <UiTableInput
+                    :label="$t('registration.ResponsiblePersonPosition')"
+                    :placeholder="$t('registration.ResponsiblePersonPosition')"
+                    name="responsiblePersonPosition"
+                    type="text"
+                />
+                <UiTableInput
+                    :label="$t('registration.SignatureDocumentType')"
+                    :placeholder="$t('registration.SignatureDocumentType')"
+                    name="signatureDocumentType"
+                    type="text"
+                />
+            </div>
+        </client-only>
+    </div>
+</template>
+<script setup lang="ts"></script>

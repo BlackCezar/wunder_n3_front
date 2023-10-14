@@ -1,0 +1,65 @@
+.edit-tabs {
+    display: flex;
+    flex-direction: row;
+    height: 59px;
+}
+
+#edit-client-modal .modal-dialog,
+#edit-contract-modal .modal-dialog,
+#edit-contracts-modal .modal-dialog {
+    width: 900px;
+    max-width: 900px;
+}
+@media screen and (max-width: 768px) {
+    #edit-client-modal .modal-dialog,
+    #edit-contract-modal .modal-dialog,
+    #edit-contracts-modal .modal-dialog {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+.input-container {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    align-items: start;
+}
+
+.col-form-label {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.date-input-container .col-form-label {
+    align-items: flex-start;
+    padding-top: 0.65em !important;
+}
+
+.input-container .form-row > .col,
+.form-row > [class*="col-"] {
+    padding-right: 1em !important;
+}
+
+.system-settings-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 20px;
+    row-gap: 22px;
+    padding: 1em 1em 1em 5px;
+}
+.system-settings-container input[type="checkbox"] {
+    margin-left: 0 !important;
+}
+.system-settings-amount {
+    width: 100%;
+}
+.system-settings-amount .btn {
+    height: 2.75rem;
+    margin-left: 1rem;
+    width: fit-content;
+    padding-left: 0;
+    padding-right: 0;
+}

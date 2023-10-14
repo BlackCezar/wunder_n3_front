@@ -1,0 +1,48 @@
+<script setup lang="ts"></script>
+
+<template>
+    <div>
+        <UiTableInput
+            :label="$t('registration.CompanyName')"
+            :placeholder="$t('registration.CompanyName')"
+            type="text"
+            name="contacts.companyName"
+        />
+        <UiTableInput
+            :label="$t('registration.CompanyTaxNumber')"
+            :placeholder="$t('registration.CompanyTaxNumber')"
+            type="text"
+            name="contacts.companyTaxNumber"
+        />
+        <UiTableInput
+            :label="$t('registration.CompanyAddress')"
+            :placeholder="$t('registration.CompanyAddress')"
+            type="text"
+            name="contacts.companyAddress"
+        />
+        <UiTableInput
+            :label="$t('registration.AccountNumber')"
+            :placeholder="$t('registration.AccountNumber')"
+            type="text"
+            name="contacts.accountNumber"
+        />
+        <UiTableInput
+            :label="$t('registration.BankName')"
+            :placeholder="$t('registration.BankName')"
+            type="text"
+            name="contacts.bankName"
+        />
+        <UiTableInput
+            :placeholder="$t('registration.BIC')"
+            :label="$t('registration.BIC')"
+            type="text"
+            name="contacts.BIC"
+        />
+        <UiTableInput
+            :label="$t('registration.ContactName')"
+            :placeholder="$t('registration.ContactName')"
+            type="text"
+            name="contacts.contactName"
+        />
+    </div>
+</template>

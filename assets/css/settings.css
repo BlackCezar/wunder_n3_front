@@ -1,0 +1,44 @@
+.settings-modal .invalid-feedback {
+    position: absolute;
+}
+
+.settings-modal .top-up-tab {
+    width: 100%;
+    height: 59px;
+    background: #cdcdcd;
+    margin: 0px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.settings-modal .top-up-tab.active {
+    background-color: var(--white);
+}
+
+.system-settings-amount {
+    display: flex;
+    align-items: center;
+}
+.system-settings-amount svg {
+    margin: var(--elementMargin);
+    cursor: pointer;
+    color: var(--primary);
+}
+
+.system-settings-currency {
+    display: block;
+    margin-top: var(--elementMargin);
+}
+
+.system-setting .list-group-item {
+    padding: 0;
+    border-color: transparent;
+}
+.system-setting .list-group-item img {
+    max-width: 80%;
+}
+
+.system-setting .list-group-item:first-child {
+    padding: 0.75rem 1.25rem;
+}

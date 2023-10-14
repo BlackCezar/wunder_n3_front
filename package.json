@@ -1,0 +1,52 @@
+{
+  "name": "wunder-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxi build",
+    "dev": "nuxi dev ",
+    "bun-dev": "bunx --bun nuxi dev",
+    "generate": "nuxi generate",
+    "preview": "nuxi preview",
+    "postinstall": "nuxi prepare",
+    "clean": "nuxi clean"
+  },
+  "devDependencies": {
+    "@bootstrap-vue-next/nuxt": "^0.14.8",
+    "@iconify-json/bi": "^1.1.17",
+    "@nuxtjs/google-fonts": "^3.0.1",
+    "@nuxtjs/svg": "^0.4.0",
+    "@types/node": "^18.16.19",
+    "@vue/compiler-sfc": "^3.3.4",
+    "bootstrap": "^5.3.2",
+    "bootstrap-vue-next": "^0.14.8",
+    "bun-types": "^1.0.5-canary.20231005T140125",
+    "nuxt": "^3.7.4",
+    "prettier": "^3.0.0",
+    "typescript": "^5.1.6",
+    "unplugin-icons": "^0.16.3",
+    "unplugin-vue-components": "^0.25.1",
+    "vite-svg-loader": "^4.0.0"
+  },
+  "dependencies": {
+    "@gtm-support/vue-gtm": "^2.0.0",
+    "@nuxt-alt/auth": "^2.6.1",
+    "@nuxt-alt/http": "^1.6.4",
+    "@pinia-plugin-persistedstate/nuxt": "^1.1.2",
+    "@pinia/nuxt": "^0.4.11",
+    "@tinymce/tinymce-vue": "^5.1.0",
+    "@vee-validate/nuxt": "^4.10.3",
+    "@vee-validate/rules": "^4.10.6",
+    "@vee-validate/yup": "^4.10.3",
+    "jsonwebtoken": "^9.0.2",
+    "maska": "^2.1.9",
+    "mitt": "^3.0.1",
+    "moment": "^2.29.4",
+    "nuxt-socket-io": "^3.0.12",
+    "pinia": "^2.1.6",
+    "pinia-plugin-persistedstate": "^3.2.0",
+    "vue-i18n": "^9.5.0",
+    "vue-logger-plugin": "^2.2.3",
+    "vue3-toastify": "^0.1.11"
+  }
+}

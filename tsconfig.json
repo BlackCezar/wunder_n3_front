@@ -1,0 +1,39 @@
+{
+    "include": [
+        "components.d.ts",
+        "environment.d.ts",
+        "locales/*.json",
+        "store/regions.ts",
+        "./**/*.ts",
+        "**/*.d.ts"
+    ],
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "resolveJsonModule": true,
+        "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
+        "esModuleInterop": true,
+        "moduleResolution": "NodeNext",
+        "isolatedModules": true,
+        "allowImportingTsExtensions": true,
+        "noImplicitAny": false,
+        "noEmit": true,
+        "allowJs": true,
+        "sourceMap": true,
+        "moduleDetection": "force",
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "composite": true,
+        "downlevelIteration": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "types": [
+            "bun-types",
+            "@nuxt/types",
+            "vue3-toastify/global",
+            "unplugin-icons/types/vue"
+        ]
+    },
+    "exclude": ["node_modules"],
+    "extends": ["./.nuxt/tsconfig.json"]
+}

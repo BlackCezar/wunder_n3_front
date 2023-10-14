@@ -1,0 +1,118 @@
+@layer app{
+    /* Colors */
+    :root {
+        --info: #00a8c1;
+        --primary: #171717;
+        --secondary: #9b9b9d;
+        --accent: #c4100c;
+        --success: #0e9c2e;
+        --green: #58c476;
+        --link: #0066ff;
+        --borderGray: #777777;
+        --borderGray2: #ced4da;
+        --borderGray3: #d9d9d9;
+        --lightGray: #cdcdcd;
+        --lightGray2: #bbbbbb;
+        --lightGray3: #dee2e6;
+        --darkGray: #495057;
+        --white: #fff;
+        --paragraphColor: #171717;
+        /* // Margins & paddings */
+        --blockMargin: 40px;
+        --elementMargin: 16px;
+        --elementPadding: 20px;
+        --buttonPadding: 12px 24px;
+        --minimalPadding: 8px;
+        --inputMaxHeight: 44px;
+        --inputHeight: 44px;
+
+        /* // Resolutions */
+        --desktopWidth: 1920px;
+        --desktopHeight: 1024px;
+        --laptopWidth: 1366px;
+        --laptopHeight: 768px;
+        --bigTabletWidth: 1024px;
+        --bigTabletHeight: 768px;
+        --tabletWidth: 961px;
+        --mobileWidth: 641px;
+
+        /* // Fonts */
+        --pFontSize: 16px;
+        --buttonFontSize: 14px;
+        --h1FontSize: 36px;
+
+        /* // Other */
+        --buttonMinWidth: 120px;
+        --buttonHeight: 40px;
+        --iconHeigh: 16px;
+        --iconWidth: 16px;
+
+        /* // $b-table-sort-icon-bg-not-sorted: url('data:image/svg+xml,<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 3L6 21M6 3L10 7M6 3L2 7" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 21L18 3M18 21L22 17M18 21L14 17" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'); */
+        /* // $b-table-sort-icon-bg-ascending: url('data:image/svg+xml,<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 3L6 21M6 3L10 7M6 3L2 7" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 21L18 3M18 21L22 17M18 21L14 17" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'); */
+        /* // $b-table-sort-icon-bg-descending: url('data:image/svg+xml,<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 3L6 21M6 3L10 7M6 3L2 7" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 21L18 3M18 21L22 17M18 21L14 17" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'); */
+        
+     
+
+    }
+}
+
+@layer bootstrap.local {
+    :root {
+        --bs-primary-rgb: 23, 23, 23;
+        --bs-btn-bg: 23, 23, 23;
+        --bs-primary: #171717;
+        --bs-border-radius: 0;
+    }
+    .pagination {
+        --bs-pagination-active-bg: #171717;
+        --bs-pagination-active-border-color: #171717;
+        --bs-pagination-border-color: white;
+        --bs-pagination-disabled-bg: #efefef;
+    }
+    .dropdown-menu {
+        --bs-dropdown-link-active-bg: #171717;
+    }
+    .btn {
+        --bs-btn-border-color: #171717;
+    }
+    .btn-info {
+        --bs-btn-border-color: #00a8c1;
+    }
+    .btn-link {
+        --bs-link-color: #171717;
+    }
+
+    .btn-primary {
+        --bs-btn-color: #fff;
+        --bs-btn-bg: #171717;
+        --bs-btn-border-color: #171717;
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: #c4100c;
+        --bs-btn-hover-border-color: #c4100c;
+        --bs-btn-focus-shadow-rgb: 49, 132, 253;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: #171717;
+        --bs-btn-active-border-color: #171717;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        --bs-btn-disabled-color: #fff;
+        --bs-btn-disabled-bg: #232323;
+        --bs-btn-disabled-border-color: #232323;
+    }
+    .btn-outline-primary {
+        --bs-btn-color: #232323;
+        --bs-btn-border-color: #232323;
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: #232323;
+        --bs-btn-hover-border-color: #232323;
+        --bs-btn-focus-shadow-rgb: 13, 110, 253;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: #232323;
+        --bs-btn-active-border-color: #232323;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        --bs-btn-disabled-color: #232323;
+        --bs-btn-disabled-bg: transparent;
+        --bs-btn-disabled-border-color: #232323;
+        --bs-gradient: none;
+    }
+   
+}

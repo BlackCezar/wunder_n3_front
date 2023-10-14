@@ -1,0 +1,237 @@
+@import "_variables.css";
+
+td,
+th {
+    vertical-align: top;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+svg {
+    height: auto;
+}
+
+iframe,
+video,
+svg {
+    max-width: 100%;
+}
+
+object,
+iframe,
+video {
+    border: 0;
+}
+
+.page {
+    padding-bottom: 60px;
+}
+.page-title {
+    font-size: 36px;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 35px;
+    font-weight: 700;
+}
+.page-paddings {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.ui-invisible {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.ui-block {
+    padding: 40px;
+    margin-bottom: 40px;
+    background-color: #fff;
+}
+.ui-block-title {
+    margin-bottom: 30px;
+    font-weight: 500;
+    font-size: 30px;
+}
+.ui-block-title.--dashed {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.ui-color-gray {
+    color: #b3b3b3;
+}
+
+.ui-color-red {
+    color: var(--accent);
+}
+
+.ui-color-black {
+    color: #000;
+}
+
+.ui-last-negative {
+    margin-bottom: -30px;
+}
+
+.ui-field {
+    margin-bottom: 30px;
+}
+.ui-field-label {
+    padding-bottom: 7px;
+    font-size: 14px;
+    font-style: italic;
+}
+.ui-field-hint {
+    font-size: 12px;
+    font-style: italic;
+    padding-top: 7px;
+    color: var(--borderGray);
+    transition: 0.1s color;
+}
+.ui-field-hint:hover {
+    color: #777;
+}
+.ui-field-error {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    padding-top: 7px;
+    font-style: italic;
+}
+
+.ui-input {
+    display: block;
+    width: 100%;
+    height: 44px;
+    border: 1px solid var(--borderGray);
+    border-radius: 0;
+    background-color: #fff;
+    padding: 0px 20px;
+    font-size: 16px;
+    outline: none;
+    transition:
+        0.1s border,
+        0.1s box-shadow;
+}
+.ui-input:not(:disabled):not(:readonly):hover {
+    border-color: var(--borderGray);
+}
+.ui-input:not(:disabled):not(:readonly):focus {
+    border-color: #171717;
+    box-shadow: 0 0 0 0.2rem rgba(205, 205, 205, 0.25);
+}
+.ui-input[readonly] {
+    background-color: #f4f4f4;
+}
+.ui-input:disabled {
+    background-color: #77777707;
+}
+.ui-input.ui-invalid {
+    border-color: var(--accent);
+}
+
+.ui-btn {
+    display: inline-block;
+    vertical-align: middle;
+    height: 44px;
+    line-height: 40px;
+    max-width: 100%;
+    padding: 0px 35px;
+    border-radius: 0;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid var(--green);
+    background-color: var(--green);
+    transition:
+        0.1s border,
+        0.1s background-color;
+    text-decoration: none !important;
+}
+.ui-btn-block {
+    display: block;
+    width: 100%;
+    padding: 0px 5px;
+}
+.ui-btn:not(:disabled):hover {
+    border-color: #45bd67;
+    background-color: #45bd67;
+    color: #fff;
+}
+.ui-btn-red {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+.ui-btn-red:not(:disabled):hover {
+    border-color: #ad0e0b;
+    background-color: #ad0e0b;
+}
+.ui-btn-bordered {
+    background-color: #fff;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+.ui-btn-bordered:not(:disabled):hover {
+    color: #fff;
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.ui-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ui-iconed-link {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 25px;
+    transition: opacity 0.1s;
+}
+.ui-iconed-link:last-child {
+    margin-right: 0;
+}
+.ui-iconed-link-icon {
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.ui-iconed-link:hover {
+    opacity: 0.8;
+}
+
+.custom-checkbox {
+    line-height: 1.5;
+}
+
+.ui-image-preview {
+    margin-bottom: 20px;
+    width: 314px;
+    max-width: 100%;
+    display: block;
+    position: relative;
+    aspect-ratio: 10 / 6;
+    overflow: hidden;
+    background: #f7f7f7;
+    border: 1px solid var(--borderGray2);
+}
+.ui-image-preview img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    object-position: center;
+    transition: transform 0.3s;
+}
+
+input:disabled {
+    background-color: rgb(220 220 220 / 30%);
+}
