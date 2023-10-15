@@ -133,6 +133,7 @@ const createAccount = () => {
             :systemSettings="systemSettings"
             :systems="systems"
         />
+        <AccountsModalPopUp />
     </div>
 </template>
 

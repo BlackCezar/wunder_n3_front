@@ -112,14 +112,11 @@ if (user.value?.role === ICustomerRole.ADMIN) {
         ],
     );
     const { data: contracts } = useAsyncData("contracts", () =>
-        contractStore.getCustomerContracts(user.value?.customer.id),
+        contractStore.getCustomerContracts(user.value?.customer?.id),
     );
     authStore.setContracts(contracts.value);
 
     const contract = authStore.getActiveContract;
-    if (contract?.contractType === ContractType.STANDARD) {
-        authStore.setSettings(regionStore.globalSettings);
-    }
 }
 
 ratesStore.loadRates();

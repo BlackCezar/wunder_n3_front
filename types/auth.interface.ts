@@ -51,11 +51,9 @@ export type Tokens = {
 };
 
 export interface AuthStoreState {
-    customerCandidate: null | ICustomerCandidate
+    customerCandidate: null | ICustomerCandidate;
     contracts: IContract[];
-    settings: IRegionSettings | ICustomerSettings | null
     user: IUser | null;
     busy: boolean;
-    tokens: null | Tokens
+    tokens: null | Tokens;
 }
-

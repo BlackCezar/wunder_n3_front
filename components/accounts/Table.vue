@@ -233,10 +233,12 @@ const accountEdit = (id: number, customerId: number) => {
                         v-if="data.value.isActive && isActive"
                     >
                         <IBiPlusSquare
-                            @click="useEvent('modal:popup-account', {
-                                system,
-                                accountId: data.value.accountId
-                            })"
+                            @click="
+                                useEvent('modal:popup-account', {
+                                    system,
+                                    accountId: data.value.accountId,
+                                })
+                            "
                         />
                     </div>
                     <div class="action-icon" v-else>
@@ -302,6 +304,9 @@ const accountEdit = (id: number, customerId: number) => {
     justify-content: space-between;
     margin-bottom: 2px;
 }
+.table-system-header {
+    cursor: pointer;
+}
 .table-system-header__items {
     display: flex;
     flex-direction: row;
@@ -362,6 +367,7 @@ const accountEdit = (id: number, customerId: number) => {
 
 .account-name-column {
     width: 11em;
+    text-align: center;
 }
 
 .gab-column-1 {

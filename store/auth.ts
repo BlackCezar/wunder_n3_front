@@ -6,15 +6,16 @@ import {
     ISignUpPayload,
     Tokens,
 } from "~/types/auth.interface";
-import { IContract } from "~/types/contract.interface";
+import { ContractType, IContract } from "~/types/contract.interface";
 import { ICustomerSettings, IRegionSettings } from "~/types/region.interface";
-import { useNuxtApp } from "#imports";
+import { useNuxtApp, persistedState } from "#imports";
+import { ICustomerRole } from "~/types/user.interface";
+import { useRegionStore } from "~/store/regions";
 
 export const useAuthStore = defineStore("auth-custom", {
     state: (): AuthStoreState => ({
         customerCandidate: null,
         contracts: [],
-        settings: null,
         user: null,
         busy: false,
         tokens: null,
@@ -22,6 +23,17 @@ export const useAuthStore = defineStore("auth-custom", {
     getters: {
         loggedIn: (state) => {
             return state.tokens?.expires && state.tokens?.expires > Date.now();
+        },
+        getSettings(state): null | IRegionSettings | ICustomerSettings {
+            if (state.user?.role === ICustomerRole.CUSTOMER) {
+                const contract = state.contracts.find(
+                    (contract) => contract.isActive,
+                );
+
+                if (!contract) return null;
+                return contract.settings;
+            }
+            return null;
         },
         getActiveContract(state): IContract | null {
             if (this.contracts?.length) {
@@ -39,11 +51,19 @@ export const useAuthStore = defineStore("auth-custom", {
                 );
             }
         },
-        getSettings(state) {
-            return state.settings;
-        },
         getSystemSettings(state) {
-            return [];
+            if (state.user?.role === ICustomerRole.CUSTOMER) {
+                const contract = state.user.contracts.find(
+                    (contract) => contract.isActive,
+                );
+                if (!contract) return null;
+
+                if (contract?.contractType === ContractType.STANDARD) {
+                    const region = useRegionStore();
+                    return region.globalSystemSettings;
+                } else return contract.systemSettings;
+            }
+            return null;
         },
     },
     actions: {
@@ -64,7 +84,7 @@ export const useAuthStore = defineStore("auth-custom", {
 
             const result = await apiClient.post("/auth/signin", payload);
             this.setTokens(result);
-            this.getProfile();
+            await this.getProfile();
         },
         async logout() {
             //@ts-ignore
@@ -72,9 +92,7 @@ export const useAuthStore = defineStore("auth-custom", {
             this.tokens = null;
             this.user = null;
         },
-        setSettings(data: IRegionSettings | ICustomerSettings | null) {
-            this.settings = data;
-        },
+
         setContracts(list: IContract[]) {
             this.contracts = list;
         },
@@ -122,7 +140,9 @@ export const useAuthStore = defineStore("auth-custom", {
         },
     },
     persist: {
-        storage: sessionStorage,
+        storage: persistedState.cookiesWithOptions({
+            sameSite: "strict",
+        }),
         paths: ["tokens"],
     },
 });

@@ -1,5 +1,5 @@
 import { ICustomer } from "~/types/user.interface";
-import { ISystem } from "~/types/region.interface";
+import { ISystem, SystemName } from "~/types/region.interface";
 import { IContract } from "~/types/contract.interface";
 
 export interface IAccount {
@@ -63,3 +63,9 @@ export type AccountTableRow = {
     };
     _rowVariant?: string;
 };
+
+export interface ITopUpAccount {
+    accountId: number;
+    isActive: boolean;
+    systemName: SystemName;
+}

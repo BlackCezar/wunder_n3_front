@@ -17,6 +17,7 @@ declare module 'vue' {
     IBiEmojiSmile: typeof import('~icons/bi/emoji-smile')['default']
     IBiFileEarmark: typeof import('~icons/bi/file-earmark')['default']
     IBiListOl: typeof import('~icons/bi/list-ol')['default']
+    IBiMinus: typeof import('~icons/bi/minus')['default']
     IBiPen: typeof import('~icons/bi/pen')['default']
     IBiPencil: typeof import('~icons/bi/pencil')['default']
     IBiPencilSquare: typeof import('~icons/bi/pencil-square')['default']

@@ -5,7 +5,10 @@ import { ICustomerCandidate } from "~/types/user.interface";
 import { IAccount } from "~/types/account.interface";
 
 export type ApplicationEvents = {
-    "modal:popup-account": void;
+    "modal:popup-account": {
+        accountId: number;
+        system: SystemName;
+    };
     "modal:edit-documents": void;
     "modal:edit-client": void;
     "modal:edit-contracts": void;

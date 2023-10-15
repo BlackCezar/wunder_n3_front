@@ -1,6 +1,7 @@
 .accounts-buttons-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
     margin-left: var(--blockMargin);
     width: fit-content;
     margin-bottom: var(--blockMargin);
@@ -92,6 +93,14 @@
     }
 }
 
+@media screen and (min-width: 768px) {
+    #top-up-modal .modal-dialog {
+        max-width: unset;
+    }
+    #top-up-modal .modal-dialog, #top-up-modal .modal-content, #top-up-modal .modal-body  {
+        width: fit-content;
+    }
+}
 .modal-body {
     padding: 0 0 0 0;
 }
@@ -109,16 +118,25 @@
 
 .top-up-tabs {
     background: var(--white);
+    width: 100%;
+    height: 100%;
 }
 .top-up-tabs__wrapper {
     display: flex;
+    width: 100%;
     flex-direction: row;
 }
 .top-up-tabs__items {
     background-color: #cdcdcd;
     min-height: 400px;
     display: flex;
+    height: 100%;
     flex-direction: column;
+}
+@media screen and (min-width: 768px) {
+    .top-up-tabs, .top-up-tabs__wrapper {
+        width: fit-content;
+    }
 }
 
 .top-up-buttons {

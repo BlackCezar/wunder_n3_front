@@ -1,46 +1,80 @@
 <script setup lang="ts">
 import { useAuthStore } from "~/store/auth";
 import { storeToRefs } from "pinia";
+import { SystemName } from "~/types/region.interface";
+import { useAccountStore } from "~/store/accounts";
+import { systemsToImg } from "~/composables/useSystems";
+import * as yup from "yup";
+import { ITopUpAccount } from "~/types/account.interface";
+import TopUpFormItem from "~/components/accounts/forms/TopUpFormItem.vue";
 
+const props = defineProps<{
+    accountId: number;
+    systemName: SystemName;
+}>();
 const autoStore = useAuthStore();
-const { getSettings } = storeToRefs(autoStore);
+const accountsStore = useAccountStore();
+const { accounts } = storeToRefs(accountsStore);
+const { getSystemSettings } = storeToRefs(autoStore);
+const enabledSystems = computed(() => getSystemSettings.value ?? []);
+
+const selectedSystemForTopUp = ref(props.systemName);
+
+const selectSystemForTopUp = (systemName: SystemName) => {
+    selectedSystemForTopUp.value = systemName;
+};
+
+const hasActiveAccount = (system: SystemName) => {
+    return !!accounts.value.find((account) => account.system?.name === system);
+};
+
+const { values } = useForm({
+    validationSchema: yup.object({
+        topUpAccounts: yup.array().of(
+            yup.object<ITopUpAccount>({
+                isActive: yup.boolean().required().default(false),
+                systemName: yup.string().required(),
+                accountId: yup.number().required(),
+            }),
+        ),
+    }),
+    initialValues: {
+        topUpAccounts: [
+            {
+                isActive: true,
+                systemName: props.systemName,
+                accountId: props.accountId,
+            },
+        ],
+    },
+});
 </script>
 <template>
-    <form action="">
+    <form v-if="accountId && accountId > 0">
         <div class="top-up-tabs">
             <div class="top-up-tabs__wrapper">
                 <div class="top-up-tabs__items">
-                    <template v-for="(system, index) in enabledSystems">
-                        <div
-                            class="top-up-tab"
-                            :class="[
-                                selectedSystemForTopUp === system.value &&
-                                    'active',
-                                !hasActiveAccount(accounts[system.value]) &&
-                                    'disable',
-                            ]"
-                            v-if="systemSettings.has(system.value)"
-                            :key="index"
-                            @click="selectSystemForTopUp(system.value)"
+                    <template
+                        v-for="(system, index) in enabledSystems"
+                        :key="system.id"
+                    >
+                        <button
+                            type="button"
+                            class="top-up-tab select-system-tab border-0"
+                            :class="{
+                                active:
+                                    selectedSystemForTopUp ===
+                                    system.systemName,
+                                disable: !hasActiveAccount(system.systemName),
+                            }"
+                            :disabled="!hasActiveAccount(system.systemName)"
+                            @click="selectSystemForTopUp(system.systemName)"
                         >
                             <img
-                                :src="systemsToImg.get(system.value)"
-                                :alt="system.value"
+                                :src="systemsToImg.get(system.systemName)"
+                                :alt="system.systemName"
                             />
-                            <div
-                                class="round-indicator"
-                                :class="
-                                    topUpTabs[system.value] &&
-                                    !topUpTabs[system.value].isValid
-                                        ? 'red'
-                                        : 'green'
-                                "
-                                v-if="
-                                    topUpAccounts[system.value] &&
-                                    topUpAccounts[system.value].length
-                                "
-                            ></div>
-                        </div>
+                        </button>
                     </template>
                 </div>
                 <div class="top-up-form-container w-100">
@@ -48,7 +82,8 @@ const { getSettings } = storeToRefs(autoStore);
                         {{ $t("AccountManagement.NoActiveAccounts") }}
                     </div>
                     <div v-else class="w-100">
-                        <div
+                        <TopUpFormItem :system-name="selectedSystemForTopUp" />
+                        <!--                        <div
                             class="selected-system"
                             :class="
                                 !topUpAccounts[selectedSystemForTopUp].length &&
@@ -296,16 +331,16 @@ const { getSettings } = storeToRefs(autoStore);
                                     })
                                 }}
                             </div>
-                            <!--                                    <div class="gray" v-if="-->
-                            <!--                                        getSumForTopUp(selectedSystemForTopUp) >=-->
-                            <!--                                        systemSettings.get(selectedSystemForTopUp).minSum-->
-                            <!--                                    ">-->
-                            <!--                                        {{-->
-                            <!--                                            $t("AccountManagement.SumWithoutVat", {-->
-                            <!--                                                variable: getTotalWithoutVat(selectedSystemForTopUp)-->
-                            <!--                                            })-->
-                            <!--                                        }}-->
-                            <!--                                    </div>-->
+                            <div class="gray" v-if="
+                                getSumForTopUp(selectedSystemForTopUp) >=
+                                systemSettings.get(selectedSystemForTopUp).minSum
+                            ">
+                                {{
+                                    $t("AccountManagement.SumWithoutVat", {
+                                        variable: getTotalWithoutVat(selectedSystemForTopUp)
+                                    })
+                                }}
+                            </div>
                             <ValidationProvider
                                 ref="publicAgree"
                                 name="publicAgree"
@@ -346,12 +381,13 @@ const { getSettings } = storeToRefs(autoStore);
                                     </b-form-invalid-feedback>
                                 </b-form-group>
                             </ValidationProvider>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>
         </div>
         <div class="top-up-buttons">
+            <!--
             <div v-if="billItemsNumber" class="count-indicator">
                 {{ billItemsNumber }}
             </div>
@@ -382,8 +418,13 @@ const { getSettings } = storeToRefs(autoStore);
                     </b-button>
                 </b-col>
             </b-row>
+            -->
         </div>
     </form>
 </template>
 
-<style scoped lang="css"></style>
+<style scoped lang="css">
+.select-system-tab {
+    max-width: 220px;
+}
+</style>

@@ -18,6 +18,7 @@ export default defineNuxtPlugin(({ vueApp }) => {
     return {
         provide: {
             $t: i18n.global.t,
+            t: i18n.global.t,
             locale: i18n.global.locale,
         },
     };

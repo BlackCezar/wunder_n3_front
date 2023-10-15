@@ -9,7 +9,6 @@ export interface IRegion {
     isActive: boolean;
 }
 
-
 export interface IRegionSettings extends ISettings {
     emailFrom: string;
     planFixManagerId: string;
@@ -41,10 +40,9 @@ export interface ICustomerSystemSettings extends ISystemSettings {
 }
 
 export interface IRegionEdit extends IRegion {
-    settings: Omit<IRegionSettings, 'regionId' | 'contractId' | 'id'>[];
+    settings: Omit<IRegionSettings, "regionId" | "contractId" | "id">[];
     systemSettings: IRegionSystemSettings[];
 }
-
 
 export interface ISettings {
     id: number;
@@ -76,7 +74,7 @@ export interface ICustomerSystemSettings extends ISystemSettings {
 export interface ISystemSettings {
     id: number;
     lines: ISystemSettingsLine[];
-    systemName: string;
+    systemName: SystemName;
     minSum: number;
     system?: ISystem;
     isActive: boolean;
