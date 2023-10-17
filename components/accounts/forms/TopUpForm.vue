@@ -1,407 +1,231 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/store/auth";
 import { storeToRefs } from "pinia";
-import { SystemName } from "~/types/region.interface";
-import { useAccountStore } from "~/store/accounts";
-import { systemsToImg } from "~/composables/useSystems";
 import * as yup from "yup";
-import { ITopUpAccount } from "~/types/account.interface";
 import TopUpFormItem from "~/components/accounts/forms/TopUpFormItem.vue";
+import { systemsToImg } from "~/composables/useSystems";
+import { useAccountStore } from "~/store/accounts";
+import { useAuthStore } from "~/store/auth";
+import { ITopUpAccount } from "~/types/account.interface";
+import { ISystemSettings, PayType, SystemName } from "~/types/region.interface";
+import { useRegionStore } from "../../../store/regions";
 
 const props = defineProps<{
     accountId: number;
     systemName: SystemName;
+    enabledSystems: ISystemSettings[];
 }>();
 const autoStore = useAuthStore();
 const accountsStore = useAccountStore();
 const { accounts } = storeToRefs(accountsStore);
-const { getSystemSettings } = storeToRefs(autoStore);
-const enabledSystems = computed(() => getSystemSettings.value ?? []);
-
+const { getSettings, getActiveContract } = storeToRefs(autoStore);
 const selectedSystemForTopUp = ref(props.systemName);
+const { hide } = useModal();
+const { t } = useI18n()
+const regionStore = useRegionStore()
+const { globalSettings, regionCurrency } = storeToRefs(regionStore)
 
 const selectSystemForTopUp = (systemName: SystemName) => {
     selectedSystemForTopUp.value = systemName;
 };
 
-const hasActiveAccount = (system: SystemName) => {
-    return !!accounts.value.find((account) => account.system?.name === system);
+
+
+watch(
+    () => props.systemName,
+    (val) => selectSystemForTopUp(val),
+    {
+        immediate: true,
+        deep: true,
+    },
+);
+
+const hasActiveAccount = (system: SystemName): boolean => {
+    return !!accounts.value.find(
+        (account) =>
+            account.system?.name &&
+            account.system.name === system &&
+            account.isActive,
+    );
 };
 
-const { values } = useForm({
+const { values, isSubmitting, setTouched, meta, errors, handleSubmit, setValues } = useForm<{ topUpAccounts: ITopUpAccount[] }>({
     validationSchema: yup.object({
+        publicAgree: yup.boolean().isTrue().required(),
         topUpAccounts: yup.array().of(
-            yup.object<ITopUpAccount>({
-                isActive: yup.boolean().required().default(false),
-                systemName: yup.string().required(),
-                accountId: yup.number().required(),
-            }),
+            yup.lazy(systemValue => {
+                const min = Number(props.enabledSystems.find(item => item.systemName === systemValue.systemName)?.minSum ?? 0)
+
+                return yup.object<ITopUpAccount>({
+                    isActive: yup.boolean().required().default(false),
+                    systemName: yup.string().required(),
+                    accounts: yup.array().of(
+                        yup.object({
+                            id: systemValue.isActive
+                                ? yup.number().required().min(1)
+                                : yup.number().optional(),
+                            sum: systemValue.isActive
+                                ? yup.number().required().min(min)
+                                : yup.number().optional(),
+                        })
+                    ),
+                })
+            })
         ),
     }),
+    keepValuesOnUnmount: true,
     initialValues: {
-        topUpAccounts: [
-            {
-                isActive: true,
-                systemName: props.systemName,
-                accountId: props.accountId,
-            },
-        ],
-    },
+        topUpAccounts: []
+    }
 });
+
+function setValuesFromProps() {
+    if (props.enabledSystems?.length) setValues({
+        topUpAccounts: props.enabledSystems.map((item) => {
+            if (item.systemName === props.systemName) return {
+                isActive: true,
+                systemName: item.systemName,
+                accounts: [{
+                    id: props.accountId,
+                    sum: 0
+                }]
+            }
+
+            const account = accounts.value?.find(account => account.systemId === item.id)
+            const systemAccounts = account ? [{
+                id: account.id,
+                sum: 0
+            }] : []
+
+            return {
+                isActive: false,
+                accounts: systemAccounts,
+                systemName: item.systemName,
+            } satisfies ITopUpAccount
+        }),
+    })
+}
+
+const cancel = () => {
+    setTouched(false);
+    setValuesFromProps();
+    hide();
+};
+
+const billItemsNumber = computed(
+    () =>
+        values.topUpAccounts.filter(
+            (item) => item.isActive && item.accounts.length,
+        )?.length ?? 0,
+);
+
+const processForm = handleSubmit(async (values) => {
+    console.log('VALUES', values)
+    const activeList = values.topUpAccounts.filter(item => item.isActive)
+    if (!getActiveContract.value) {
+        useNuxtApp().$toast.error('Активный договор не найден')
+        return;
+    }
+
+    const isSuccess = await accountsStore.topUpAccounts({
+        list: activeList,
+        customerId: getActiveContract.value.customerId,
+        contractId: getActiveContract.value.id,
+        currency: regionCurrency.value ?? 'BYN'
+    })
+    if (isSuccess) {
+        const messasge = getSettings.value?.payType === PayType.POSTPAY ? t("AccountManagement.TopUpPostPayAccountCreated") : t("AccountManagement.TopUpAccountCreated")
+        useNuxtApp().$toast.success(messasge)
+        setValuesFromProps()
+        setTouched(false)
+        hide()
+    }
+});
+
+const isValidItem = (index: number) => {
+    if (errors.value) {
+        for (const key in errors.value) {
+            if (key.startsWith(`topUpAccounts[${index}]`)) return false;
+        }
+    }
+    return meta.value.touched;
+}
+const isActiveItem = (index: number) => {
+    return values.topUpAccounts?.[index]?.isActive ?? false
+}
+watch(() => props.accountId, () => {
+    if (props.accountId) setValuesFromProps()
+}, {
+    immediate: true
+})
+watch(() => props.systemName, () => {
+    if (props.systemName) setValuesFromProps()
+}, {
+    immediate: true
+})
 </script>
 <template>
-    <form v-if="accountId && accountId > 0">
+    <form @submit.prevent="processForm">
         <div class="top-up-tabs">
             <div class="top-up-tabs__wrapper">
                 <div class="top-up-tabs__items">
-                    <template
-                        v-for="(system, index) in enabledSystems"
-                        :key="system.id"
-                    >
-                        <button
-                            type="button"
-                            class="top-up-tab select-system-tab border-0"
-                            :class="{
-                                active:
-                                    selectedSystemForTopUp ===
-                                    system.systemName,
-                                disable: !hasActiveAccount(system.systemName),
-                            }"
-                            :disabled="!hasActiveAccount(system.systemName)"
-                            @click="selectSystemForTopUp(system.systemName)"
-                        >
-                            <img
-                                :src="systemsToImg.get(system.systemName)"
-                                :alt="system.systemName"
-                            />
+                    <template v-for="(system, index) in enabledSystems" :key="system.id">
+
+                        <button type="button" class="top-up-tab select-system-tab border-0" :class="{
+                            active:
+                                selectedSystemForTopUp ===
+                                system.systemName,
+                            disable: !hasActiveAccount(system.systemName),
+                        }" :disabled="!hasActiveAccount(system.systemName)"
+                            @click="selectSystemForTopUp(system.systemName)">
+                            <img :src="systemsToImg.get(system.systemName)" :alt="system.systemName" />
+                            <div v-if="isActiveItem(index)" class="round-indicator-wrapper">
+                                <div class="round-indicator" :class="{
+                                    'green': isValidItem(index),
+                                    'red': !isValidItem(index)
+                                }" />
+                            </div>
                         </button>
                     </template>
                 </div>
-                <div class="top-up-form-container w-100">
+                <div class="top-up-form-container">
                     <div v-if="!selectedSystemForTopUp">
                         {{ $t("AccountManagement.NoActiveAccounts") }}
                     </div>
-                    <div v-else class="w-100">
-                        <TopUpFormItem :system-name="selectedSystemForTopUp" />
-                        <!--                        <div
-                            class="selected-system"
-                            :class="
-                                !topUpAccounts[selectedSystemForTopUp].length &&
-                                'gray'
-                            "
-                        >
-                            <div class="selected-systems-icon">
-                                <img
-                                    :src="
-                                        systemsToImg.get(selectedSystemForTopUp)
-                                    "
-                                    :alt="selectedSystemForTopUp"
-                                />
-                            </div>
+                    <div v-else>
+                        <template v-for="(system, index) in enabledSystems" :key="system.id">
+                            <TopUpFormItem v-show="system.systemName === selectedSystemForTopUp" :system="system"
+                                :index="index" />
+                        </template>
 
-                            <b-icon
-                                v-if="
-                                    topUpAccounts[selectedSystemForTopUp].length
-                                "
-                                icon="toggle-on"
-                                font-scale="2.6"
-                                variant="success"
-                                class="toggle-icon"
-                                @click="
-                                    toggleOffSystemForTopUp(
-                                        selectedSystemForTopUp,
-                                    )
-                                "
-                            />
-                            <b-icon
-                                class="toggle-icon"
-                                v-else
-                                icon="toggle-off"
-                                font-scale="2.6"
-                                style="color: #bbbbbb"
-                                @click="
-                                    addAccountForTopUp(selectedSystemForTopUp)
-                                "
-                            />
-                        </div>
-                        <div
-                            class="top-up-form-row"
-                            v-for="(line, index) in topUpAccounts[
-                                selectedSystemForTopUp
-                            ]"
-                            :key="index"
-                        >
-                            <validation-provider
-                                name="selectAccount"
-                                slim
-                                :rules="{ required: true }"
-                                v-slot="validationContext"
-                            >
-                                <b-form-group>
-                                    <b-form-select
-                                        v-model="line.accountId"
-                                        :class="
-                                            !line.accountId &&
-                                            'select-default-option'
-                                        "
-                                        :options="
-                                            getActiveAccounts(
-                                                selectedSystemForTopUp,
-                                            )
-                                        "
-                                        :state="
-                                            getValidationState(
-                                                validationContext,
-                                            )
-                                        "
-                                    >
-                                        <template #first>
-                                            <b-form-select-option
-                                                :value="null"
-                                                disabled
-                                                class="select-default-option"
-                                            >
-                                                {{
-                                                    $t(
-                                                        "AccountManagement.SelectAccount",
-                                                    )
-                                                }}
-                                            </b-form-select-option>
-                                        </template>
-                                    </b-form-select>
-                                </b-form-group>
-                            </validation-provider>
-                            <validation-provider
-                                name="AccountSum"
-                                :rules="{
-                                    required: true,
-                                    min_value: systemSettings.get(
-                                        selectedSystemForTopUp,
-                                    ).minSum,
-                                }"
-                                v-slot="validationContext"
-                                slim
-                            >
-                                <b-input
-                                    v-model.number="line.sum"
-                                    :placeholder="$t('AccountManagement.Sum')"
-                                    type="number"
-                                    id="AccountSum"
-                                    name="AccountSum"
-                                    step="0.01"
-                                    :state="
-                                        getValidationState(validationContext)
-                                    "
-                                ></b-input>
-                            </validation-provider>
-                            <b-button
-                                @click="
-                                    deleteAccountForTopUp(
-                                        selectedSystemForTopUp,
-                                        index,
-                                    )
-                                "
-                                variant="outline-danger"
-                                >—
-                            </b-button>
-                        </div>
-                        <div
-                            v-if="topUpAccounts[selectedSystemForTopUp].length"
-                            class="top-up-form-row"
-                        >
-                            <b-button
-                                @click="
-                                    addAccountForTopUp(selectedSystemForTopUp)
-                                "
-                                variant="outline-info"
-                                class="add-account-for-top-up"
-                                v-if="
-                                    topUpAccounts[selectedSystemForTopUp]
-                                        .length <
-                                    getActiveAccounts(selectedSystemForTopUp)
-                                        .length
-                                "
-                            >
-                                {{ $t("AccountManagement.AddAccount") }}
-                            </b-button>
-                        </div>
-                        <div
-                            v-if="topUpAccounts[selectedSystemForTopUp].length"
-                            class="mt-3"
-                        >
-                            <div
-                                class="gray"
-                                v-if="
-                                    getSumForTopUp(selectedSystemForTopUp) >=
-                                    systemSettings.get(selectedSystemForTopUp)
-                                        .minSum
-                                "
-                            >
-                                {{
-                                    $t("AccountManagement.SumWithVat", {
-                                        variable: getTotalWithVat(
-                                            selectedSystemForTopUp,
-                                        ),
-                                    })
-                                }}
-                            </div>
-                            <div
-                                v-if="
-                                    getSumComission(selectedSystemForTopUp) !==
-                                    0
-                                "
-                                class="gray"
-                            >
-                                {{
-                                    $t("AccountManagement.Comission", {
-                                        variable: getSumComission(
-                                            selectedSystemForTopUp,
-                                        ),
-                                    })
-                                }}
-                            </div>
-                            <div
-                                v-if="
-                                    getSumDiscount(selectedSystemForTopUp) !== 0
-                                "
-                                class="gray"
-                            >
-                                {{
-                                    $t("AccountManagement.Discount", {
-                                        variable: getSumDiscount(
-                                            selectedSystemForTopUp,
-                                        ),
-                                    })
-                                }}
-                            </div>
-                            <div>
-                                {{
-                                    $t("AccountManagement.YourSum", {
-                                        variable:
-                                            getSumForTopUp(
-                                                selectedSystemForTopUp,
-                                            ) -
-                                            getSumComission(
-                                                selectedSystemForTopUp,
-                                            ) +
-                                            getSumDiscount(
-                                                selectedSystemForTopUp,
-                                            ),
-                                    })
-                                }}
-                            </div>
-                            <div
-                                class="gray"
-                                v-if="
-                                    getSumForTopUp(selectedSystemForTopUp) >=
-                                        systemSettings.get(
-                                            selectedSystemForTopUp,
-                                        ).minSum &&
-                                    !['BYN', 'KZT'].includes(
-                                        systemSettings.get(
-                                            selectedSystemForTopUp,
-                                        ).currency,
-                                    )
-                                "
-                            >
-                                {{
-                                    getCurrencyAccountEquivalent(
-                                        systemSettings.get(
-                                            selectedSystemForTopUp,
-                                        ),
-                                        selectedSystemForTopUp,
-                                    )
-                                }}
-                            </div>
-                            <div
-                                class="gray"
-                                :class="
-                                    getSumForTopUp(selectedSystemForTopUp) >=
-                                    systemSettings.get(selectedSystemForTopUp)
-                                        .minSum
-                                        ? 'gray'
-                                        : 'danger'
-                                "
-                            >
-                                {{
-                                    $t("AccountManagement.MinSum", {
-                                        variable: systemSettings.get(
-                                            selectedSystemForTopUp,
-                                        ).minSum,
-                                    })
-                                }}
-                            </div>
-                            <div class="gray" v-if="
-                                getSumForTopUp(selectedSystemForTopUp) >=
-                                systemSettings.get(selectedSystemForTopUp).minSum
-                            ">
-                                {{
-                                    $t("AccountManagement.SumWithoutVat", {
-                                        variable: getTotalWithoutVat(selectedSystemForTopUp)
-                                    })
-                                }}
-                            </div>
-                            <ValidationProvider
-                                ref="publicAgree"
-                                name="publicAgree"
-                                :rules="{ required: { allowFalse: false } }"
-                                v-if="contract.contractType === 'STANDARD'"
-                                v-slot="{ dirty, validated, valid }"
-                            >
-                                <b-form-group>
-                                    <b-form-checkbox
-                                        :state="
-                                            dirty || validated ? valid : null
-                                        "
-                                        v-model="publicAgree"
-                                        id="publicAgree"
-                                        class="form-checkbox"
-                                    >
-                                        {{ $t(`registration.agreeWith`) }}
-                                        <a
-                                            class="a-link"
-                                            :href="
-                                                globalSettings.publicContract
-                                            "
-                                            >{{
-                                                $t(
-                                                    `registration.publicContract`,
-                                                )
-                                            }}</a
-                                        >
-                                    </b-form-checkbox>
-                                    <b-form-invalid-feedback
-                                        :state="
-                                            dirty || validated ? valid : null
-                                        "
-                                        class="form-input-invalid-feedback"
-                                        id="input-live-feedback"
-                                    >
-                                        {{ $t("registration.PhoneFeedback") }}
-                                    </b-form-invalid-feedback>
-                                </b-form-group>
-                            </ValidationProvider>
-                        </div>-->
+                        <Field name="publicAgree" as="div" class="checkbox-block" :value="true" type="checkbox"
+                            v-slot="{ field, meta }">
+                            <label class="mt-3">
+                                <input class="form-check-input" :class="{
+                                    'is-invalid': !meta.valid && meta.touched
+                                }" type="checkbox" :value="true" v-bind="field" />
+                                <span>
+                                    {{ $t(`registration.agreeWith`) }} <a class="a-link"
+                                        :href="globalSettings?.publicContract">{{
+                                            $t(`registration.publicContract`)
+                                        }}</a>
+                                </span>
+                            </label>
+                        </Field>
                     </div>
                 </div>
             </div>
         </div>
         <div class="top-up-buttons">
-            <!--
             <div v-if="billItemsNumber" class="count-indicator">
                 {{ billItemsNumber }}
             </div>
             <b-row class="h-100 m-0">
                 <b-col style="padding: 0 1px 0 0">
-                    <b-button
-                        type="submit"
-                        :disabled="isLoading"
-                        class="m-0 w-100 h-100"
-                        variant="danger"
-                    >
-                        <template v-if="isLoading">
+                    <b-button type="submit" :disabled="isSubmitting || billItemsNumber === 0" class="m-0 w-100 h-100"
+                        variant="danger">
+                        <template v-if="isSubmitting">
                             {{ $t("AccountManagement.GenerateBill") }}
-                            <b-spinner variant="white ml-3" />
+                            <b-spinner variant="light" class="ml-3" />
                         </template>
                         <template v-else>
                             {{ $t("AccountManagement.GenerateBill") }}
@@ -409,16 +233,11 @@ const { values } = useForm({
                     </b-button>
                 </b-col>
                 <b-col class="p-0">
-                    <b-button
-                        @click="closeTopUpModal"
-                        class="m-0 w-100 h-100 cancel"
-                        variant="outline-danger"
-                    >
+                    <b-button @click="cancel" class="m-0 w-100 h-100 cancel" variant="outline-danger">
                         {{ $t("AccountManagement.Cansel") }}
                     </b-button>
                 </b-col>
             </b-row>
-            -->
         </div>
     </form>
 </template>
@@ -426,5 +245,24 @@ const { values } = useForm({
 <style scoped lang="css">
 .select-system-tab {
     max-width: 220px;
+    position: relative;
+}
+
+.round-indicator-wrapper {
+    position: absolute;
+    right: 5px;
+}
+
+.pl-3 {
+    padding-left: 1.5rem;
+}
+
+.checkbox-block label {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.checkbox-block .form-check-input[type="checkbox"] {
+    margin-left: 0 !important;
 }
 </style>

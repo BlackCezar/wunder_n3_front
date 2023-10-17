@@ -65,7 +65,17 @@ export type AccountTableRow = {
 };
 
 export interface ITopUpAccount {
-    accountId: number;
     isActive: boolean;
     systemName: SystemName;
+    accounts: {
+        id: number;
+        sum: number;
+    }[]
+}
+
+export type TopUpAccountPayload = {
+    list: ITopUpAccount[];
+    currency: string;
+    customerId: number;
+    contractId: number;
 }

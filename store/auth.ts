@@ -7,7 +7,13 @@ import {
     Tokens,
 } from "~/types/auth.interface";
 import { ContractType, IContract } from "~/types/contract.interface";
-import { ICustomerSettings, IRegionSettings } from "~/types/region.interface";
+import {
+    ICustomerSettings,
+    ICustomerSystemSettings,
+    IRegionSettings,
+    IRegionSystemSettings,
+    ISystemSettings,
+} from "~/types/region.interface";
 import { useNuxtApp, persistedState } from "#imports";
 import { ICustomerRole } from "~/types/user.interface";
 import { useRegionStore } from "~/store/regions";
@@ -26,7 +32,7 @@ export const useAuthStore = defineStore("auth-custom", {
         },
         getSettings(state): null | IRegionSettings | ICustomerSettings {
             if (state.user?.role === ICustomerRole.CUSTOMER) {
-                const contract = state.contracts.find(
+                const contract = state.user.contracts.find(
                     (contract) => contract.isActive,
                 );
 
@@ -34,6 +40,11 @@ export const useAuthStore = defineStore("auth-custom", {
                 return contract.settings;
             }
             return null;
+        },
+        contractType(state): ContractType | null {
+            const contract = state.user?.contracts?.find(item => item.isActive)
+            if (!contract) return null;
+            return contract.contractType
         },
         getActiveContract(state): IContract | null {
             if (this.contracts?.length) {
@@ -51,19 +62,21 @@ export const useAuthStore = defineStore("auth-custom", {
                 );
             }
         },
-        getSystemSettings(state) {
+        getSystemSettings(
+            state,
+        ): ISystemSettings[] {
             if (state.user?.role === ICustomerRole.CUSTOMER) {
                 const contract = state.user.contracts.find(
                     (contract) => contract.isActive,
                 );
-                if (!contract) return null;
+                if (!contract) return [];
 
                 if (contract?.contractType === ContractType.STANDARD) {
                     const region = useRegionStore();
                     return region.globalSystemSettings;
                 } else return contract.systemSettings;
             }
-            return null;
+            return [];
         },
     },
     actions: {

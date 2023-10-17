@@ -35,7 +35,7 @@ export const useRatesStore = defineStore("rates", {
     actions: {
         async getList() {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient()
                 const { count, array } = await apiClient.get("/rates/list", {
                     query: {
                         filters: JSON.stringify({
@@ -54,7 +54,7 @@ export const useRatesStore = defineStore("rates", {
         },
         async loadRates() {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient()
 
                 this.rates = (await apiClient.get("/rates")) as IRatesResponse;
             } catch (e: any) {

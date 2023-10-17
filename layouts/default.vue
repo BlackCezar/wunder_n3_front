@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import { INavLink } from "~/types/common";
+import { storeToRefs } from "pinia";
+import { setLocale } from "yup";
 import TheHeader from "~/components/common/header/TheHeader.vue";
 import FloatBtns from "~/components/other/FloatBtns.vue";
+import { useAuthStore } from "~/store/auth";
+import { useContractStore } from "~/store/contracts";
 import { useRatesStore } from "~/store/rates";
-import { ICustomerRole, IUser } from "~/types/user.interface";
-import QuestionCircle from "~icons/bi/question-circle";
+import { useRegionStore } from "~/store/regions";
+import { INavLink } from "~/types/common";
+import { ICustomerRole } from "~/types/user.interface";
+import CardList from "~icons/bi/card-list";
 import CurrencyExchange from "~icons/bi/currency-exchange";
 import FileEarmarkSpreadsheet from "~icons/bi/file-earmark-spreadsheet";
-import TableIcon from "~icons/bi/table";
-import PersonCircle from "~icons/bi/person-circle";
-import GearIcon from "~icons/bi/gear";
-import PersonPlus from "~icons/bi/person-plus";
-import CardList from "~icons/bi/card-list";
 import FileEarmarkText from "~icons/bi/file-earmark-text";
-import { useRegionStore } from "~/store/regions";
-import { setLocale } from "yup";
-import { useAuthStore } from "~/store/auth";
-import { useAsyncData } from "#imports";
-import { useContractStore } from "~/store/contracts";
-import { ContractType, IContract } from "~/types/contract.interface";
+import GearIcon from "~icons/bi/gear";
+import PersonCircle from "~icons/bi/person-circle";
+import PersonPlus from "~icons/bi/person-plus";
+import QuestionCircle from "~icons/bi/question-circle";
+import TableIcon from "~icons/bi/table";
 
 const sidebarCollapsed = ref<boolean>(true);
 const showLinkText = ref<boolean>(true);
@@ -26,19 +25,8 @@ const ratesStore = useRatesStore();
 const contractStore = useContractStore();
 const regionStore = useRegionStore();
 const authStore = useAuthStore();
-const userObj = useAuthStore().user;
+const { user } = storeToRefs(authStore)
 
-const user = ref<
-    | (IUser & {
-          contracts: IContract[];
-      })
-    | null
->(null);
-if (userObj)
-    user.value = userObj as IUser & {
-        contracts: IContract[];
-    };
-const navLinks = markRaw<INavLink[]>([]);
 const { t } = useI18n();
 
 const toggleSidebar = () => {
@@ -46,9 +34,14 @@ const toggleSidebar = () => {
     showLinkText.value = !showLinkText.value;
 };
 
-if (user.value?.role === ICustomerRole.ADMIN) {
-    navLinks.push(
-        ...[
+await useAsyncData('user', () =>
+    authStore.getProfile()
+)
+
+const navLinks = computed<INavLink[]>(() => {
+    console.log('user', user.value)
+    if (user.value?.role === ICustomerRole.ADMIN) {
+        return [
             {
                 to: "/admin",
                 icon: PersonCircle,
@@ -89,11 +82,9 @@ if (user.value?.role === ICustomerRole.ADMIN) {
                 icon: CurrencyExchange,
                 linkText: t("Navigation.Rates"),
             },
-        ],
-    );
-} else if (user.value?.role === ICustomerRole.CUSTOMER) {
-    navLinks.push(
-        ...[
+        ]
+    } else {
+        return [
             {
                 to: "/accounts",
                 icon: PersonCircle,
@@ -109,14 +100,14 @@ if (user.value?.role === ICustomerRole.ADMIN) {
                 icon: QuestionCircle,
                 linkText: t("Navigation.Help"),
             },
-        ],
-    );
+        ]
+    }
+})
+if (user.value?.role === ICustomerRole.CUSTOMER) {
     const { data: contracts } = useAsyncData("contracts", () =>
         contractStore.getCustomerContracts(user.value?.customer?.id),
     );
     authStore.setContracts(contracts.value);
-
-    const contract = authStore.getActiveContract;
 }
 
 ratesStore.loadRates();
@@ -148,42 +139,18 @@ setLocale({
 
 <template>
     <client-only>
-        <b-row
-            class="layout-container m-0 p-0"
-            :class="{ full: !sidebarCollapsed }"
-        >
-            <b-navbar
-                class="my-sidebar p-0"
-                :class="sidebarCollapsed && 'sidebar-collapsed'"
-                type="dark"
-                variant="primary"
-                :container="false"
-                @click.native="toggleSidebar()"
-            >
+        <b-row class="layout-container m-0 p-0" :class="{ full: !sidebarCollapsed }">
+            <b-navbar class="my-sidebar p-0" :class="sidebarCollapsed && 'sidebar-collapsed'" type="dark" variant="primary"
+                :container="false" @click.native="toggleSidebar()">
                 <div class="sidebar-logo bg-danger">
-                    <img
-                        src="/imgs/short-logo.png"
-                        v-if="sidebarCollapsed"
-                        alt="logo"
-                    />
+                    <img src="/imgs/short-logo.png" v-if="sidebarCollapsed" alt="logo" />
                     <img src="/imgs/logo_white_13.png" v-else alt="logo" />
                 </div>
                 <div class="nav-links">
-                    <b-navbar-nav
-                        vertical
-                        v-for="navLink in navLinks"
-                        :key="navLink.to"
-                    >
-                        <b-nav-item
-                            :to="navLink.to"
-                            class="sidebar-nav-link-container"
-                            @click.stop
-                        >
+                    <b-navbar-nav vertical v-for="navLink in navLinks" :key="navLink.to">
+                        <b-nav-item :to="navLink.to" class="sidebar-nav-link-container" @click.stop>
                             <div class="sidebar-nav-link p-0">
-                                <component
-                                    :is="navLink.icon"
-                                    style="font-size: 55px; width: 55px"
-                                />
+                                <component :is="navLink.icon" style="font-size: 55px; width: 55px" />
                                 <div class="ms-3" v-if="!showLinkText">
                                     {{ navLink.linkText }}
                                 </div>
@@ -194,13 +161,8 @@ setLocale({
             </b-navbar>
             <div class="main-container px-0">
                 <TheHeader :navLinks="navLinks" />
-                <b-overlay
-                    id="overlay-background"
-                    :show="!sidebarCollapsed"
-                    variant="dark"
-                    :opacity="0.35"
-                    @click.prevent="toggleSidebar"
-                >
+                <b-overlay id="overlay-background" :show="!sidebarCollapsed" variant="dark" :opacity="0.35"
+                    @click.prevent="toggleSidebar">
                     <template #overlay><br /></template>
                     <div class="page-container">
                         <Suspense>
@@ -225,9 +187,11 @@ setLocale({
     display: grid;
     grid-template-columns: 7.37em 1fr;
 }
+
 .layout-container.full {
     grid-template-columns: 22.81em 1fr;
 }
+
 @media screen and (max-width: 768px) {
     .layout-container {
         grid-template-columns: 1fr;
@@ -300,6 +264,7 @@ setLocale({
     height: 100%;
     padding: 3.5rem 1.5rem 1.5rem;
 }
+
 @media screen and (max-width: 768px) {
     .page-container {
         padding: 20px;
@@ -325,6 +290,7 @@ setLocale({
     color: var(--paragraphColor);
     margin: 0 0 2.5rem 2.5rem;
 }
+
 @media screen and (max-width: 768px) {
     .page-header-3 {
         margin: 0 0 2rem 0;
@@ -343,6 +309,7 @@ setLocale({
         width: 100vw;
         margin-left: 0;
     }
+
     .my-sidebar {
         display: none;
     }

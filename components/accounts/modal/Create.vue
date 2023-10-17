@@ -42,7 +42,9 @@ const schema = computed(() =>
                 selectedSystem.value,
             )
                 ? yup.string().required()
-                : yup.string().email().required(),
+                : [].includes(selectedSystem.value)
+                ? yup.string().email().required()
+                : yup.string().optional(),
             accountName: [SystemName.Telegram, SystemName.AppleSearch].includes(
                 selectedSystem.value,
             )

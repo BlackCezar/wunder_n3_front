@@ -194,6 +194,7 @@
 
 .top-up-form-container {
     padding: 28px;
+    max-width: 460px;
 }
 @media screen and (max-width: 768px) {
     .top-up-form-container {
@@ -203,7 +204,6 @@
 
 .selected-system {
     height: 59px;
-    width: 460px;
     border: 2px solid var(--lightGray2);
     display: flex;
     flex-direction: row;

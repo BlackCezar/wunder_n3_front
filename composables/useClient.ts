@@ -29,7 +29,6 @@ export const useClient = () => {
                 });
                 authStore.setTokens(result);
             }
-            console.log(context);
         },
         retry: 2,
         retryStatusCodes: [401, 403],
@@ -52,9 +51,10 @@ export const useClient = () => {
         const response = await apiClient(request, {
             ...options,
             retry: 1,
-            method: 'get',
-            retryStatusCodes: [401]
+            method: "get",
+            retryStatusCodes: [401],
         });
+        console.log("retry response", response);
         return response;
     };
     apiClient.delete = async (request, options) => {

@@ -10,12 +10,10 @@ import { ContractType } from "~/types/contract.interface";
 
 const customerStore = useCustomerStore();
 const authStore = useAuthStore();
-const auth = useAuthStore();
 const { t } = useI18n();
-const { forms } = storeToRefs(customerStore);
 const regionStore = useRegionStore();
 const accountStore = useAccountStore();
-const { data: user } = await useAsyncData("me", () => auth.getProfile());
+const { user } = storeToRefs(authStore)
 const customer = computed(() => user.value?.customer);
 
 watchEffect(() => {
@@ -33,7 +31,7 @@ const isDisabled = computed(() => {
 });
 
 const isTopUpDisabled = computed(() => {
-    return !(customer.isActive && accounts.value?.length);
+    return !(customer.value?.isActive && accounts.value?.length);
 });
 
 const isTransferDisabled = computed<boolean>(() => {
@@ -66,6 +64,9 @@ const systemSettings = computed(() => {
 const createAccount = () => {
     useEvent("modal:add-account");
 };
+const topUpAccount = () => {
+    useEvent('modal:popup-account')
+}
 </script>
 
 <template>
@@ -74,52 +75,28 @@ const createAccount = () => {
             {{ t("Navigation.AccountManagement").toUpperCase() }}
         </div>
         <div class="accounts-buttons-container">
-            <b-button
-                variant="danger"
-                class="general-button accounts-button"
-                :disabled="isDisabled"
-                @click="createAccount"
-            >
+            <b-button variant="danger" class="general-button accounts-button" :disabled="isDisabled" @click="createAccount">
                 + {{ t("AccountManagement.CreateAccount") }}
             </b-button>
-            <b-button
-                variant="primary"
-                class="general-button accounts-button"
-                :disabled="isTopUpDisabled"
-            >
+            <b-button variant="primary" class="general-button accounts-button" :disabled="isTopUpDisabled"
+                @click="topUpAccount">
                 {{ t("AccountManagement.TopUpAccount") }}
             </b-button>
-            <b-button
-                variant="primary"
-                class="general-button accounts-button"
-                :disabled="isTransferDisabled"
-            >
+            <b-button variant="primary" class="general-button accounts-button" :disabled="isTransferDisabled">
                 {{ t("AccountManagement.Transfer") }}
             </b-button>
         </div>
         <div v-if="isLoading">
             <div class="text-center">
-                <b-spinner
-                    variant="danger"
-                    class="ms-3"
-                    label="Spinning"
-                ></b-spinner>
+                <b-spinner variant="danger" class="ms-3" label="Spinning"></b-spinner>
             </div>
         </div>
         <div class="accounts-tables-container" v-else-if="!hasNoAnyAccounts">
-            <template
-                v-for="systemName in Object.keys(accountsMap)"
-                :key="'account-table-' + systemName"
-            >
-                <AccountsTable
-                    v-if="accountsMap[systemName].length && contract"
-                    :system="systemName as SystemName"
-                    :accounts="accountsMap[systemName]"
-                    :customer-id="contract.customerId"
-                    :contract-type="contract && contract.contractType"
-                    :allow-transfer="!isTransferDisabled || false"
-                    :is-active="contract && contract.isActive"
-                />
+            <template v-for="systemName in Object.keys(accountsMap)" :key="'account-table-' + systemName">
+                <AccountsTable v-if="accountsMap[systemName].length && contract" :system="systemName as SystemName"
+                    :accounts="accountsMap[systemName]" :customer-id="contract.customerId"
+                    :contract-type="contract && contract.contractType" :allow-transfer="!isTransferDisabled || false"
+                    :is-active="contract && contract.isActive" />
             </template>
         </div>
         <div v-else>
@@ -127,12 +104,8 @@ const createAccount = () => {
                 {{ $t("AccountManagement.NoAccounts") }}
             </h3>
         </div>
-        <AccountsModalCreate
-            v-if="systemSettings?.length"
-            :accounts="accounts ? accounts : []"
-            :systemSettings="systemSettings"
-            :systems="systems"
-        />
+        <AccountsModalCreate v-if="systemSettings?.length" :accounts="accounts ? accounts : []"
+            :systemSettings="systemSettings" :systems="systems" />
         <AccountsModalPopUp />
     </div>
 </template>

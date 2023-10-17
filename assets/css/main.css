@@ -43,6 +43,9 @@ layer(bootstrap.remote);
     .w-full {
         width: 100%;
     }
+    .w-screen {
+        width: 100vw;
+    }
 }
 
 body {

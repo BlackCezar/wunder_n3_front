@@ -114,5 +114,8 @@
         --bs-btn-disabled-border-color: #232323;
         --bs-gradient: none;
     }
+    .btn-danger, .btn-outline-danger {
+        border: 0
+    }
    
 }

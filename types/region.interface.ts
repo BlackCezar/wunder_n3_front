@@ -78,6 +78,7 @@ export interface ISystemSettings {
     minSum: number;
     system?: ISystem;
     isActive: boolean;
+    currency: string;
 }
 export interface IRegionSystemSettings extends ISystemSettings {
     regionId: number;
@@ -98,7 +99,7 @@ export interface ISystemSettingsLine {
 
 export interface ISystem {
     id: number;
-    name: string;
+    name: SystemName;
 }
 
 export enum SystemName {
@@ -116,4 +117,12 @@ export enum SystemName {
     LinkedIn = "LinkedIn",
     Telegram = "Telegram",
     AppleSearch = "Apple Search",
+}
+
+export enum CURRENCIES {
+    USD = "USD",
+    RUB = "RUB",
+    BYN = 'BYN',
+    KZT = 'KZT',
+    EUR = 'EUR'
 }
