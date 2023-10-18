@@ -34,3 +34,9 @@ export interface IDocument {
     link: string;
     contract?: IContract;
 }
+
+export enum DocumentsTabs {
+    finances = 'finances',
+    closure = 'closure',
+    contracts = 'contracts'
+}

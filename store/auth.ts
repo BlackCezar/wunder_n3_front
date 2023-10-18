@@ -15,7 +15,7 @@ import {
     ISystemSettings,
 } from "~/types/region.interface";
 import { useNuxtApp, persistedState } from "#imports";
-import { ICustomerRole } from "~/types/user.interface";
+import { ICustomerRole, IUser } from "~/types/user.interface";
 import { useRegionStore } from "~/store/regions";
 
 export const useAuthStore = defineStore("auth-custom", {
@@ -85,6 +85,9 @@ export const useAuthStore = defineStore("auth-custom", {
             this.tokens = tokens;
             const token = jwtUtils.decodeJWT(tokens.access_token);
             this.tokens.expires = token.exp * 1000;
+        },
+        setUser(user: IUser) {
+            this.user = user
         },
         async getProfile() {
             const { apiClient } = useClient();

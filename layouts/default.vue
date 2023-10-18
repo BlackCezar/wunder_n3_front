@@ -34,9 +34,10 @@ const toggleSidebar = () => {
     showLinkText.value = !showLinkText.value;
 };
 
-await useAsyncData('user', () =>
+const { data: userProfiel } = await useAsyncData('user', () =>
     authStore.getProfile()
 )
+authStore.setUser(userProfiel)
 
 const navLinks = computed<INavLink[]>(() => {
     console.log('user', user.value)
