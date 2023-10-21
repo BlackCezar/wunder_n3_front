@@ -1,30 +1,49 @@
-import {IAccount} from "~/types/account.interface";
-import {ICustomer} from "~/types/user.interface";
-import {IContract} from "~/types/contract.interface";
+import type { IAccount } from "~/types/account.interface";
+import type { ICustomer } from "~/types/user.interface";
+import type { IContract } from "~/types/contract.interface";
 
+export enum InvoiceDocumentType {
+    BILL = "BILL",
+    ACT = "ACT",
+    SIGNED_BILL = "SIGNED_BILL",
+    SIGNED_ACT = "SIGNED_ACT",
+}
+
+export interface IInvoiceDocument {
+    id: number;
+    link: string;
+    name: string;
+    type: InvoiceDocumentType;
+    invoiceId: number;
+}
+export type IInvoiceCachedSystemSettings = {
+    currency: string;
+    minSum: string;
+    systemName: string;
+    lines: {
+        commission: number;
+        discount: number;
+        fromAmount: string;
+        id: number;
+        systemName: string;
+        systemSettingsId: number;
+        toAmount: string;
+    }[];
+};
 export interface IInvoice {
     id: number;
-    customerId: number;
-    customer: ICustomer;
-    invoiceURL: string;
-    certificateURL: string;
-    signedCertificateURL: string;
-    invoiceNumber: string;
-    createdAt: Date;
-    readyForPayment: boolean;
     contractId: number;
-    contract: IContract;
-    isPaid: boolean;
-    isActive: boolean;
-    paymentWay: IPaymentWay;
-    invoiceRates: IInvoiceRates[];
-    invoiceLines: IInvoiceLine[];
-    invoiceSystemLines: IInvoiceSystemLine[];
     status: InvoiceStatus;
-    total: number;
-    sum: number;
-    hasOriginal: boolean;
-    isVisibly: boolean;
+    createdAt: Date;
+    taskId?: number;
+    customerId: number;
+    currency: string;
+    invoiceNumber: string;
+    invoiceDocument: IInvoiceDocument[];
+    rates: IInvoiceRates | null;
+    lines: IInvoiceLine[];
+    cachedSystemSettings: IInvoiceCachedSystemSettings[];
+    isVisible: boolean;
 }
 
 export interface IInvoiceSystemLine {
@@ -39,14 +58,14 @@ export interface IInvoiceSystemLine {
 }
 
 export interface IInvoiceLine {
-    id: number;
-    invoiceId: number;
-    invoice?: IInvoice;
-    sum: number;
-    expense: number;
-    transferred: number;
-    accountId: number;
-    account?: IAccount;
+    isActive: boolean;
+    systemName: string;
+    accounts: {
+        id: number;
+        sum: number;
+        name: string;
+    }[];
+    amount: number;
 }
 
 export type InvoiceStatus =
@@ -62,7 +81,7 @@ export type IPaymentWay = "prepay" | "postpay" | "postpay-expense";
 export enum PaymentWay {
     PREPAY = "prepay",
     POSTPAY = "postpay",
-    POSTPAY_EXPENSE = "postpay-expense"
+    POSTPAY_EXPENSE = "postpay-expense",
 }
 
 export interface IInvoiceRates {
@@ -72,4 +91,19 @@ export interface IInvoiceRates {
     rubRate?: string;
     usdRate?: string;
     eurRate?: string;
+}
+
+export interface IInvoiceState {
+    invoices: IInvoice[];
+    isLoading: boolean;
+    totalInvoices: number;
+}
+export interface IInvoiceFilters {
+    limit?: number;
+    skip?: number;
+    status?: string;
+    query?: string;
+    contract?: number;
+    fromDate?: string;
+    endDate?: string;
 }

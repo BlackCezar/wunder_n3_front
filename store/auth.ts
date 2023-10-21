@@ -1,13 +1,14 @@
 import { defineStore } from "pinia";
-import {
+import type {
     AuthStoreState,
     ICompleteSignUpPayload,
     ILoginPayload,
     ISignUpPayload,
     Tokens,
 } from "~/types/auth.interface";
-import { ContractType, IContract } from "~/types/contract.interface";
-import {
+import type { IContract } from "~/types/contract.interface";
+import { ContractType } from "~/types/contract.interface";
+import type {
     ICustomerSettings,
     ICustomerSystemSettings,
     IRegionSettings,
@@ -15,7 +16,8 @@ import {
     ISystemSettings,
 } from "~/types/region.interface";
 import { useNuxtApp, persistedState } from "#imports";
-import { ICustomerRole, IUser } from "~/types/user.interface";
+import type { IUser } from "~/types/user.interface";
+import { ICustomerRole } from "~/types/user.interface";
 import { useRegionStore } from "~/store/regions";
 
 export const useAuthStore = defineStore("auth-custom", {
@@ -42,9 +44,11 @@ export const useAuthStore = defineStore("auth-custom", {
             return null;
         },
         contractType(state): ContractType | null {
-            const contract = state.user?.contracts?.find(item => item.isActive)
+            const contract = state.user?.contracts?.find(
+                (item) => item.isActive,
+            );
             if (!contract) return null;
-            return contract.contractType
+            return contract.contractType;
         },
         getActiveContract(state): IContract | null {
             if (this.contracts?.length) {
@@ -62,9 +66,7 @@ export const useAuthStore = defineStore("auth-custom", {
                 );
             }
         },
-        getSystemSettings(
-            state,
-        ): ISystemSettings[] {
+        getSystemSettings(state): ISystemSettings[] {
             if (state.user?.role === ICustomerRole.CUSTOMER) {
                 const contract = state.user.contracts.find(
                     (contract) => contract.isActive,
@@ -87,7 +89,7 @@ export const useAuthStore = defineStore("auth-custom", {
             this.tokens.expires = token.exp * 1000;
         },
         setUser(user: IUser) {
-            this.user = user
+            this.user = user;
         },
         async getProfile() {
             const { apiClient } = useClient();
@@ -136,6 +138,15 @@ export const useAuthStore = defineStore("auth-custom", {
                 console.error(e);
                 useNuxtApp().$toast.error(e.message);
             }
+        },
+        async refreshTokens() {
+            const result = await $fetch<Tokens>("/api/auth/refresh", {
+                method: "POST",
+                body: {
+                    refresh_token: this.tokens?.refresh_token,
+                },
+            });
+            this.setTokens(result);
         },
         async signInAsUser(id: number) {
             const { apiClient } = useClient();

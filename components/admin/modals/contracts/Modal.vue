@@ -47,12 +47,12 @@
         >
             {{ $t("common.cancel") }}
         </b-button>
-
         <b-button
             :disabled="isSubmitting"
             class="modal-btn"
             type="submit"
             variant="danger"
+            @click="saveContract"
         >
             {{
                 contract.id
@@ -65,7 +65,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ContractType, IContract } from "@/types/contract.interface";
+import { ContractType } from "~/types/contract.interface";
+import type { IContract } from "~/types/contract.interface";
 import * as Yup from "yup";
 import ContractTab from "./tabs/ContractTab.vue";
 import DocumentsTab from "./tabs/DocumentsTab.vue";
@@ -173,6 +174,7 @@ watch(
 );
 
 const saveContract = handleSubmit(async (values) => {
+    console.log("click");
     if (values) {
         const payload: any = {
             ...values,
@@ -190,6 +192,7 @@ const saveContract = handleSubmit(async (values) => {
         if (payload.expireDate === "") delete payload.expireDate;
         else if (payload.expireDate)
             payload.expireDate = new Date(values.expireDate);
+        console.log("save contract payload", payload);
         if (payload.id) {
             await contractStore.update(payload);
         } else await contractStore.create(payload);

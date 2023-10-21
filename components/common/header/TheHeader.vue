@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { INavLink } from "~/types/common";
+import type { INavLink } from "~/types/common";
 import { useRatesStore } from "~/store/rates";
 import { storeToRefs } from "pinia";
 import { useRegionStore } from "~/store/regions";
@@ -14,7 +14,7 @@ const ratesStore = useRatesStore();
 const regionStore = useRegionStore();
 const { region } = storeToRefs(regionStore);
 const { rates } = storeToRefs(ratesStore);
-const {user} = storeToRefs(authStore)
+const { user } = storeToRefs(authStore);
 </script>
 
 <template>

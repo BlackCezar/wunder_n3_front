@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { InputType } from "bootstrap-vue-next";
+import type { InputType } from "bootstrap-vue-next";
 import { computed } from "#imports";
 import { vMaska } from "maska";
 import { useRegionStore } from "@/store/regions";

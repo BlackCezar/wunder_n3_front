@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import {
+import type {
     ICustomerSystemSettings,
     IRegion,
     ISystem,
-    SystemName,
 } from "~/types/region.interface";
+import { SystemName } from "~/types/region.interface";
 import {
     computed,
     ref,

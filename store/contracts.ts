@@ -1,13 +1,17 @@
-import {defineStore} from "pinia";
-import {IFilters} from "~/types/common";
-import {IContract, IDocument} from "~/types/contract.interface";
-import {ISystemSettingsLine} from "~/types/region.interface";
+import { defineStore } from "pinia";
+import type {
+    GetCustomerContractsQuery,
+    IContract,
+    IContractFilters,
+    IDocument,
+} from "~/types/contract.interface";
+import type { ISystemSettingsLine } from "~/types/region.interface";
 
 interface IContractState {
     list: IContract[];
     customerList: IContract[];
     listTotal: number;
-    filters: IFilters;
+    isLoading: boolean;
     forms: {
         contract: Partial<IContract> | null;
         contractId: number | null;
@@ -19,12 +23,7 @@ export const useContractStore = defineStore("contracts", {
         list: [],
         listTotal: 0,
         customerList: [],
-        filters: {
-            isLoading: false,
-            limit: 10,
-            page: 1,
-            query: "",
-        },
+        isLoading: false,
         forms: {
             contract: null,
             contractId: null,
@@ -37,12 +36,14 @@ export const useContractStore = defineStore("contracts", {
     actions: {
         deleteDocument(id: number) {
             if (this.forms.contract?.documents) {
-                this.forms.contract.documents.filter( doc => doc.id !== id)
+                this.forms.contract.documents.filter((doc) => doc.id !== id);
             }
         },
         updateDocuments(list: IDocument[]) {
             if (this.forms.contract) {
-                if (!this.forms.contract.documents) this.forms.contract.documents = list; else this.forms.contract.documents.push(...list)
+                if (!this.forms.contract.documents)
+                    this.forms.contract.documents = list;
+                else this.forms.contract.documents.push(...list);
             }
         },
         setActiveContract(data: IContractState["forms"]["contract"]) {
@@ -56,64 +57,75 @@ export const useContractStore = defineStore("contracts", {
                     });
             }
         },
-        setCustomerList(list) {
+        setCustomerList(list: IContract[]) {
             this.customerList = list;
         },
         async getDetails(id: string | number) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
-                this.filters.isLoading = true;
+                this.isLoading = true;
                 const response = await apiClient.get("/contracts/" + id);
-                this.filters.isLoading = false;
+                this.isLoading = false;
 
                 return response;
             } catch (e: any) {
-                this.filters.isLoading = false;
+                this.isLoading = false;
                 if (process.client) useNuxtApp().$toast.error(e.message);
                 console.error(e);
             }
         },
-        async loadContracts() {
+        async getCustomerContracts(
+            id?: number,
+            filters?: IContractFilters,
+        ): Promise<{ array: IContract[]; count: number }> {
             try {
-                const {apiClient} = useClient()
+                this.isLoading = true;
+                const { apiClient } = useClient();
 
-                this.filters.isLoading = true;
-                const response = await apiClient.get("/contracts", {
-                    query: this.filters,
+                if (!id) {
+                    this.isLoading = false;
+                    return {
+                        count: 0,
+                        array: [],
+                    };
+                }
+                const query: GetCustomerContractsQuery = {
+                    customerId: id.toString(),
+                    limit: filters?.limit ?? "10",
+                };
+                if (filters?.contractId) query.contractId = filters.contractId;
+                if (filters?.endDate) query.endDate = filters.endDate;
+                if (filters?.fromDate) query.fromDate = filters.fromDate;
+                if (filters?.search) query.query = filters.search;
+
+                const result = await apiClient.get<{
+                    count: number;
+                    array: IContract[];
+                }>(`/contracts/customer`, {
+                    query,
                 });
-                this.listTotal = response.count;
-                this.list = response.array;
-                this.filters.isLoading = false;
-            } catch (e: any) {
-                this.filters.isLoading = false;
-                if (process.client) useNuxtApp().$toast.error(e.message);
-                console.error(e);
-            }
-        },
-        async getCustomerContracts(id?: number) {
-            try {
-                const {apiClient} = useClient()
-
-                if (id)
-                    return await apiClient.get(`/contracts/customer`, {
-                        query: {
-                            customerId: id,
-                        },
-                    });
-                return [];
+                this.isLoading = false;
+                this.listTotal = result.count;
+                this.list = result.array;
+                return result;
             } catch (e: any) {
                 if (process.client) useNuxtApp().$toast.error(e.message);
                 console.error(e);
+                this.isLoading = false;
+                return {
+                    count: 0,
+                    array: [],
+                };
             }
         },
         async delete(id: number) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
                 await apiClient.delete(`/contracts/${id}`);
                 this.list = this.list.filter((item) => item.id !== id);
                 this.customerList = this.customerList.filter(
-                    (item) => item.id !== id
+                    (item) => item.id !== id,
                 );
                 if (process.client)
                     useNuxtApp().$toast.success("Данные успешно удалены");
@@ -124,8 +136,11 @@ export const useContractStore = defineStore("contracts", {
         },
         async update(data) {
             try {
-                const {apiClient} = useClient()
-                const result = await apiClient.put(`/contracts/${data.id}`, data);
+                const { apiClient } = useClient();
+                const result = await apiClient.put(
+                    `/contracts/${data.id}`,
+                    data,
+                );
                 this.list = this.list.map((item) => {
                     if (item.id === data.id) {
                         return {
@@ -145,7 +160,7 @@ export const useContractStore = defineStore("contracts", {
         },
         async create(data: any) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
                 const result = await apiClient.post(`/contracts`, data);
                 this.list.push(result);
                 this.customerList.push(result);
@@ -159,16 +174,20 @@ export const useContractStore = defineStore("contracts", {
         },
         async removeSystemCustomerLine(line: ISystemSettingsLine) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
-                await apiClient.delete(`/contracts/customer-line/${line.id}`)
+                await apiClient.delete(`/contracts/customer-line/${line.id}`);
                 if (this.forms.contract?.systemSettings) {
-                    this.forms.contract.systemSettings.map(item => {
-                        return item.id === line.systemSettingsId ? {
-                            ...item,
-                            lines: item.lines.filter(l => l.id !== line.id)
-                        } : item
-                    })
+                    this.forms.contract.systemSettings.map((item) => {
+                        return item.id === line.systemSettingsId
+                            ? {
+                                  ...item,
+                                  lines: item.lines.filter(
+                                      (l) => l.id !== line.id,
+                                  ),
+                              }
+                            : item;
+                    });
                 }
             } catch (e: any) {
                 if (process.client) useNuxtApp().$toast.error(e.message);
@@ -177,13 +196,13 @@ export const useContractStore = defineStore("contracts", {
         },
         async removeSystemLine(id: number) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
-                await apiClient.delete(`/contracts/line/${id}`)
+                await apiClient.delete(`/contracts/line/${id}`);
             } catch (e: any) {
                 if (process.client) useNuxtApp().$toast.error(e.message);
                 console.error(e);
             }
-        }
+        },
     },
 });

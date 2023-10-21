@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import DynamicForm from "@/components/forms/DynamicForm.vue";
 import * as Yup from "yup";
 import { useRegionStore } from "~/store/regions";
@@ -12,7 +11,7 @@ definePageMeta({
 });
 
 const authStore = useAuthStore();
-const {user} = storeToRefs(authStore)
+const { user } = storeToRefs(authStore);
 
 const { t } = useI18n();
 const router = useRouter();
@@ -26,7 +25,7 @@ const processForm = async (event: any) => {
         });
         if (user.value) {
             if (user.value.role === ICustomerRole.ADMIN) {
-                await router.push('/admin');
+                await router.push("/admin");
             } else await router.push("/accounts");
             useNuxtApp().$toast.success(t("Validation.Success"));
         }
@@ -60,9 +59,8 @@ const formSchema = ref({
 });
 
 const toSignUp = () => {
-    router.push('/auth/signup')
-}
-
+    router.push("/auth/signup");
+};
 </script>
 <template>
     <div>

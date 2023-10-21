@@ -1,6 +1,6 @@
-import { ICustomer } from "~/types/user.interface";
-import { ISystem, SystemName } from "~/types/region.interface";
-import { IContract } from "~/types/contract.interface";
+import type { ICustomer } from "~/types/user.interface";
+import type { ISystem, SystemName } from "~/types/region.interface";
+import type { IContract } from "~/types/contract.interface";
 
 export interface IAccount {
     id: number;
@@ -70,7 +70,7 @@ export interface ITopUpAccount {
     accounts: {
         id: number;
         sum: number;
-    }[]
+    }[];
 }
 
 export type TopUpAccountPayload = {
@@ -78,4 +78,4 @@ export type TopUpAccountPayload = {
     currency: string;
     customerId: number;
     contractId: number;
-}
+};

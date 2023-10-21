@@ -7,7 +7,7 @@ import { useAuthStore } from "~/store/auth";
 import { useContractStore } from "~/store/contracts";
 import { useRatesStore } from "~/store/rates";
 import { useRegionStore } from "~/store/regions";
-import { INavLink } from "~/types/common";
+import type { INavLink } from "~/types/common";
 import { ICustomerRole } from "~/types/user.interface";
 import CardList from "~icons/bi/card-list";
 import CurrencyExchange from "~icons/bi/currency-exchange";
@@ -25,7 +25,7 @@ const ratesStore = useRatesStore();
 const contractStore = useContractStore();
 const regionStore = useRegionStore();
 const authStore = useAuthStore();
-const { user } = storeToRefs(authStore)
+const { user } = storeToRefs(authStore);
 
 const { t } = useI18n();
 
@@ -34,13 +34,12 @@ const toggleSidebar = () => {
     showLinkText.value = !showLinkText.value;
 };
 
-const { data: userProfiel } = await useAsyncData('user', () =>
-    authStore.getProfile()
-)
-authStore.setUser(userProfiel)
+const { data: userProfile } = await useAsyncData("user", () =>
+    authStore.getProfile(),
+);
+authStore.setUser(userProfile.value);
 
 const navLinks = computed<INavLink[]>(() => {
-    console.log('user', user.value)
     if (user.value?.role === ICustomerRole.ADMIN) {
         return [
             {
@@ -83,7 +82,7 @@ const navLinks = computed<INavLink[]>(() => {
                 icon: CurrencyExchange,
                 linkText: t("Navigation.Rates"),
             },
-        ]
+        ];
     } else {
         return [
             {
@@ -101,9 +100,9 @@ const navLinks = computed<INavLink[]>(() => {
                 icon: QuestionCircle,
                 linkText: t("Navigation.Help"),
             },
-        ]
+        ];
     }
-})
+});
 if (user.value?.role === ICustomerRole.CUSTOMER) {
     const { data: contracts } = useAsyncData("contracts", () =>
         contractStore.getCustomerContracts(user.value?.customer?.id),
@@ -114,6 +113,11 @@ if (user.value?.role === ICustomerRole.CUSTOMER) {
 ratesStore.loadRates();
 regionStore.loadGlobalSettings();
 regionStore.loadSystems();
+
+if (!authStore.loggedIn && authStore.tokens?.refresh_token) {
+    await authStore.refreshTokens();
+    authStore.getProfile();
+}
 
 setLocale({
     mixed: {
@@ -140,18 +144,42 @@ setLocale({
 
 <template>
     <client-only>
-        <b-row class="layout-container m-0 p-0" :class="{ full: !sidebarCollapsed }">
-            <b-navbar class="my-sidebar p-0" :class="sidebarCollapsed && 'sidebar-collapsed'" type="dark" variant="primary"
-                :container="false" @click.native="toggleSidebar()">
+        <b-row
+            class="layout-container m-0 p-0"
+            :class="{ full: !sidebarCollapsed }"
+        >
+            <b-navbar
+                class="my-sidebar p-0"
+                :class="sidebarCollapsed && 'sidebar-collapsed'"
+                type="dark"
+                variant="primary"
+                :container="false"
+                @click.native="toggleSidebar()"
+            >
                 <div class="sidebar-logo bg-danger">
-                    <img src="/imgs/short-logo.png" v-if="sidebarCollapsed" alt="logo" />
+                    <img
+                        src="/imgs/short-logo.png"
+                        v-if="sidebarCollapsed"
+                        alt="logo"
+                    />
                     <img src="/imgs/logo_white_13.png" v-else alt="logo" />
                 </div>
                 <div class="nav-links">
-                    <b-navbar-nav vertical v-for="navLink in navLinks" :key="navLink.to">
-                        <b-nav-item :to="navLink.to" class="sidebar-nav-link-container" @click.stop>
+                    <b-navbar-nav
+                        vertical
+                        v-for="navLink in navLinks"
+                        :key="navLink.to"
+                    >
+                        <b-nav-item
+                            :to="navLink.to"
+                            class="sidebar-nav-link-container"
+                            @click.stop
+                        >
                             <div class="sidebar-nav-link p-0">
-                                <component :is="navLink.icon" style="font-size: 55px; width: 55px" />
+                                <component
+                                    :is="navLink.icon"
+                                    style="font-size: 55px; width: 55px"
+                                />
                                 <div class="ms-3" v-if="!showLinkText">
                                     {{ navLink.linkText }}
                                 </div>
@@ -162,8 +190,13 @@ setLocale({
             </b-navbar>
             <div class="main-container px-0">
                 <TheHeader :navLinks="navLinks" />
-                <b-overlay id="overlay-background" :show="!sidebarCollapsed" variant="dark" :opacity="0.35"
-                    @click.prevent="toggleSidebar">
+                <b-overlay
+                    id="overlay-background"
+                    :show="!sidebarCollapsed"
+                    variant="dark"
+                    :opacity="0.35"
+                    @click.prevent="toggleSidebar"
+                >
                     <template #overlay><br /></template>
                     <div class="page-container">
                         <Suspense>

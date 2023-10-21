@@ -1,8 +1,8 @@
 import mitt from "mitt";
-import { IContract } from "~/types/contract.interface";
+import type { IContract } from "~/types/contract.interface";
 import { SystemName } from "~/types/region.interface";
-import { ICustomerCandidate } from "~/types/user.interface";
-import { IAccount } from "~/types/account.interface";
+import type { ICustomerCandidate } from "~/types/user.interface";
+import type { IAccount } from "~/types/account.interface";
 
 export type ApplicationEvents = {
     "modal:popup-account": {

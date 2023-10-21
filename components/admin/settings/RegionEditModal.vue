@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import {
-    IRegion,
+import type {
     IRegionEdit,
     IRegionSystemSettings,
-    PayType,
 } from "~/types/region.interface";
+import { PayType } from "~/types/region.interface";
 import SettingsTab from "~/components/admin/settings/tabs/SettingsTab.vue";
 import SignTab from "~/components/admin/settings/tabs/SignTab.vue";
 import ContactsTab from "~/components/admin/settings/tabs/ContactsTab.vue";

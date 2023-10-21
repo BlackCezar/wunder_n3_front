@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import {
+import type {
     ICreatePostResponse,
     IFetchMainResponse,
     IFetchPostsResponse,
@@ -34,7 +34,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
     }),
     actions: {
         clearFile() {
-          this.file = null
+            this.file = null;
         },
         pushCategory(val: any) {
             this.categories.push(val);
@@ -50,7 +50,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async createCategory(payload: any) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 if (payload.sort === "" || typeof payload.sort !== "number") {
                     delete payload.sort;
@@ -58,7 +58,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
 
                 const data = await apiClient.post(
                     "/knowledge/create-category",
-                    payload
+                    payload,
                 );
                 this.pushCategory(data);
             } catch (err: any) {
@@ -69,12 +69,11 @@ export const useKnowledgeStore = defineStore("knowledge", {
 
         async getCategories() {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
-                const data =
-                    await apiClient.get(
-                        "/knowledge/get-categories"
-                    ) as IKnowledgeCategoriesResponse
+                const data = (await apiClient.get(
+                    "/knowledge/get-categories",
+                )) as IKnowledgeCategoriesResponse;
                 this.categories = data.data;
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
@@ -83,10 +82,10 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async deleteCategory(id: number) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
                 await apiClient.delete("/knowledge/delete-categories/" + id);
                 this.categories = this.categories.filter(
-                    (item) => item.id !== id
+                    (item) => item.id !== id,
                 );
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
@@ -95,11 +94,11 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async uploadFile(payload: any) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 this.file = await apiClient.post(
                     "/knowledge/upload-file",
-                    payload
+                    payload,
                 );
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
@@ -108,12 +107,12 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async createPost(payload) {
             try {
-                const {apiClient} = useClient()
-                
+                const { apiClient } = useClient();
+
                 payload.preview = this.file;
                 const data: ICreatePostResponse = await apiClient.post(
                     "/knowledge/create-post",
-                    payload
+                    payload,
                 );
                 this.file = null;
                 if (!data.toMain) {
@@ -126,11 +125,9 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async fetchMain() {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
-                this.main = await apiClient.get(
-                    "/knowledge"
-                );
+                this.main = await apiClient.get("/knowledge");
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
                 console.error(err);
@@ -138,12 +135,12 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async updateCategory(payload: any) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 const data: IKnowledgeUpdateCategoriesResponse =
                     await apiClient.post(
                         "/knowledge/update-categories",
-                        payload
+                        payload,
                     );
 
                 this.categories = this.categories.map((item) => {
@@ -166,12 +163,12 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async updatePost(payload: any) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 payload.preview = this.file;
                 const data: IUpdatePostResponse = await apiClient.post(
                     "/knowledge/update-post",
-                    payload
+                    payload,
                 );
                 this.file = null;
 
@@ -185,7 +182,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async fetchNav() {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 this.nav = await apiClient.get("/knowledge/get-nav");
             } catch (err: any) {
@@ -195,7 +192,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async fetchPost(id: number) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 this.post = await apiClient.get("/knowledge/get-post/" + id);
             } catch (err: any) {
@@ -205,10 +202,10 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async fetchPosts(id: number) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 const data: IFetchPostsResponse = await apiClient.get(
-                    "/knowledge/get-posts/" + id
+                    "/knowledge/get-posts/" + id,
                 );
                 this.posts = data.posts;
                 this.category = data.category;
@@ -219,7 +216,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async deletePost(id: number) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 await apiClient.delete("/knowledge/delete-posts/" + id);
                 this.posts = this.posts.filter((item) => item.id !== id);
@@ -231,10 +228,10 @@ export const useKnowledgeStore = defineStore("knowledge", {
         },
         async fetchSearch(keyword: string) {
             try {
-                const {apiClient} = useClient()
+                const { apiClient } = useClient();
 
                 this.searchResults = await apiClient.post(
-                    "/knowledge/search/?keyword=" + encodeURIComponent(keyword)
+                    "/knowledge/search/?keyword=" + encodeURIComponent(keyword),
                 );
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);

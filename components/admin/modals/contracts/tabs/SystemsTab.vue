@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Field } from "vee-validate";
-import { ContractType, IContract } from "@/types/contract.interface";
+import type { IContract } from "~/types/contract.interface";
+import { ContractType } from "~/types/contract.interface";
 import SystemLineModal from "../SystemLine.vue";
-import { useContractStore } from "@/store/contracts";
-import { useRegionStore } from "@/store/regions";
+import { useContractStore } from "~/store/contracts";
+import { useRegionStore } from "~/store/regions";
 import { storeToRefs } from "pinia";
 
 const props = defineProps<{

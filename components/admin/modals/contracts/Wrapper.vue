@@ -47,10 +47,10 @@
 import { storeToRefs } from "pinia";
 import AdminContractsList from "./List.vue";
 import AdminContractsModal from "./Modal.vue";
-import { useContractStore } from "@/store/contracts";
-import { useRegionStore } from "@/store/regions";
-import { ContractType, IContract } from "@/types/contract.interface";
-import { useCustomerStore } from "@/store/customers";
+import { useContractStore } from "~/store/contracts";
+import { useRegionStore } from "~/store/regions";
+import { ContractType } from "~/types/contract.interface";
+import { useCustomerStore } from "~/store/customers";
 import { useAuthStore } from "~/store/auth";
 
 const contractStore = useContractStore();

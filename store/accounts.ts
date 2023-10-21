@@ -1,8 +1,13 @@
 import { defineStore } from "pinia";
-import { CreateAccountPayload, IAccount, ITopUpAccount, TopUpAccountPayload } from "~/types/account.interface";
-import { IFilters } from "~/types/common";
+import type {
+    CreateAccountPayload,
+    IAccount,
+    ITopUpAccount,
+    TopUpAccountPayload,
+} from "~/types/account.interface";
+import type { IFilters } from "~/types/common";
 import { useAuthStore } from "./auth";
-import { ICustomerUser, IUser } from "~/types/user.interface";
+import type { ICustomerUser, IUser } from "~/types/user.interface";
 import { client } from "process";
 
 interface IAccountState {
@@ -183,8 +188,8 @@ export const useAccountStore = defineStore("account", {
         },
         async topUpAccounts(data: TopUpAccountPayload): Promise<boolean> {
             try {
-                const { apiClient } = useClient()
-                await apiClient.post('/accounts/top-up', data)
+                const { apiClient } = useClient();
+                await apiClient.post("/accounts/top-up", data);
                 // useNuxtApp().$gtm.push({ event: 'topup-account' })
                 return true;
             } catch (e: any) {
@@ -192,6 +197,6 @@ export const useAccountStore = defineStore("account", {
                 useNuxtApp().$toast.error(e.message);
                 return false;
             }
-        }
+        },
     },
 });

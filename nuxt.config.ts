@@ -17,6 +17,7 @@ export default defineNuxtConfig({
         tsConfig: {
             include: ["../store/*.ts"],
             compilerOptions: {
+                lib: ["dom"],
                 types: [
                     "~/types/*.ts",
                     "bun-types",
@@ -38,23 +39,6 @@ export default defineNuxtConfig({
         },
     },
     vite: {
-        server: {
-            // С версии 3.7.4 не нужно
-            // host: "0.0.0.0",
-            // hmr: {
-            //     protocol: "wss",
-            //     clientPort: 443,
-            //     path: "hmr/",
-            // }
-            //     port: 443,
-            //     hmr: {
-            //         protocol: 'wss'
-            //     },
-            //     https: {
-            //         key: '/etc/letsencrypt/live/wunder.pwd.by/privkey.pem',
-            //         cert: '/etc/letsencrypt/live/wunder.pwd.by/fullchain.pem'
-            //     },
-        },
         plugins: [
             svgLoader(),
             Components({
@@ -66,47 +50,8 @@ export default defineNuxtConfig({
         ],
     },
     plugins: [{ src: "~/plugins/toastify.client.ts", mode: "client" }],
-    // auth: {
-    //     globalMiddleware: true,
-    //     strategies: {
-    //         local: {
-    //             scheme: "refresh",
-    //             token: {
-    //                 property: "access_token",
-    //                 maxAge: 60 * 15,
-    //                 global: true,
-    //                 type: "Bearer",
-    //             },
-    //             refreshToken: {
-    //                 property: "refresh_token",
-    //                 data: "refresh_token",
-    //                 maxAge: 60 * 60 * 24 * 7,
-    //             },
-    //             user: {
-    //                 property: "",
-    //             },
-    //             endpoints: {
-    //                 login: { url: "/auth/signin", method: "post" },
-    //                 refresh: { url: "/auth/refresh", method: "post" },
-    //                 user: {
-    //                     url: "/auth/me",
-    //                     method: "get",
-    //                     propertyName: "",
-    //                 },
-    //                 logout: false,
-    //             },
-    //             redirect: {
-    //                 login: "/login",
-    //                 logout: "/login",
-    //                 home: "/admin",
-    //             },
-    //             logoutRedirectUri: "/login",
-    //         },
-    //     },
-    // },
     modules: [
         "@vee-validate/nuxt",
-        // "@nuxt-alt/auth",
         [
             "unplugin-icons/nuxt",
             {

@@ -1,7 +1,7 @@
-import { $Fetch, FetchRequest, FetchOptions } from "ofetch";
+import type { $Fetch, FetchRequest, FetchOptions } from "ofetch";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "~/store/auth";
-import { Tokens } from "~/types/auth.interface";
+import type { Tokens } from "~/types/auth.interface";
 export const useClient = () => {
     const authStore = useAuthStore();
     const { tokens } = storeToRefs(authStore);
@@ -54,7 +54,6 @@ export const useClient = () => {
             method: "get",
             retryStatusCodes: [401],
         });
-        console.log("retry response", response);
         return response;
     };
     apiClient.delete = async (request, options) => {

@@ -20,13 +20,10 @@ defineProps({
     </div>
 </template>
 
-<style lang="scss">
+<style lang="css">
 .error-page {
     padding: 2.62rem 1rem 2.815rem;
     min-height: 100dvh;
-    @media (min-width: 1024px) {
-        padding: 4rem 4.375rem;
-    }
 }
 
 .error-page .logo {
@@ -37,19 +34,10 @@ defineProps({
 .error-page .content {
     padding-top: 3.5rem;
     margin-top: auto;
-    @media (min-width: 1024px) {
-        display: flex;
-        align-items: flex-start;
-        gap: 5rem;
-        justify-content: flex-start;
-    }
 }
 
 .error-page .content p {
     margin-bottom: 1.56rem;
-    @media (min-width: 1024px) {
-        margin-bottom: 4.81em;
-    }
 }
 
 .error-page .btn-title {
@@ -61,5 +49,19 @@ defineProps({
     display: flex;
     flex-direction: column;
     gap: 1.56rem;
+}
+@media (min-width: 1024px) {
+    .error-page {
+        padding: 4rem 4.375rem;
+    }
+    .error-page .content {
+        display: flex;
+        align-items: flex-start;
+        gap: 5rem;
+        justify-content: flex-start;
+    }
+    .error-page .content p {
+        margin-bottom: 4.81em;
+    }
 }
 </style>

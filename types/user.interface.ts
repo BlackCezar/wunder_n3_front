@@ -1,7 +1,7 @@
-import { ContractType, IContract } from "~/types/contract.interface";
-import { IAccount } from "~/types/account.interface";
-import { ICustomerSettings } from "./region.interface";
-import { TableItem } from "bootstrap-vue-next";
+import type { ContractType, IContract } from "~/types/contract.interface";
+import type { IAccount } from "~/types/account.interface";
+import type { ICustomerSettings } from "./region.interface";
+import type { TableItem } from "bootstrap-vue-next";
 
 export type ICustomerUser = {
     id: number;
@@ -9,20 +9,17 @@ export type ICustomerUser = {
     role: ICustomerRole.CUSTOMER;
     email: string;
     contracts: IContract[];
-}
+};
 export type IAdminUser = {
     id: number;
     role: ICustomerRole.ADMIN;
     email: string;
     contracts: [];
-}
+};
 
-export type IUser =
-    | ICustomerUser
-    | IAdminUser
+export type IUser = ICustomerUser | IAdminUser;
 
-
-export enum ICustomerRole {
+export const enum ICustomerRole {
     CUSTOMER = "CUSTOMER",
     ADMIN = "ADMIN",
 }

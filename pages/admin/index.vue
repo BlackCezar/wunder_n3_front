@@ -4,7 +4,7 @@ import { useRegionStore } from "~/store/regions";
 import { useCustomerStore } from "~/store/customers";
 import { useAccountStore } from "~/store/accounts";
 import { useListen } from "~/composables/useEventBus";
-import { ISystem } from "types/region.interface";
+import type { ISystem } from "~/types/region.interface";
 
 const customerStore = useCustomerStore();
 const accountStore = useAccountStore();

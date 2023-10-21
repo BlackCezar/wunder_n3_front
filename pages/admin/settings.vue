@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRegionStore } from "~/store/regions";
 import { storeToRefs } from "pinia";
-import { IRegion } from "~/types/region.interface";
+import type { IRegion } from "~/types/region.interface";
 import { useLogger } from "vue-logger-plugin";
 
 const regionStore = useRegionStore();

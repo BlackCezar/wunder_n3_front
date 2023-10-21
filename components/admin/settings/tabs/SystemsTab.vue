@@ -2,7 +2,7 @@
 import { ref } from "#imports";
 import SystemItemLineForm from "~/components/admin/settings/forms/SystemItemLineForm.vue";
 import SystemItemForm from "~/components/admin/settings/forms/SystemItemForm.vue";
-import { IRegionSystemSettings } from "~/types/region.interface";
+import type { IRegionSystemSettings } from "~/types/region.interface";
 
 const showEditLineModal = ref<boolean>(false);
 const selectedSystemName = ref<string | null>(null);

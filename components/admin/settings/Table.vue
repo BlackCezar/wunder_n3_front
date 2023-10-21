@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IRegion } from "~/types/region.interface";
+import type { IRegion } from "~/types/region.interface";
 import { useRegionStore } from "~/store/regions";
 
 defineProps<{

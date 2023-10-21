@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { systemsToImg } from "~/composables/useSystems";
-import { SystemName } from "~/types/region.interface";
-import { AccountTableRow, IAccount } from "~/types/account.interface";
-import { ContractType } from "~/types/contract.interface";
+import type { SystemName } from "~/types/region.interface";
+import type { AccountTableRow, IAccount } from "~/types/account.interface";
+import type { ContractType } from "~/types/contract.interface";
 import { useEvent } from "~/composables/useEventBus";
 import { useAccountStore } from "~/store/accounts";
 

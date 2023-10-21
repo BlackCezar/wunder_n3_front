@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { IContract } from "types/contract.interface";
+import type { IContract } from "~/types/contract.interface";
 import AdminContractsItem from "./Item.vue";
 
 defineProps<{

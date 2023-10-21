@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ICustomer, CustomerTableItem } from "~/types/user.interface";
-import { ISystem } from "~/types/region.interface";
-import { UpdateAccountPayload } from "~/types/account.interface";
+import type { ICustomer, CustomerTableItem } from "~/types/user.interface";
+import type { ISystem } from "~/types/region.interface";
 import { PaymentWay } from "~/types/invoice.interface";
-import { ContractType, IContract } from "~/types/contract.interface";
+import { ContractType } from "~/types/contract.interface";
+import type { IContract } from "~/types/contract.interface";
 import { useCustomerStore } from "~/store/customers";
 import { useEvent } from "~/composables/useEventBus";
 import { useAuthStore } from "~/store/auth";
-import { CustomerEditTabs } from "~/types/common.js";
+import { CustomerEditTabs } from "~/types/common";
 
 const props = defineProps<{
     clients: ICustomer[];

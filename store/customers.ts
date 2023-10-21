@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { ICustomer, ICustomerCandidate } from "~/types/user.interface";
-import { CustomerEditTabs, IFilters } from "~/types/common";
+import type { ICustomer, ICustomerCandidate } from "~/types/user.interface";
+import type { CustomerEditTabs, IFilters } from "~/types/common";
 
 interface ICustomerState {
     list: ICustomer[];

@@ -10,6 +10,7 @@
 .documents > .row {
     margin: 0 2.5rem;
     display: flex;
+    gap: 1rem;
     justify-content: space-between;
 }
 @media screen and (max-width: 768px) {
@@ -83,7 +84,21 @@
     height: 1px;
     top: 50%;
 }
+@layer components {
+    .documents-links {
+        padding: 0;
+        width: fit-content;
+    }
+    .documents-filters {
+        margin-left: auto;
+        width: fit-content;
+        padding: 0;
+    }
 
+    .closure-period-filter input {
+        accent-color: var(--accent);
+    }
+}
 .documents-links ul {
     margin: 0;
     padding: 0;

@@ -1,5 +1,5 @@
-import { ICustomer } from "~/types/user.interface";
-import { IContract } from "~/types/contract.interface";
+import type { ICustomer } from "~/types/user.interface";
+import type { IContract } from "~/types/contract.interface";
 
 export interface IRegion {
     id: number;
@@ -122,7 +122,7 @@ export enum SystemName {
 export enum CURRENCIES {
     USD = "USD",
     RUB = "RUB",
-    BYN = 'BYN',
-    KZT = 'KZT',
-    EUR = 'EUR'
+    BYN = "BYN",
+    KZT = "KZT",
+    EUR = "EUR",
 }

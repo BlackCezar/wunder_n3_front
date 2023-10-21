@@ -24,7 +24,8 @@
 
 <script setup lang="ts">
 import { useContractStore } from "@/store/contracts";
-import { ContractType, IContract } from "@/types/contract.interface";
+import { ContractType } from "~/types/contract.interface";
+import type { IContract } from "~/types/contract.interface";
 
 const isLoading = ref(false);
 const props = defineProps<{

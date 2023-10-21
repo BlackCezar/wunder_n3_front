@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import {
+import type {
     IRegion,
     IRegionSettings,
     IRegionSystemSettings,
@@ -43,11 +43,12 @@ export const useRegionStore = defineStore("region", {
             try {
                 this.settings = await apiClient.get("/settings/global");
                 if (this.settings?.region) this.region = this.settings.region;
-                log.info("Loaded settings", this.settings);
+                if (process.client) log.info("Loaded settings", this.settings);
                 this.systemSettings = await apiClient.get(
                     "/settings/global/systems",
                 );
-                log.info("Loaded systemSettings", this.systemSettings);
+                if (process.client)
+                    log.info("Loaded systemSettings", this.systemSettings);
 
                 return this.settings;
             } catch (e: any) {
@@ -133,9 +134,12 @@ export const useRegionStore = defineStore("region", {
             }
         },
 
-        async removeSystemLine({ systemSettingsId, lineId }: {
+        async removeSystemLine({
+            systemSettingsId,
+            lineId,
+        }: {
             systemSettingsId: number;
-            lineId: number
+            lineId: number;
         }) {
             if (lineId) {
                 const { apiClient } = useClient();
@@ -146,8 +150,13 @@ export const useRegionStore = defineStore("region", {
                     },
                 });
             }
-            const systemSetting = this.systemSettings.find(r => r.id === systemSettingsId)
-            if (systemSetting) systemSetting.lines = systemSetting.lines.filter(item => item.id !== lineId)
+            const systemSetting = this.systemSettings.find(
+                (r) => r.id === systemSettingsId,
+            );
+            if (systemSetting)
+                systemSetting.lines = systemSetting.lines.filter(
+                    (item) => item.id !== lineId,
+                );
         },
     },
 });

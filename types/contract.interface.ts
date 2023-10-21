@@ -1,8 +1,8 @@
-import {
+import type {
     ICustomerSettings,
     ICustomerSystemSettings,
 } from "~/types/region.interface";
-import { ICustomer } from "~/types/user.interface";
+import type { ICustomer } from "~/types/user.interface";
 
 export interface IContract {
     id: number;
@@ -23,7 +23,7 @@ export interface IContract {
 export enum ContractType {
     STANDARD = "STANDARD",
     CUSTOM = "CUSTOM",
-    NULL = 'NULL'
+    NULL = "NULL",
 }
 
 export interface IDocument {
@@ -36,7 +36,25 @@ export interface IDocument {
 }
 
 export enum DocumentsTabs {
-    finances = 'finances',
-    closure = 'closure',
-    contracts = 'contracts'
+    finances = "finances",
+    closure = "closure",
+    contracts = "contracts",
+}
+
+export interface IContractFilters {
+    contractId?: string;
+    endDate?: string;
+    fromDate?: string;
+    search?: string;
+    limit?: string;
+}
+
+export interface GetCustomerContractsQuery {
+    query?: string;
+    skip?: string;
+    limit?: string;
+    fromDate?: string;
+    endDate?: string;
+    customerId: string;
+    contractId?: string;
 }

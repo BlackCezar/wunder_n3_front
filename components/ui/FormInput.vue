@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { useRegionStore } from "~/store/regions";
-import { computed, toRef } from "vue";
 import { useField } from "vee-validate";
-import { InputType } from "bootstrap-vue-next";
+import type { InputType } from "bootstrap-vue-next";
 import { vMaska } from "maska";
 
 const { t } = useI18n();
