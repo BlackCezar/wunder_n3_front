@@ -243,6 +243,10 @@
         "Settings": "Настройки",
         "Systems": "Правила систем"
     },
+  "Invoices": {
+    "Status": "Статус",
+    "DocumentName": "Наименование файла"
+  },
     "Validation": {
         "required": "Поле обязательно к заполнению",
         "ShouldContain": "Должен содержать ",

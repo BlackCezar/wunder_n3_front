@@ -11,6 +11,11 @@
         "NoSuccess": "Неверный пароль",
         "ForgotPassword": "Я забыл свой пароль и мне нужно его восстановить"
     },
+    "Invoices": {
+        "Status": "Статус",
+        "DocumentName": "Наименование файла",
+        "DocumentLink": "Ссылка на файл"
+    },
     "registration": {
         "ContactMail": "Email контактного лица",
         "CompanyName": "Полное наименование компании",

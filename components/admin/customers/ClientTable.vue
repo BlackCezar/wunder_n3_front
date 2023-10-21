@@ -168,11 +168,14 @@ const openDocumentsModal = (tab: number, customerId: number) => {
     const customer = props.clients.find((c) => c.id === customerId);
     if (customer) {
         customerStore.setActiveCustomer({
-            tab: tab,
             id: customerId,
             client: customer,
+            tab: CustomerEditTabs.Invoices,
         });
-        useEvent("modal:edit-documents");
+        useEvent("modal:edit-documents", {
+            id: customerId,
+            customer,
+        });
     }
 };
 const openEditClientModal = (tab: number, customerId: number) => {

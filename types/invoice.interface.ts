@@ -69,13 +69,34 @@ export interface IInvoiceLine {
 }
 
 export type InvoiceStatus =
-    | "created"
+    | "new"
     | "void"
     | "cancelled"
     | "waiting"
     | "paid"
     | "completed"
     | "signed";
+
+export const InvoiceStatusTranslate = new Map();
+InvoiceStatusTranslate.set("new", "Новый");
+InvoiceStatusTranslate.set("void", "Аннулирован");
+InvoiceStatusTranslate.set("cancelled", "Отменен");
+InvoiceStatusTranslate.set("waiting", "Ожидание");
+InvoiceStatusTranslate.set("paid", "Оплачен");
+InvoiceStatusTranslate.set("completed", "Завершен");
+InvoiceStatusTranslate.set("signed", "Подписан");
+
+export const InvoiceDocumentTypeTranslate = new Map();
+InvoiceDocumentTypeTranslate.set(InvoiceDocumentType.BILL, "Счет");
+InvoiceDocumentTypeTranslate.set(
+    InvoiceDocumentType.SIGNED_BILL,
+    "Подписанный счет",
+);
+InvoiceDocumentTypeTranslate.set(InvoiceDocumentType.ACT, "Акт");
+InvoiceDocumentTypeTranslate.set(
+    InvoiceDocumentType.SIGNED_ACT,
+    "Подписанный акт",
+);
 
 export type IPaymentWay = "prepay" | "postpay" | "postpay-expense";
 export enum PaymentWay {

@@ -56,7 +56,8 @@ const editContractsModal = ref(false);
 const editClientModal = ref(false);
 const editAccountModal = ref(false);
 
-useListen("modal:edit-documents", () => {
+useListen("modal:edit-documents", (ev) => {
+    console.log("ev", ev);
     editDocumentsModal.value = !editDocumentsModal.value;
 });
 useListen("modal:activate-account", (event) => {
@@ -166,7 +167,7 @@ definePageMeta({
             id="edit-documents-modal"
             ref="edit-documents-modal"
         >
-            <!-- <AdminModalsDocuments /> -->
+            <AdminModalsInvoicesList />
         </b-modal>
         <b-modal
             hide-footer

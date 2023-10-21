@@ -19,4 +19,5 @@ export const enum CustomerEditTabs {
     AccountData = 4,
     Info = 5,
     Contracts,
+    Invoices,
 }

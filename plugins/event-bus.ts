@@ -1,15 +1,20 @@
 import mitt from "mitt";
 import type { IContract } from "~/types/contract.interface";
 import { SystemName } from "~/types/region.interface";
-import type { ICustomerCandidate } from "~/types/user.interface";
+import type { ICustomer, ICustomerCandidate } from "~/types/user.interface";
 import type { IAccount } from "~/types/account.interface";
+import { IInvoice } from "~/types/invoice.interface";
 
 export type ApplicationEvents = {
     "modal:popup-account": {
         accountId: number;
         system: SystemName;
     };
-    "modal:edit-documents": void;
+    "modal:edit-documents": {
+        id: number;
+        customer: ICustomer;
+    };
+    "modal:edit-invoice": IInvoice;
     "modal:edit-client": void;
     "modal:edit-contracts": void;
     "modal:show-customer-candidate": ICustomerCandidate;

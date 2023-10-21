@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import type { IInvoiceFilters, IInvoiceState } from "~/types/invoice.interface";
 import { useAuthStore } from "~/store/auth";
 import type { IFilters } from "~/types/common";
+import { ICustomerRole } from "~/types/user.interface";
 
 export const useInvoiceStore = defineStore("invoices", {
     state: (): IInvoiceState => ({
@@ -18,9 +19,12 @@ export const useInvoiceStore = defineStore("invoices", {
                 this.isLoading = true;
                 const { apiClient } = useClient();
                 const authStore = useAuthStore();
+                let customerId = null;
+                if (authStore.user?.role === ICustomerRole.CUSTOMER)
+                    customerId = authStore.user.customer.id;
 
                 const query = {
-                    customerId: authStore.user?.customer.id,
+                    customerId: customerId,
                     filters: JSON.stringify(filters),
                 };
                 const result = await apiClient.get("/invoices", {
@@ -33,6 +37,41 @@ export const useInvoiceStore = defineStore("invoices", {
                 if (process.client) useNuxtApp().$toast.error(e.message);
                 console.error(e);
                 this.isLoading = false;
+            }
+        },
+        async getInvoices(customerId: number) {
+            try {
+                this.isLoading = true;
+                const { apiClient } = useClient();
+
+                const result = await apiClient.get("/invoices", {
+                    query: {
+                        customerId,
+                        filters: JSON.stringify({
+                            query: "",
+                            skip: 0,
+                        }),
+                    },
+                });
+                this.isLoading = false;
+                return result[1];
+            } catch (e: any) {
+                if (process.client) useNuxtApp().$toast.error(e.message);
+                console.error(e);
+                this.isLoading = false;
+            }
+        },
+        async removeInvoice(id: number) {
+            try {
+                const { apiClient } = useClient();
+
+                await apiClient.delete("/invoices/" + id);
+                this.invoices = this.invoices.filter(
+                    (invoice) => invoice.id !== id,
+                );
+            } catch (e: any) {
+                if (process.client) useNuxtApp().$toast.error(e.message);
+                console.error(e);
             }
         },
     },

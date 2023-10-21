@@ -99,10 +99,12 @@ export const useAuthStore = defineStore("auth-custom", {
         },
         async login(payload: ILoginPayload) {
             const { apiClient } = useClient();
+            this.busy = true;
 
             const result = await apiClient.post("/auth/signin", payload);
             this.setTokens(result);
             await this.getProfile();
+            this.busy = false;
         },
         async logout() {
             //@ts-ignore

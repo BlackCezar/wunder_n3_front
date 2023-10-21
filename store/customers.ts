@@ -11,7 +11,7 @@ interface ICustomerState {
     isLoading: boolean;
     forms: {
         customers: {
-            tab: keyof CustomerEditTabs;
+            tab: CustomerEditTabs;
             id: number | null;
             client: Partial<ICustomer> | null;
         };
