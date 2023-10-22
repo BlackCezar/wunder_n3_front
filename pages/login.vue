@@ -32,6 +32,7 @@ const processForm = async (event: any) => {
     } catch (err) {
         console.error(err);
         useNuxtApp().$toast.error(t("login.NoSuccess"));
+        authStore.setBusy(false);
     }
 };
 
@@ -89,7 +90,10 @@ const toSignUp = () => {
                     :disabled="authStore.busy"
                     type="submit"
                 >
-                    {{ $t("login.Login") }}
+                    <b-spinner v-if="authStore.busy" small />
+                    <span v-else>
+                        {{ $t("login.Login") }}
+                    </span>
                 </b-button>
                 <b-button
                     squared

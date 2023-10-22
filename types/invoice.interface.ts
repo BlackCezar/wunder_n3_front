@@ -66,6 +66,8 @@ export interface IInvoiceLine {
         name: string;
     }[];
     amount: number;
+    expenseAmount?: number;
+    transferAmount?: number;
 }
 
 export type InvoiceStatus =

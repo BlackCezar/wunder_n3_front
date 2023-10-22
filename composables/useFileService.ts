@@ -1,3 +1,5 @@
+import { IInvoiceDocument } from "~/types/invoice.interface";
+
 type DocumentTypes = "contracts" | "sign" | "bills" | "acts" | "documents";
 export const useFileService = () => {
     const documentsToUploads = ref<
@@ -47,6 +49,19 @@ export const useFileService = () => {
         return apiClient.post("/invoices/bill/upload/", data);
     };
 
+    const uploadInvoiceDocument = async (
+        file: FileList,
+        data: Pick<IInvoiceDocument, "name" | "type" | "invoiceId">,
+    ) => {
+        const fm = new FormData();
+        fm.append("file", file);
+        fm.append("type", data.type);
+        fm.append("name", data.name);
+        fm.append("invoiceId", data.invoiceId.toString());
+
+        return apiClient.post("/invoices/documents/upload", fm);
+    };
+
     const downloadFile = async (filename: string, type: DocumentTypes) => {
         return apiClient(`/documents/download/${type}/${filename}`, {
             responseType: "blob",
@@ -62,6 +77,7 @@ export const useFileService = () => {
         uploadBill,
         uploadFileToSign,
         uploadSignFile,
+        uploadInvoiceDocument,
         deleteLocalFile,
         addLocalFile,
     };

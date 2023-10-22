@@ -1,7 +1,10 @@
 import { defineStore } from "pinia";
-import type { IInvoiceFilters, IInvoiceState } from "~/types/invoice.interface";
+import type {
+    IInvoice,
+    IInvoiceFilters,
+    IInvoiceState,
+} from "~/types/invoice.interface";
 import { useAuthStore } from "~/store/auth";
-import type { IFilters } from "~/types/common";
 import { ICustomerRole } from "~/types/user.interface";
 
 export const useInvoiceStore = defineStore("invoices", {
@@ -69,6 +72,15 @@ export const useInvoiceStore = defineStore("invoices", {
                 this.invoices = this.invoices.filter(
                     (invoice) => invoice.id !== id,
                 );
+            } catch (e: any) {
+                if (process.client) useNuxtApp().$toast.error(e.message);
+                console.error(e);
+            }
+        },
+        async saveInvoice(invoice: IInvoice) {
+            try {
+                const { apiClient } = useClient();
+                return await apiClient.put("/invoices/" + invoice.id, invoice);
             } catch (e: any) {
                 if (process.client) useNuxtApp().$toast.error(e.message);
                 console.error(e);

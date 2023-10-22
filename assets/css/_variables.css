@@ -117,5 +117,11 @@
     .btn-danger, .btn-outline-danger {
         border: 0
     }
-   
+
+    input[readonly].is-valid {
+        background-image: none;
+    }
+    input[readonly].form-input:focus {
+        box-shadow: none !important;
+    }
 }

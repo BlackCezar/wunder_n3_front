@@ -34,6 +34,12 @@ const invoiceName = computed(() => {
         ).toLocaleDateString()}`;
     return "";
 });
+
+useListen("modal:edit-invoice:save", (invoice) => {
+    invoices.value = invoices.value.map((i) =>
+        i.id === invoice.id ? invoice : i,
+    );
+});
 </script>
 
 <template>

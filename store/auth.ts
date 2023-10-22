@@ -82,6 +82,9 @@ export const useAuthStore = defineStore("auth-custom", {
         },
     },
     actions: {
+        setBusy(val: boolean) {
+            this.busy = val;
+        },
         setTokens(tokens: Tokens) {
             const jwtUtils = useJWTUtils();
             this.tokens = tokens;

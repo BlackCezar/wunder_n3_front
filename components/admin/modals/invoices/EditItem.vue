@@ -8,13 +8,19 @@ import {
 } from "~/types/invoice.interface";
 import * as yup from "yup";
 import { CURRENCIES } from "~/types/region.interface";
+import EditItemLines from "~/components/admin/modals/invoices/EditItemLines.vue";
+import { useFileService } from "#imports";
+import { useInvoiceStore } from "~/store/invoices";
 
 const props = defineProps<{ invoice: IInvoice | null }>();
+const showLines = ref<boolean>(false);
+const invoiceStore = useInvoiceStore();
 
-const { setValues, values, resetForm } = useForm<IInvoice>({
+const { setValues, values, resetForm, handleSubmit } = useForm<IInvoice>({
     validationSchema: yup.object().shape({
         invoiceNumber: yup.string().required(),
         currency: yup.string().required(),
+        status: yup.string().required(),
         invoiceDocument: yup.array().of(
             yup.object().shape({
                 type: yup.string().required(),
@@ -30,6 +36,7 @@ const { setValues, values, resetForm } = useForm<IInvoice>({
                 usdRate: yup.string().optional(),
                 eurRate: yup.string().optional(),
             })
+            .optional()
             .default(null),
     }),
     initialValues: props.invoice ?? {},
@@ -47,6 +54,7 @@ const statusOptions = computed(() => {
     return options;
 });
 const { hide } = useModal();
+const { downloadFile, uploadInvoiceDocument } = useFileService();
 
 watch(
     () => props.invoice,
@@ -103,10 +111,33 @@ const cancelEdit = () => {
     resetForm();
     hide();
 };
+
+useListen("modal:edit-invoice-lines", () => {
+    showLines.value = true;
+});
+
+const saveInvoice = handleSubmit(async (values) => {
+    console.log("save values", values);
+    for (const doc of values.invoiceDocument) {
+        if (doc.file) {
+            await uploadInvoiceDocument(doc.file, {
+                type: doc.type,
+                name: doc.name,
+                invoiceId: values.id,
+            });
+        }
+    }
+    const newInvoice = await invoiceStore.saveInvoice(values);
+    if (newInvoice) {
+        useEvent("modal:edit-invoice:save", newInvoice);
+        resetForm();
+        hide();
+    }
+});
 </script>
 
 <template>
-    <div class="invoice-edit-item">
+    <form @submit.prevent="saveInvoice" class="invoice-edit-item">
         <div class="invoice-edit-main">
             <BFormGroup label="Основные данные">
                 <TableInput
@@ -143,7 +174,7 @@ const cancelEdit = () => {
                     type="number"
                 />
                 <TableInput
-                    name="rates.eurRates"
+                    name="rates.eurRate"
                     :label="$t('Documents.eurRate')"
                     min="0.00000"
                     step="0.00001"
@@ -200,12 +231,20 @@ const cancelEdit = () => {
                                     @blur="handleBlur"
                                 />
                             </Field>
-                            <BLink
+                            <BButton
                                 class="invoice-document-link"
                                 v-if="item.value?.link"
+                                target="_blank"
+                                variant="outline-info"
+                                @click="
+                                    downloadFile(
+                                        item.value.link,
+                                        item.value.type,
+                                    )
+                                "
                             >
                                 <IBiDownload />
-                            </BLink>
+                            </BButton>
                             <BButton
                                 class="invoice-document-remove"
                                 variant="outline-danger"
@@ -246,7 +285,13 @@ const cancelEdit = () => {
                     <span class="w-100 d-block text-sm-right">Позиции</span>
                 </BCol>
                 <BCol lg="9">
-                    <BButton variant="outline-primary" @click="">
+                    <BButton
+                        v-if="invoice"
+                        variant="outline-primary"
+                        @click="
+                            useEvent('modal:edit-invoice-lines', invoice.lines)
+                        "
+                    >
                         <span>
                             {{ $t("EditClient.EditBillLines") }}
                         </span>
@@ -260,13 +305,21 @@ const cancelEdit = () => {
                     {{ $t("common.cancel") }}
                 </span>
             </BButton>
-            <BButton variant="danger"
+            <BButton variant="danger" @click="saveInvoice"
                 ><span>
                     {{ $t("Settings.Save") }}
                 </span></BButton
             >
         </div>
-    </div>
+        <b-modal
+            id="edit-invoice-lines"
+            hide-footer
+            hide-header
+            v-model="showLines"
+        >
+            <EditItemLines v-if="invoice" :invoice-lines="invoice?.lines" />
+        </b-modal>
+    </form>
 </template>
 
 <style lang="css">
@@ -306,6 +359,14 @@ const cancelEdit = () => {
 }
 .invoice-document .dropdown-toggle-split {
     width: 50px;
+}
+.invoice-document-link {
+    border: 0;
+    color: var(--link);
+}
+.invoice-document-link:hover {
+    color: white;
+    background-color: var(--link);
 }
 .invoice-document-link,
 .invoice-document-remove {

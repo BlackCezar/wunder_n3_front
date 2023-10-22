@@ -160,7 +160,7 @@
         "AccountStatus": "Статус договора",
         "Active": "Действующий",
         "NotActive": "Приостановлен",
-"Null": "Отсутствует",
+        "Null": "Отсутствует",
         "Activate": "Активировать",
         "PublicContract": "Публичный договор",
         "PublicContractFull": "Публичный договор возмездного оказания услуг",
@@ -243,20 +243,21 @@
         "Settings": "Настройки",
         "Systems": "Правила систем"
     },
-  "Invoices": {
-    "Status": "Статус",
-    "DocumentName": "Наименование файла"
-  },
+    "Invoices": {
+        "Status": "Статус",
+        "DocumentName": "Наименование файла",
+        "DocumentLink": "Ссылка на файл"
+    },
     "Validation": {
         "required": "Поле обязательно к заполнению",
         "ShouldContain": "Должен содержать ",
         "minLength": "Поле должно содержать больше {min} символов",
         "InvalidFormat": "Невалидный формат",
-"Length": "Должно быть {length} символов",
-"NaN": "Доступны только цифры",
+        "Length": "Должно быть {length} символов",
+        "NaN": "Доступны только цифры",
         "maxLength": "Максимум {max} символов",
-"Max": "Максимум {max}",
-"Min": "Минимум {min}",
+        "Max": "Максимум {max}",
+        "Min": "Минимум {min}",
         "InvalidEmail": "Некорректный e-mail",
         "InvalidSite": "Некорректный адрес сайта",
         "invalidSum": "Некорректная сумма",
@@ -362,7 +363,7 @@
         "ExpireDate": "Действителен до",
         "DeleteConfirmation": "Вы действтельно хотите удалить документ?",
         "AddDocument": "Добавить документ",
-"SaveDocuments": "Сохранить  документы",
+        "SaveDocuments": "Сохранить  документы",
         "EnterSearch": "Введите поисковой запрос",
         "EnterPeriod": "Укажите период",
         "EnterContract": "Введите номер",

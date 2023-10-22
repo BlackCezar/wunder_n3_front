@@ -3,7 +3,7 @@ import type { IContract } from "~/types/contract.interface";
 import { SystemName } from "~/types/region.interface";
 import type { ICustomer, ICustomerCandidate } from "~/types/user.interface";
 import type { IAccount } from "~/types/account.interface";
-import { IInvoice } from "~/types/invoice.interface";
+import { IInvoice, IInvoiceLine } from "~/types/invoice.interface";
 
 export type ApplicationEvents = {
     "modal:popup-account": {
@@ -15,6 +15,8 @@ export type ApplicationEvents = {
         customer: ICustomer;
     };
     "modal:edit-invoice": IInvoice;
+    "modal:edit-invoice-lines": IInvoiceLine[];
+    "modal:edit-invoice:save": IInvoice;
     "modal:edit-client": void;
     "modal:edit-contracts": void;
     "modal:show-customer-candidate": ICustomerCandidate;

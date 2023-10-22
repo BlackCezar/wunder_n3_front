@@ -16,6 +16,7 @@ const props = defineProps<{
     options?: any[];
     disabled?: boolean;
     step?: string | number;
+    readonly?: boolean;
 }>();
 
 const maskOptions = computed(() => {
@@ -95,6 +96,7 @@ const isValid = computed(() => {
                 class="form-input m-0"
                 :class="inputClass"
                 type="number"
+                :readonly="readonly"
             />
             <b-form-checkbox
                 v-else-if="type === 'checkbox'"
@@ -107,6 +109,7 @@ const isValid = computed(() => {
                 :disabled="disabled"
                 class="form-input m-0"
                 :class="inputClass"
+                :readonly="readonly"
             />
             <b-form-input
                 v-else

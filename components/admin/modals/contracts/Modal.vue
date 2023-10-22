@@ -87,7 +87,7 @@ const contractStore = useContractStore();
 const schema = Yup.object().shape({
     contractType: Yup.string().required(t("Validation.required")),
     isActive: Yup.bool().required(t("Validation.required")),
-    contractNumber: Yup.string().optional(),
+    contractNumber: Yup.string().optional().nullable(),
     contractService: Yup.string().optional(),
     startDate: Yup.date().required(t("Validation.required")),
     expireDate: Yup.date().optional().nullable(),
@@ -150,6 +150,7 @@ const {
         contractService: "Зачисление средств",
         startDate: "",
         expireDate: "",
+        contractNumber: "",
     },
 });
 
