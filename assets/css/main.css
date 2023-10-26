@@ -22,7 +22,7 @@ layer(bootstrap.remote);
 
 @layer components {
     .tab-content {
-        max-height: 80vh;
+        max-height: calc(100vh - 216px);
         overflow-y: auto;
     }
     .nav-tabs .nav-link {

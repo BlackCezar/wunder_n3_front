@@ -16,7 +16,7 @@ import type {
     ISystemSettings,
 } from "~/types/region.interface";
 import { useNuxtApp, persistedState } from "#imports";
-import type { IUser } from "~/types/user.interface";
+import type { ICustomerCandidate, IUser } from "~/types/user.interface";
 import { ICustomerRole } from "~/types/user.interface";
 import { useRegionStore } from "~/store/regions";
 
@@ -122,6 +122,22 @@ export const useAuthStore = defineStore("auth-custom", {
         setCustomerCandidate(data: any) {
             this.customerCandidate = data;
         },
+        async getCustomerCandidate(id: string) {
+            const { apiClient } = useClient();
+            try {
+                const result = await apiClient.get(
+                    `/customers/candidates/${id}`,
+                );
+                if (result) {
+                    this.customerCandidate = result;
+                    return result;
+                }
+                return null;
+            } catch (e: any) {
+                console.error(e);
+                useNuxtApp().$toast.error(e.message);
+            }
+        },
         async completeSignUp(body: ICompleteSignUpPayload) {
             const { apiClient } = useClient();
             try {
@@ -136,9 +152,14 @@ export const useAuthStore = defineStore("auth-custom", {
         async signUp(body: ISignUpPayload) {
             const { apiClient } = useClient();
             try {
-                const result = await apiClient.post("/auth/signup", body);
-                this.customerCandidate = result;
-                return result ? result : null;
+                const result = await apiClient.post<
+                    ICustomerCandidate | undefined
+                >("/auth/signup", body);
+                if (result) {
+                    this.customerCandidate = result;
+                    return result;
+                }
+                return null;
             } catch (e: any) {
                 console.error(e);
                 useNuxtApp().$toast.error(e.message);

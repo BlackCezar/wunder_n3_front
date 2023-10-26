@@ -1,6 +1,6 @@
 import { IContract } from "./contract.interface";
 import { ICustomerSettings, IRegionSettings } from "./region.interface";
-import { ICustomerCandidate, IUser } from "./user.interface";
+import { ICustomer, ICustomerCandidate, IUser } from "./user.interface";
 
 export interface ILoginPayload {
     username: string;
@@ -51,7 +51,7 @@ export type Tokens = {
 };
 
 export interface AuthStoreState {
-    customerCandidate: null | ICustomerCandidate;
+    customerCandidate: null | ICustomerCandidate | ICustomer;
     contracts: IContract[];
     user: IUser | null;
     busy: boolean;

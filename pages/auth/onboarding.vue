@@ -144,14 +144,27 @@ const formSchema = computed(() =>
     }),
 );
 
-const { handleSubmit, values, isSubmitting } = useForm({
+const { handleSubmit, values, isSubmitting } = useForm<{
+    companyEmail: string;
+    companyAddress: string;
+    sameAddress: boolean;
+    personalAgree: boolean;
+    postalAddress?: string;
+    responsiblePersonFullName: string;
+    responsiblePersonPosition: string;
+    signatureDocumentType: string;
+    bankName: string;
+    accountNumber: string;
+    BIC: string;
+    bankAddress: string;
+}>({
     validationSchema: formSchema,
 });
 
 const userRegister = handleSubmit(async (values) => {
     const payload = {
         ...values,
-        customerCandidateId: authStore.customerCandidate?.id,
+        customerCandidateId: Number(authStore.customerCandidate?.id),
         personalAgree: true,
     };
     if (payload.sameAddress) {

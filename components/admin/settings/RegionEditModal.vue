@@ -212,9 +212,6 @@ const submitSettingsUpdate = handleSubmit(async (values) => {
                     />
                 </b-tab>
             </b-tabs>
-            <span>
-                {{ errors }}
-            </span>
             <b-button
                 class="modal-close"
                 variant="outline-danger"

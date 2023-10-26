@@ -53,14 +53,14 @@ export interface ICustomer extends ICustomerCandidate {
 export interface ICustomerCandidate {
     id: number;
     regionName?: string;
-    companyName: string;
     companyTaxNumber: string;
     contactEmail: string;
+    companyName: string;
     contactPhoneNumber: string;
+    customerId?: number;
     contactName: string;
     publicAgree: boolean;
     taskId?: number;
-    customerId?: number;
 }
 
 export type SignInPayload = {
