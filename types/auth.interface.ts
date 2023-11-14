@@ -56,4 +56,6 @@ export interface AuthStoreState {
     user: IUser | null;
     busy: boolean;
     tokens: null | Tokens;
+    users: IUser[];
+    usersTotal: number;
 }

@@ -44,6 +44,7 @@ export interface IInvoice {
     lines: IInvoiceLine[];
     cachedSystemSettings: IInvoiceCachedSystemSettings[];
     isVisible: boolean;
+    hasOriginal: boolean;
 }
 
 export interface IInvoiceSystemLine {
@@ -118,6 +119,8 @@ export interface IInvoiceRates {
 
 export interface IInvoiceState {
     invoices: IInvoice[];
+    acts: IInvoice[];
+    totalActs: number;
     isLoading: boolean;
     totalInvoices: number;
 }

@@ -165,7 +165,7 @@ onMounted(() => {
                     :filters="filters"
                     :contracts="contracts"
                 />
-                <DocumentsClosure
+                <LazyDocumentsClosure
                     v-else-if="activeTab === 'closure'"
                     :filters="filters"
                     :contracts="contracts"

@@ -114,6 +114,10 @@ const getSystemPlaceholder = (name: string, system: SystemName) => {
         return t("AccountManagement.AccountExternalAgency");
     } else if (name === "externalRegion") {
         return t("AccountManagement.AccountRegion");
+    } else if (name === 'accountPassword') {
+        return t("AccountManagement.AccountPassword")
+    } else if (name === 'accountLogin') {
+        return t("AccountManagement.AccountLogin")
     }
 };
 const { setValues, handleSubmit } = useForm();
@@ -233,48 +237,33 @@ onMounted(() => {
 </script>
 <template>
     <div v-if="form.account">
-        <div
-            class="top-up-tab active m-auto create-account-title"
-            v-if="customer"
-        >
+        <div class="top-up-tab active m-auto create-account-title" v-if="customer">
             <div class="create-account-name">
                 {{ customer.companyName }}
             </div>
             <div>
-                <img
-                    class="create-account-img"
-                    :src="systemsToImg.get(accountSystemName)"
-                    alt="activateAccountName"
-                />
+                <img class="create-account-img" :src="systemsToImg.get(accountSystemName)" alt="activateAccountName" />
             </div>
         </div>
         <form @submit.prevent="saveAccount" class="px-4 pb-4 pt-0">
-            <div
-                v-for="{ name, label, children, ...attrs } in formSchema.fields"
-                :key="name"
-            >
+            <div v-for="{ name, label, children, ...attrs } in formSchema.fields" :key="name">
                 <UiFormInput :name="name" :label="label" v-bind="attrs" />
             </div>
         </form>
-        <b-button
-            :disabled="isLoading"
-            style="width: 100%; height: 59px"
-            variant="danger"
-            @click="saveAccount"
-        >
+        <b-button :disabled="isLoading" style="width: 100%; height: 59px" variant="danger" @click="saveAccount">
             <template v-if="isLoading">
                 {{
                     form.isActivate
-                        ? $t("AccountManagement.Activate")
-                        : $t("AccountManagement.Save")
+                    ? $t("AccountManagement.Activate")
+                    : $t("AccountManagement.Save")
                 }}
                 <b-spinner class="white ml-3" />
             </template>
             <template v-else>
                 {{
                     form.isActivate
-                        ? $t("AccountManagement.Activate")
-                        : $t("AccountManagement.Save")
+                    ? $t("AccountManagement.Activate")
+                    : $t("AccountManagement.Save")
                 }}
             </template>
         </b-button>

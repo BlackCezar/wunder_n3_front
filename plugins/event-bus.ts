@@ -3,13 +3,13 @@ import type { IContract } from "~/types/contract.interface";
 import { SystemName } from "~/types/region.interface";
 import type { ICustomer, ICustomerCandidate } from "~/types/user.interface";
 import type { IAccount } from "~/types/account.interface";
-import { IInvoice, IInvoiceLine } from "~/types/invoice.interface";
+import type { IInvoice, IInvoiceLine } from "~/types/invoice.interface";
 
 export type ApplicationEvents = {
     "modal:popup-account": {
         accountId: number;
         system: SystemName;
-    };
+    } | undefined;
     "modal:edit-documents": {
         id: number;
         customer: ICustomer;
@@ -34,7 +34,7 @@ export type ApplicationEvents = {
     "modal-close:edit-documents": void;
     "modal-close:edit-contracts": void;
     "modal-close:edit-contract": void;
-    "modal-close:edit-client": void;
+    "modal-close:edit-client": ICustomer | undefined;
     "modal-close:add-account": void;
     "modal-close:create-region": void;
     "modal-close:edit-region": void;
@@ -49,6 +49,7 @@ export type ApplicationEvents = {
     };
     // new objects
     "new-account": IAccount;
+    'delete:user': number;
 };
 
 export default defineNuxtPlugin(() => {

@@ -11,6 +11,7 @@ const { globalSettings } = storeToRefs(regionStore);
 const { customerCandidate } = storeToRefs(authStore);
 const isLoaded = ref<boolean>(false);
 const route = useRoute();
+const router = useRouter()
 
 if (route?.query?.id && !authStore.customerCandidate) {
     await authStore.getCustomerCandidate(route.query.id.toString());
@@ -18,6 +19,7 @@ if (route?.query?.id && !authStore.customerCandidate) {
 
 onMounted(() => {
     isLoaded.value = true;
+    if (!route.query.id && !authStore.customerCandidate?.id) router.push('/login')
 });
 
 const isCompleted = computed(() =>
@@ -29,6 +31,7 @@ const onBoardingLink = computed(() => {
     if (route.query.id) return "/auth/onboarding?id=" + route.query.id;
     return "/auth/onboarding";
 });
+
 
 definePageMeta({
     layout: "signup",

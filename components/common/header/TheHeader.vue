@@ -3,7 +3,7 @@ import type { INavLink } from "~/types/common";
 import { useRatesStore } from "~/store/rates";
 import { storeToRefs } from "pinia";
 import { useRegionStore } from "~/store/regions";
-import { ICustomerRole } from "~/types/user.interface";
+import { IUserRole } from "~/types/user.interface";
 import { useAuthStore } from "~/store/auth";
 
 defineProps<{
@@ -15,6 +15,10 @@ const regionStore = useRegionStore();
 const { region } = storeToRefs(regionStore);
 const { rates } = storeToRefs(ratesStore);
 const { user } = storeToRefs(authStore);
+
+const loginAsCustomer = (customerId: number) => {
+    authStore.signInAsUser(customerId);
+};
 </script>
 
 <template>
@@ -45,7 +49,7 @@ const { user } = storeToRefs(authStore);
             <b-navbar-nav class="ms-auto user-info">
                 <b-nav-text
                     right
-                    v-if="user && user.role === ICustomerRole.CUSTOMER"
+                    v-if="user && user.role === IUserRole.CUSTOMER"
                 >
                     <div
                         class="user-name"
@@ -56,14 +60,33 @@ const { user } = storeToRefs(authStore);
                         v-text="user?.customer?.companyName"
                     ></div>
                 </b-nav-text>
-                <b-nav-text right v-else-if="user && user.role === `ADMIN`">
+                <b-nav-text
+                    right
+                    v-else-if="user && user.role === IUserRole.ADMIN"
+                >
                     <div class="user-name">Super Admin</div>
                     <div class="user-details">{{ $t("header.Admin") }}</div>
+                </b-nav-text>
+                <b-nav-text
+                    right
+                    v-else-if="user && user.role === IUserRole.GROUP"
+                >
+                    <div class="user-name">{{ user.email }}</div>
+                    <div class="user-details">{{ user.group.companyName }}</div>
                 </b-nav-text>
                 <b-nav-text id="user-icon" right class="user-icon">
                     <img src="/imgs/user_47.png" alt="user" />
                 </b-nav-text>
                 <b-tooltip target="user-icon">
+                    <template v-if="user && user.role === IUserRole.GROUP">
+                        <b-button
+                            v-for="department of user.group.departments"
+                            @click="loginAsCustomer(department.userId)"
+                        >
+                            <span>{{ department.companyName }}</span>
+                            <IBiBoxArrowInRight />
+                        </b-button>
+                    </template>
                     <b-button variant="primary" @click="authStore.logout()">{{
                         $t("header.SignOut")
                     }}</b-button>

@@ -5,6 +5,7 @@ import type { InputType } from "bootstrap-vue-next";
 import { vMaska } from "maska";
 
 const { t } = useI18n();
+
 const props = defineProps({
     name: {
         type: String,
@@ -61,6 +62,11 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    options: {
+        type: Array,
+        required: false,
+        default: [],
+    },
 });
 const regionStore = useRegionStore();
 const name = toRef(props, "name");
@@ -85,13 +91,23 @@ const maskOptions = computed(() => {
         return {
             mask: str,
         };
+    } else if (props.type === "url") {
+        return {
+            mask: "https://A.A",
+            tokens: {
+                A: {
+                    pattern: /[a-zA-Z]/,
+                    multiple: true,
+                },
+            },
+        };
     }
     return {
         mask: Number,
     };
 });
 
-const { value, meta, handleBlur, errorMessage } = useField(
+const { value, meta, handleBlur, handleChange, errorMessage } = useField(
     () => props.name,
     undefined,
     {
@@ -99,8 +115,12 @@ const { value, meta, handleBlur, errorMessage } = useField(
     },
 );
 
-const onChange = (val) => {
-    if (props.type === "tel" || props.type === "number") {
+const onChange = (val: any) => {
+    if (
+        props.type === "tel" ||
+        props.type === "number" ||
+        props.type === "url"
+    ) {
         value.value = val;
     }
 };
@@ -124,9 +144,36 @@ const isValid = computed(() => {
             :state="isValid"
             :type="type as InputType"
             class="form-input"
-            type="number"
             @blur="handleBlur"
             @input="onChange"
+        />
+        <b-form-input
+            v-else-if="type === 'url'"
+            :id="name as string"
+            v-maska
+            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined"
+            data-maska="https://A.A"
+            data-maska-tokens="A:[a-zA-Z]:multiple"
+            :model-value="value as string"
+            :name="name as string"
+            :placeholder="placeholder ?? ''"
+            :state="isValid"
+            type="text"
+            class="form-input"
+            @blur="handleBlur"
+            @input="onChange"
+        />
+        <b-form-select
+            v-else-if="type === 'select'"
+            :id="name as string"
+            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined"
+            :placeholder="placeholder"
+            :state="isValid"
+            :model-value="value"
+            @update:model-value="handleChange"
+            class="form-input"
+            @blur="handleBlur"
+            :options="options"
         />
         <b-form-input
             v-else
@@ -140,10 +187,10 @@ const isValid = computed(() => {
             :placeholder="placeholder"
             :state="isValid"
             :type="type === 'number' ? 'text' : (type as InputType)"
-            v-model="value as string"
+            :model-value="value"
+            @update:model-value="handleChange"
             class="form-input"
             @blur="handleBlur"
-            @input="onChange"
         />
         <template v-if="helperText">
             <IBiQuestionCircle
@@ -171,9 +218,11 @@ const isValid = computed(() => {
 .form-input-invalid-feedback {
     text-align: left;
 }
+
 .form-input-invalid-feedback:empty {
     display: none;
 }
+
 .question-helper {
     position: absolute;
     right: 11px;

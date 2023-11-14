@@ -2,9 +2,10 @@
 import DynamicForm from "@/components/forms/DynamicForm.vue";
 import * as Yup from "yup";
 import { useRegionStore } from "~/store/regions";
-import { ICustomerRole } from "~/types/user.interface";
+import { IUserRole } from "~/types/user.interface";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "~/store/auth";
+import { FetchError } from "ofetch";
 
 definePageMeta({
     layout: "signup",
@@ -24,14 +25,21 @@ const processForm = async (event: any) => {
             password: event.password,
         });
         if (user.value) {
-            if (user.value.role === ICustomerRole.ADMIN) {
+            if (user.value.role === IUserRole.ADMIN) {
                 await router.push("/admin");
+            } else if (user.value.role === IUserRole.GROUP) {
+                await router.push("/groups");
             } else await router.push("/accounts");
             useNuxtApp().$toast.success(t("Validation.Success"));
         }
     } catch (err) {
-        console.error(err);
-        useNuxtApp().$toast.error(t("login.NoSuccess"));
+        if (err instanceof FetchError) {
+            console.dir(err.data);
+            useNuxtApp().$toast.error(err.data.message);
+        } else {
+            console.error(err);
+            useNuxtApp().$toast.error(t("login.NoSuccess"));
+        }
         authStore.setBusy(false);
     }
 };

@@ -16,15 +16,23 @@ import type {
     ISystemSettings,
 } from "~/types/region.interface";
 import { useNuxtApp, persistedState } from "#imports";
-import type { ICustomerCandidate, IUser } from "~/types/user.interface";
-import { ICustomerRole } from "~/types/user.interface";
+import type {
+    ICustomerCandidate,
+    ICustomerGroup,
+    IUser,
+    IUserCreatePayload,
+} from "~/types/user.interface";
+import { IUserRole } from "~/types/user.interface";
 import { useRegionStore } from "~/store/regions";
+import { FetchError } from "ofetch";
 
 export const useAuthStore = defineStore("auth-custom", {
     state: (): AuthStoreState => ({
         customerCandidate: null,
         contracts: [],
         user: null,
+        users: [],
+        usersTotal: 0,
         busy: false,
         tokens: null,
     }),
@@ -33,7 +41,7 @@ export const useAuthStore = defineStore("auth-custom", {
             return state.tokens?.expires && state.tokens?.expires > Date.now();
         },
         getSettings(state): null | IRegionSettings | ICustomerSettings {
-            if (state.user?.role === ICustomerRole.CUSTOMER) {
+            if (state.user?.role === IUserRole.CUSTOMER) {
                 const contract = state.user.contracts.find(
                     (contract) => contract.isActive,
                 );
@@ -67,7 +75,7 @@ export const useAuthStore = defineStore("auth-custom", {
             }
         },
         getSystemSettings(state): ISystemSettings[] {
-            if (state.user?.role === ICustomerRole.CUSTOMER) {
+            if (state.user?.role === IUserRole.CUSTOMER) {
                 const contract = state.user.contracts.find(
                     (contract) => contract.isActive,
                 );
@@ -93,6 +101,41 @@ export const useAuthStore = defineStore("auth-custom", {
         },
         setUser(user: IUser) {
             this.user = user;
+        },
+        async loadUsers(page: number) {
+            const { apiClient } = useClient();
+            const result = await apiClient.get<[number, IUser[]]>(
+                "/auth/users",
+                {
+                    query: {
+                        page,
+                    },
+                },
+            );
+            if (Array.isArray(result)) {
+                this.usersTotal = result[0];
+                this.users = result[1];
+            }
+        },
+        async createUser(values: IUserCreatePayload) {
+            const { apiClient } = useClient();
+            try {
+                const result = await apiClient.post(`/auth/users`, values);
+                if (result) {
+                    this.users.push(result);
+                    this.usersTotal++;
+                    return result;
+                }
+                return null;
+            } catch (e: any) {
+                if (e instanceof FetchError) {
+                    console.dir(e.data);
+                    useNuxtApp().$toast.error(e.data.message);
+                } else {
+                    console.error(e);
+                    useNuxtApp().$toast.error(e.message);
+                }
+            }
         },
         async getProfile() {
             const { apiClient } = useClient();
@@ -134,8 +177,13 @@ export const useAuthStore = defineStore("auth-custom", {
                 }
                 return null;
             } catch (e: any) {
-                console.error(e);
-                useNuxtApp().$toast.error(e.message);
+                if (e instanceof FetchError) {
+                    console.dir(e.data);
+                    useNuxtApp().$toast.error(e.data.message);
+                } else {
+                    console.error(e);
+                    useNuxtApp().$toast.error(e.message);
+                }
             }
         },
         async completeSignUp(body: ICompleteSignUpPayload) {
@@ -145,8 +193,59 @@ export const useAuthStore = defineStore("auth-custom", {
                 this.customerCandidate = result;
                 return result ? result : null;
             } catch (e: any) {
-                console.error(e);
-                useNuxtApp().$toast.error(e.message);
+                if (e instanceof FetchError) {
+                    console.dir(e.data);
+                    useNuxtApp().$toast.error(e.data.message);
+                } else {
+                    console.error(e);
+                    useNuxtApp().$toast.error(e.message);
+                }
+            }
+        },
+        async getCustomerGroupsList(): Promise<ICustomerGroup[]> {
+            const { apiClient } = useClient();
+            return apiClient.get<ICustomerGroup[]>("/customers/groups");
+        },
+        async getDepartments(groupId: number) {
+            const { apiClient } = useClient();
+            try {
+                return apiClient.get<IUser | undefined>("/auth/users", {
+                    query: {
+                        groupId,
+                    },
+                });
+            } catch (e: any) {
+                if (e instanceof FetchError) {
+                    console.dir(e.data);
+                    useNuxtApp().$toast.error(e.data.message);
+                } else {
+                    console.error(e);
+                    useNuxtApp().$toast.error(e.message);
+                }
+            }
+        },
+        async saveCustomer(data: IUser) {
+            const { apiClient } = useClient();
+            try {
+                const result = await apiClient.put<IUser | undefined>(
+                    "/auth/users",
+                    data,
+                );
+                if (result) {
+                    this.users = this.users.map((item) => {
+                        return item.id === data.id ? data : item;
+                    });
+                    return result;
+                }
+                return null;
+            } catch (e: any) {
+                if (e instanceof FetchError) {
+                    console.dir(e.data);
+                    useNuxtApp().$toast.error(e.data.message);
+                } else {
+                    console.error(e);
+                    useNuxtApp().$toast.error(e.message);
+                }
             }
         },
         async signUp(body: ISignUpPayload) {
@@ -161,8 +260,13 @@ export const useAuthStore = defineStore("auth-custom", {
                 }
                 return null;
             } catch (e: any) {
-                console.error(e);
-                useNuxtApp().$toast.error(e.message);
+                if (e instanceof FetchError) {
+                    console.dir(e.data);
+                    useNuxtApp().$toast.error(e.data.message);
+                } else {
+                    console.error(e);
+                    useNuxtApp().$toast.error(e.message);
+                }
             }
         },
         async refreshTokens() {
@@ -173,6 +277,24 @@ export const useAuthStore = defineStore("auth-custom", {
                 },
             });
             this.setTokens(result);
+        },
+        async deleteUser(id: number) {
+            try {
+                this.busy = true;
+                const { apiClient } = useClient();
+
+                await apiClient.delete("/auth/users/" + id);
+                this.users = this.users.filter((u) => u.id !== id);
+            } catch (e: any) {
+                if (e instanceof FetchError) {
+                    console.dir(e.data);
+                    useNuxtApp().$toast.error(e.data.message);
+                } else {
+                    console.error(e);
+                    useNuxtApp().$toast.error(e.message);
+                }
+            }
+            this.busy = false;
         },
         async signInAsUser(id: number) {
             const { apiClient } = useClient();
@@ -187,8 +309,13 @@ export const useAuthStore = defineStore("auth-custom", {
                 this.router.push("/accounts");
                 useNuxtApp().$toast.success("Вы успешно авторизовались");
             } catch (e: any) {
-                console.error(e);
-                useNuxtApp().$toast.error(e.message);
+                if (e instanceof FetchError) {
+                    console.dir(e.data);
+                    useNuxtApp().$toast.error(e.data.message);
+                } else {
+                    console.error(e);
+                    useNuxtApp().$toast.error(e.message);
+                }
             }
         },
     },

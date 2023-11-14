@@ -1,19 +1,16 @@
 @layer bootstrap, app, components;
 
-@import url("/node_modules/bootstrap/dist/css/bootstrap.min.css")
-layer(bootstrap.remote);
-@import url("/node_modules/bootstrap/dist/css/bootstrap-reboot.min.css")
-layer(bootstrap.remote);
-@import url("/node_modules/bootstrap/dist/css/bootstrap-grid.min.css")
-layer(bootstrap.remote);
-@import url("/node_modules/bootstrap/dist/css/bootstrap-utilities.min.css")
-layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap.min.css") layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-reboot.min.css") layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-grid.min.css") layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-utilities.min.css") layer(bootstrap.remote);
 @import url("_variables.css");
 
 @layer bootstrap.local {
     .page-item.disabled {
         cursor: not-allowed;
     }
+
     .nav-tabs .nav-link {
         border: 0;
         padding: 0;
@@ -25,24 +22,30 @@ layer(bootstrap.remote);
         max-height: calc(100vh - 216px);
         overflow-y: auto;
     }
+
     .nav-tabs .nav-link {
         color: var(--paragraphColor);
     }
+
     .nav-tabs {
         border-bottom: 0;
         height: auto;
         overflow-y: hidden;
     }
+
     .nav-tabs .nav-item {
         border: 0;
         margin: 0;
     }
+
     .min-w-none {
         min-width: unset;
     }
+
     .w-full {
         width: 100%;
     }
+
     .w-screen {
         width: 100vw;
     }
@@ -90,11 +93,13 @@ body {
     padding-left: 2.2em;
     background: white;
 }
+
 @media screen and (max-width: 768px) {
     .table-container {
         padding: 0;
     }
 }
+
 .table-container .table th {
     border-top: none;
     font-weight: 500 !important;
@@ -104,11 +109,13 @@ body {
     padding-top: 1.5em;
     vertical-align: middle;
 }
+
 @media screen and (max-width: 768px) {
     .table-container .table th {
         padding: 8px 15px;
     }
 }
+
 @media screen and (max-width: 768px) {
     .table-container .table td {
         padding: 8px 15px;
@@ -123,6 +130,7 @@ body {
     margin-top: 22px;
     max-height: var(--inputMaxHeight);
 }
+
 .form-input:focus,
 .form-input:focus-visible {
     box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
@@ -142,19 +150,20 @@ body {
     align-items: center;
     margin-bottom: 0;
 }
+
 .custom-file-label::after {
     height: 100%;
     display: flex;
     align-items: center;
 }
 
-.form-input-period fieldset > div,
-.finances-search-filter fieldset > div {
+.form-input-period fieldset>div,
+.finances-search-filter fieldset>div {
     display: flex;
     align-items: center;
 }
 
-.form-input-search > div {
+.form-input-search>div {
     display: flex;
     align-items: center;
 }
@@ -196,11 +205,9 @@ body {
     margin-top: 22px;
     text-align: left;
 }
-.form-checkbox
-    .was-validated
-    .custom-control-input:valid
-    ~ .custom-control-label,
-.form-checkbox .custom-control-input.is-valid ~ .custom-control-label {
+
+.form-checkbox .was-validated .custom-control-input:valid~.custom-control-label,
+.form-checkbox .custom-control-input.is-valid~.custom-control-label {
     color: inherit;
 }
 
@@ -212,6 +219,7 @@ body {
     margin-bottom: var(--blockMargin);
     max-width: 260px;
 }
+
 .search-filter .form-input {
     margin-top: 0;
 }
@@ -223,27 +231,34 @@ body {
         align-items: start;
         text-align: center;
     }
+
     .navbar-nav.rate .currency-symbol {
         margin: 0;
         grid-row-start: 1;
     }
+
     .navbar-nav.rate .currency-value {
         font-size: 18px;
     }
+
     .modal-dialog {
         margin: 0;
         width: 100%;
         max-width: unset;
     }
+
     .p-4 {
         padding: 15px !important;
     }
+
     .top-up-tab {
         padding: 10px !important;
     }
+
     .table-container {
         overflow-x: auto;
     }
+
     #edit-region-modal {
         padding-left: 0;
     }
@@ -252,6 +267,7 @@ body {
 .modal-close {
     display: none;
 }
+
 @media screen and (max-width: 768px) {
     .modal-close {
         width: 100%;

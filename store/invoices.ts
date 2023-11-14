@@ -5,11 +5,13 @@ import type {
     IInvoiceState,
 } from "~/types/invoice.interface";
 import { useAuthStore } from "~/store/auth";
-import { ICustomerRole } from "~/types/user.interface";
+import { IUserRole } from "~/types/user.interface";
 
 export const useInvoiceStore = defineStore("invoices", {
     state: (): IInvoiceState => ({
         invoices: [],
+        acts: [],
+        totalActs: 0,
         isLoading: false,
         totalInvoices: 0,
     }),
@@ -17,13 +19,38 @@ export const useInvoiceStore = defineStore("invoices", {
         bills: (state) => state.invoices,
     },
     actions: {
+        async getCustomerActs(filters: IInvoiceFilters) {
+            try {
+                this.isLoading = true;
+                const { apiClient } = useClient();
+                const authStore = useAuthStore();
+                let customerId = null;
+                if (authStore.user?.role === IUserRole.CUSTOMER)
+                    customerId = authStore.user.customer.id;
+
+                const query = {
+                    customerId: customerId,
+                    filters: JSON.stringify(filters),
+                };
+                const result = await apiClient.get("/invoices/acts", {
+                    query,
+                });
+                this.totalActs = result[0];
+                this.acts = result[1];
+                this.isLoading = false;
+            } catch (e: any) {
+                if (process.client) useNuxtApp().$toast.error(e.message);
+                console.error(e);
+                this.isLoading = false;
+            }
+        },
         async getCustomerInvoices(filters: IInvoiceFilters) {
             try {
                 this.isLoading = true;
                 const { apiClient } = useClient();
                 const authStore = useAuthStore();
                 let customerId = null;
-                if (authStore.user?.role === ICustomerRole.CUSTOMER)
+                if (authStore.user?.role === IUserRole.CUSTOMER)
                     customerId = authStore.user.customer.id;
 
                 const query = {

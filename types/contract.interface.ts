@@ -16,7 +16,7 @@ export interface IContract {
     settings: ICustomerSettings;
     documents?: IDocument[];
     systemSettings: ICustomerSystemSettings[];
-    expireDate?: Date | string;
+    expireDate?: Date | string | null;
     startDate: Date | string;
 }
 

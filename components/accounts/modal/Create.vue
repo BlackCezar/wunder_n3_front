@@ -18,6 +18,7 @@ import {
 import * as yup from "yup";
 import { useAccountStore } from "~/store/accounts";
 import { useAuthStore } from "~/store/auth";
+import { storeToRefs } from "pinia";
 
 const props = defineProps<{
     accounts: any[];
@@ -33,31 +34,65 @@ const isLoading = ref<boolean>(false);
 const enabledSystems = computed(() => {
     return props.systemSettings.filter((s) => s.isActive);
 });
-const selectedSystem = ref<SystemName>("");
+const selectedSystem = ref<SystemName>(SystemName.GoogleAds);
 
-const schema = computed(() =>
-    yup.object().shape({
+const { handleSubmit, values, setFieldValue, meta, errors } = useForm<{
+    account: {
+        email?: string;
+        accountName?: string;
+        site?: string;
+        system: SystemName;
+    };
+}>({
+    validationSchema: yup.object().shape({
         account: yup.object().shape({
-            email: [SystemName.Telegram, SystemName.AppleSearch].includes(
-                selectedSystem.value,
-            )
-                ? yup.string().required()
-                : [].includes(selectedSystem.value)
-                ? yup.string().email().required()
-                : yup.string().optional(),
-            accountName: [SystemName.Telegram, SystemName.AppleSearch].includes(
-                selectedSystem.value,
-            )
-                ? yup.string().required()
-                : yup.string().optional(),
+            email: yup.lazy((_val) => {
+                if (selectedSystem.value === SystemName.GoogleAds)
+                    return yup
+                        .string()
+                        .required()
+                        .matches(/.+@gmail\.com/, {
+                            message:
+                                t("Validation.ShouldContain") + "@gmail.com",
+                        });
+                if (selectedSystem.value === SystemName.VK)
+                    return yup
+                        .string()
+                        .required()
+                        .matches(/[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,5}/, {
+                            message: t("Validation.InvalidSite"),
+                        });
+                if (
+                    [SystemName.MyTarget, SystemName.Telegram].includes(
+                        selectedSystem.value,
+                    )
+                )
+                    return yup.string().required();
+                if (
+                    [
+                        SystemName.TikTok,
+                        SystemName.Facebook,
+                        SystemName.DV360,
+                        SystemName.OK,
+                        SystemName.LinkedIn,
+                    ].includes(selectedSystem.value)
+                )
+                    return yup.string().email().required();
+                return yup.string().optional();
+            }),
+            accountName: yup.lazy(() => {
+                if (
+                    [SystemName.Telegram, SystemName.AppleSearch].includes(
+                        selectedSystem.value,
+                    )
+                )
+                    return yup.string().required();
+                return yup.string().optional();
+            }),
             site: yup.string().required().url(),
-            system: yup.string().required(),
+            system: yup.string().required().oneOf(Object.values(SystemName)),
         }),
     }),
-);
-
-const { handleSubmit, values, setFieldValue, meta, errors } = useForm({
-    validationSchema: schema,
     initialValues: {
         account: {
             email: "",
@@ -73,8 +108,9 @@ const contract = authStore.getActiveContract;
 const { t } = useI18n();
 const auth = useAuthStore();
 const accountStore = useAccountStore();
+const { user } = storeToRefs(auth);
 
-const updateSystem = (systemName: string) => {
+const updateSystem = (systemName: SystemName) => {
     selectedSystem.value = systemName;
     setFieldValue("account.system", systemName);
 };
@@ -82,8 +118,8 @@ const handleCreateAccountSubmit = handleSubmit(async (values) => {
     isLoading.value = true;
 
     const result = await accountStore.create({
-        customerId: auth.user.customer.id,
-        contractId: contract?.id,
+        customerId: user.value?.customer?.id,
+        contractId: contract?.id ?? 0,
         accountName: values.account.accountName,
         site: values.account.site,
         email: values.account.email,
@@ -91,7 +127,7 @@ const handleCreateAccountSubmit = handleSubmit(async (values) => {
     });
     isLoading.value = false;
     showCreateAccountModal.value = false;
-    useEvent("new-account", result);
+    if (result) useEvent("new-account", result);
 });
 
 watch(
@@ -108,37 +144,23 @@ watch(
     },
 );
 
-useListen("modal:add-account", () => (showCreateAccountModal.value = true));
+useListen("modal:add-account", () => {
+    showCreateAccountModal.value = true;
+    console.log("has");
+});
 </script>
 
 <template>
     <div>
-        <b-modal
-            id="create-account-modal"
-            ref="modal"
-            v-model="showCreateAccountModal"
-            hide-footer
-            hide-header
-        >
+        <b-modal id="create-account-modal" ref="modal" v-model="showCreateAccountModal" hide-footer hide-header>
             <form @submit.prevent="handleCreateAccountSubmit">
                 <div class="create-account-form-container">
                     <div class="system-buttons-container">
-                        <template
-                            v-for="system in enabledSystems"
-                            :key="system.id"
-                        >
-                            <div
-                                :class="
-                                    selectedSystem === system.systemName &&
-                                    'active'
-                                "
-                                class="select-system-button"
-                                @click="updateSystem(system.systemName)"
-                            >
-                                <img
-                                    :alt="system.systemName"
-                                    :src="systemsToImg.get(system.systemName)"
-                                />
+                        <template v-for="system in enabledSystems" :key="system.id">
+                            <div :class="selectedSystem === system.systemName &&
+                                'active'
+                                " class="select-system-button" @click="updateSystem(system.systemName)">
+                                <img :alt="system.systemName" :src="systemsToImg.get(system.systemName)" />
                             </div>
                         </template>
                     </div>
@@ -146,106 +168,47 @@ useListen("modal:add-account", () => (showCreateAccountModal.value = true));
                         {{ t("AccountManagement.ChoseSystem") }}
                     </div>
 
-                    <UiFormInput
-                        v-if="selectedSystem === SystemName.GoogleAds"
-                        name="account.email"
-                        placeholder="email@gmail.com"
-                    />
-                    <UiFormInput
-                        v-if="selectedSystem === SystemName.MyTarget"
-                        :placeholder="
-                            t('AccountManagement.MyTargetPlaceholder')
-                        "
-                        name="account.email"
-                    />
-                    <UiFormInput
-                        v-if="selectedSystem === SystemName.Telegram"
-                        :placeholder="
-                            t('AccountManagement.TelegramUserPlaceholder')
-                        "
-                        name="account.email"
-                    />
-                    <UiFormInput
-                        v-if="
-                            [
-                                SystemName.TikTok,
-                                SystemName.Facebook,
-                                SystemName.DV360,
-                                SystemName.OK,
-                                SystemName.LinkedIn,
-                            ].includes(selectedSystem)
-                        "
-                        name="account.email"
-                    />
-                    <UiFormInput
-                        v-if="selectedSystem === SystemName.VK"
-                        :placeholder="t('AccountManagement.VKLink')"
+                    <UiFormInput v-if="selectedSystem === SystemName.GoogleAds" name="account.email"
+                        placeholder="email@gmail.com" />
+                    <UiFormInput v-if="selectedSystem === SystemName.MyTarget" :placeholder="t('AccountManagement.MyTargetPlaceholder')
+                        " name="account.email" />
+                    <UiFormInput v-if="selectedSystem === SystemName.Telegram" :placeholder="t('AccountManagement.TelegramUserPlaceholder')
+                        " name="account.email" />
+                    <UiFormInput v-if="[
+                            SystemName.TikTok,
+                            SystemName.Facebook,
+                            SystemName.DV360,
+                            SystemName.OK,
+                            SystemName.LinkedIn,
+                        ].includes(selectedSystem)
+                        " placeholder="Email" name="account.email" />
+                    <UiFormInput v-if="selectedSystem === SystemName.VK" :placeholder="t('AccountManagement.VKLink')"
                         :rules="{
                             required: true,
                             regex: /[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,5}/,
-                        }"
-                        name="account.email"
-                    />
-                    <UiFormInput
-                        v-if="selectedSystem === SystemName.Telegram"
-                        :placeholder="
-                            t('AccountManagement.AccountNameTelegramName')
-                        "
-                        name="account.accountName"
-                    />
-                    <UiFormInput
-                        v-if="selectedSystem === SystemName.AppleSearch"
-                        :placeholder="
-                            t('AccountManagement.AccountNameAppleSearchName')
-                        "
-                        name="account.accountName"
-                    />
-                    <UiFormInput
-                        v-if="
-                            ![
-                                SystemName.AppleSearch,
-                                SystemName.Telegram,
-                            ].includes(selectedSystem)
-                        "
-                        :placeholder="t('AccountManagement.AccountName')"
-                        name="account.accountName"
-                    />
-                    <UiFormInput
-                        v-if="
-                            [
-                                SystemName.AppleSearch,
-                                SystemName.Telegram,
-                            ].includes(selectedSystem)
-                        "
-                        :placeholder="
-                            t('AccountManagement.TelegramURLPlaceholder')
-                        "
-                        :rules="{
-                            required: true,
-                            regex: /[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,5}/,
-                        }"
-                        name="account.site"
-                    />
-                    <UiFormInput
-                        v-else
-                        :placeholder="t('AccountManagement.Site')"
-                        :rules="{
-                            required: true,
-                            regex: /[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,5}/,
-                        }"
-                        name="account.site"
-                    />
+                        }" name="account.email" />
+                    <UiFormInput v-if="selectedSystem === SystemName.Telegram" :placeholder="t('AccountManagement.AccountNameTelegramName')
+                        " name="account.accountName" />
+                    <UiFormInput v-if="selectedSystem === SystemName.AppleSearch" :placeholder="t('AccountManagement.AccountNameAppleSearchName')
+                        " name="account.accountName" />
+                    <UiFormInput v-if="![
+                            SystemName.AppleSearch,
+                            SystemName.Telegram,
+                        ].includes(selectedSystem)
+                        " :placeholder="t('AccountManagement.AccountName')" name="account.accountName" />
+                    <UiFormInput v-if="[
+                            SystemName.AppleSearch,
+                            SystemName.Telegram,
+                        ].includes(selectedSystem)
+                        " :placeholder="t('AccountManagement.TelegramURLPlaceholder')
+        " type="url" name="account.site" />
+                    <UiFormInput v-else :placeholder="t('AccountManagement.Site')" type="url" name="account.site" />
                 </div>
-                <p>{{ errors }}</p>
-                <b-button
-                    :disabled="isLoading || !meta.valid"
-                    style="width: 100%; margin-top: 9px; height: 59px"
-                    type="submit"
-                    variant="danger"
-                >
+                <b-button :disabled="isLoading || !meta.valid" style="width: 100%; margin-top: 9px; height: 59px"
+                    type="submit" variant="danger">
                     <template v-if="isLoading">
                         {{ t("AccountManagement.CreateAccount") }}
-                        <b-spinner variant="white ms-3" />
+                        <b-spinner class="white ms-3" />
                     </template>
                     <template v-else>
                         {{ t("AccountManagement.CreateAccount") }}

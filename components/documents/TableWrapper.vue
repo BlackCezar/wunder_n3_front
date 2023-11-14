@@ -14,8 +14,9 @@
                     <span
                         style="cursor: pointer"
                         :id="`tooltip-${data.item.id}`"
-                        ><IBiQuestionCircle
-                    /></span>
+                    >
+                        <IBiQuestionCircle />
+                    </span>
                     <b-tooltip
                         variant="danger"
                         :target="`tooltip-${data.item.id}`"
@@ -82,6 +83,7 @@
                     <a
                         download
                         target="_blank"
+                        :href="data.value"
                         :disabled="data.item.billClosed"
                         v-if="!data.item.type || data.item.type !== 'postpay'"
                         @click.prevent="
@@ -108,9 +110,9 @@
                 </template>
                 <template #cell(downloadAct)="data">
                     <a
-                        download
-                        :href="'/api/documents/public/' + data.value"
                         target="_blank"
+                        :href="data.value"
+                        v-if="!data.item.type || data.item.type !== 'postpay'"
                     >
                         {{ $t("Documents.Download") }}
                         <IBiDownload />
@@ -192,6 +194,8 @@ const downloadFile = async (fileName: string, type: string) => {
     let file = null;
     if (type === "bill") {
         file = await fsDownload(fileName, "bills");
+    } else if (type === "act") {
+        file = await fsDownload(fileName, "acts");
     } else {
         file = await fsDownload(fileName, "contracts");
     }
@@ -199,7 +203,7 @@ const downloadFile = async (fileName: string, type: string) => {
     const href = URL.createObjectURL(file);
     const link = document.createElement("a");
     link.href = href;
-    link.setAttribute("download", "file.pdf"); //or any other extension
+    link.setAttribute("download", fileName); //or any other extension
     document.body.appendChild(link);
     link.click();
 };
@@ -211,9 +215,11 @@ const downloadFile = async (fileName: string, type: string) => {
     transition: 0.3s ease;
     padding-bottom: 1em;
 }
+
 .table-container .success-text {
     color: var(--green);
 }
+
 .table-container .danger-text {
     color: var(--accent);
 }
@@ -222,14 +228,17 @@ const downloadFile = async (fileName: string, type: string) => {
     text-align: left;
     background-image: none !important;
 }
+
 .table-container table th div {
     position: relative;
     display: inline-block;
 }
+
 .table-container td {
     color: var(--paragraphColor);
     padding-left: calc(0.75rem + 0.65em);
 }
+
 .table-container .table.b-table > thead > tr > [aria-sort="none"] div::after,
 .table.b-table > tfoot > tr > [aria-sort="none"] div::after {
     content: "";
@@ -243,6 +252,7 @@ const downloadFile = async (fileName: string, type: string) => {
     position: absolute;
     background-image: url('data:image/svg+xml,%3csvg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"%3e%3cpath d="M6 3L6 21M6 3L10 7M6 3L2 7" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3e%3cpath d="M18 21L18 3M18 21L22 17M18 21L14 17" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3e%3c/svg%3e');
 }
+
 .table-container
     .table.b-table
     > thead
@@ -261,6 +271,7 @@ const downloadFile = async (fileName: string, type: string) => {
     position: absolute;
     background-image: url('data:image/svg+xml,%3csvg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"%3e%3cpath d="M6 3L6 21M6 3L10 7M6 3L2 7" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3e%3cpath d="M18 21L18 3M18 21L22 17M18 21L14 17" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3e%3c/svg%3e');
 }
+
 .table-container
     .table.b-table
     > thead
@@ -284,6 +295,7 @@ const downloadFile = async (fileName: string, type: string) => {
     position: absolute;
     background-image: url('data:image/svg+xml,%3csvg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"%3e%3cpath d="M6 3L6 21M6 3L10 7M6 3L2 7" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3e%3cpath d="M18 21L18 3M18 21L22 17M18 21L14 17" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3e%3c/svg%3e');
 }
+
 .table-container .link {
     color: var(--link);
     line-height: 23px;
@@ -291,9 +303,11 @@ const downloadFile = async (fileName: string, type: string) => {
     cursor: pointer;
     border-bottom: 1px dotted var(--link);
 }
+
 .table-container .link + svg {
     cursor: pointer;
 }
+
 .table-container .document-download a {
     color: var(--link);
     cursor: pointer;
@@ -308,10 +322,12 @@ const downloadFile = async (fileName: string, type: string) => {
 .b-tooltip-white {
     opacity: 1 !important;
 }
+
 .b-tooltip-white.arrow::before {
     border-top-color: white !important;
     border-bottom-color: white !important;
 }
+
 .b-tooltip-white .tooltip-inner {
     background-color: white;
     box-shadow:
@@ -320,6 +336,7 @@ const downloadFile = async (fileName: string, type: string) => {
     padding: 17px 22px;
     max-width: unset;
 }
+
 @media screen and (max-width: 768px) {
     .b-tooltip-white .tooltip-inner {
         max-width: 80vw;
@@ -331,10 +348,12 @@ const downloadFile = async (fileName: string, type: string) => {
 .b-tooltip-white .tooltip-inner table {
     margin-bottom: 0;
 }
+
 .b-tooltip-white .tooltip-inner thead th {
     padding: 0 10px 10px 00px;
     border-top: 0;
 }
+
 .b-tooltip-white .tooltip-inner td {
     color: var(--paragraphColor);
 }

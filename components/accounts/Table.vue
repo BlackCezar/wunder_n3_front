@@ -217,7 +217,7 @@ const accountEdit = (id: number, customerId: number) => {
             <div class="close-open-button" @click.stop="isOpen = !isOpen">
                 <IBiChevronUp
                     class="chevron-btn close-open-button"
-                    :class="{ open: isOpen }"
+                    :class="{ open: !isOpen }"
                 />
             </div>
         </div>

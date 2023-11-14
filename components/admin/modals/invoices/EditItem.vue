@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import TableInput from "~/components/ui/TableInput.vue";
+import type { IInvoice } from "~/types/invoice.interface";
 import {
-    IInvoice,
     InvoiceDocumentType,
-    InvoiceDocumentTypeTranslate,
     InvoiceStatusTranslate,
+    InvoiceDocumentTypeTranslate,
 } from "~/types/invoice.interface";
 import * as yup from "yup";
 import { CURRENCIES } from "~/types/region.interface";
@@ -21,6 +21,8 @@ const { setValues, values, resetForm, handleSubmit } = useForm<IInvoice>({
         invoiceNumber: yup.string().required(),
         currency: yup.string().required(),
         status: yup.string().required(),
+        hasOriginal: yup.boolean().optional().default(false),
+        isVisible: yup.boolean().optional().default(false),
         invoiceDocument: yup.array().of(
             yup.object().shape({
                 type: yup.string().required(),
@@ -36,6 +38,7 @@ const { setValues, values, resetForm, handleSubmit } = useForm<IInvoice>({
                 usdRate: yup.string().optional(),
                 eurRate: yup.string().optional(),
             })
+            .nullable()
             .optional()
             .default(null),
     }),
@@ -127,6 +130,9 @@ const saveInvoice = handleSubmit(async (values) => {
             });
         }
     }
+    values.hasOriginal = !!values.hasOriginal;
+    values.isVisible = !!values.isVisible;
+
     const newInvoice = await invoiceStore.saveInvoice(values);
     if (newInvoice) {
         useEvent("modal:edit-invoice:save", newInvoice);
@@ -231,52 +237,49 @@ const saveInvoice = handleSubmit(async (values) => {
                                     @blur="handleBlur"
                                 />
                             </Field>
-                            <BButton
-                                class="invoice-document-link"
-                                v-if="item.value?.link"
+                            <nuxt-link
+                                class="invoice-document-link p-2"
+                                :to="`/download?type=${item.value.type.toLowerCase()}s&name=${
+                                    item.value.link
+                                }`"
                                 target="_blank"
-                                variant="outline-info"
-                                @click="
-                                    downloadFile(
-                                        item.value.link,
-                                        item.value.type,
-                                    )
-                                "
                             >
                                 <IBiDownload />
-                            </BButton>
+                            </nuxt-link>
                             <BButton
                                 class="invoice-document-remove"
                                 variant="outline-danger"
                                 @click="remove(idx)"
-                                ><IBiTrash
-                            /></BButton>
+                            >
+                                <IBiTrash />
+                            </BButton>
                         </div>
                     </BListGroupItem>
                     <BButton
                         variant="outline-secondary"
                         @click="push(newDocument)"
-                        ><span>{{ $t("Documents.AddDocument") }}</span
-                        ><IBiPlus
-                    /></BButton>
+                        ><span>{{ $t("Documents.AddDocument") }}</span>
+                        <IBiPlus />
+                    </BButton>
                 </FieldArray>
             </BListGroup>
         </BFormGroup>
         <div class="invoice-edit-main">
             <BRow>
-                <BCol lg="3">
+                <BCol lg="4">
                     <span class="w-100 d-block text-sm-right"
                         >Ссылка на PF</span
                     >
                 </BCol>
-                <BCol lg="9">
+                <BCol lg="8">
                     <BLink
                         v-if="invoice?.taskId"
                         target="_blank"
                         :href="`https://wunder-digital.planfix.ru/task/${invoice.taskId}`"
                         class="d-flex gap-1 align-items-center"
                     >
-                        <span>Открыть</span> <IBiBoxArrowUpRight />
+                        <span>Открыть</span>
+                        <IBiBoxArrowUpRight />
                     </BLink>
                 </BCol>
             </BRow>
@@ -296,6 +299,54 @@ const saveInvoice = handleSubmit(async (values) => {
                             {{ $t("EditClient.EditBillLines") }}
                         </span>
                     </BButton>
+                </BCol>
+            </BRow>
+            <BRow>
+                <BCol offset="4" class="d-flex flex-column">
+                    <Field
+                        name="isVisible"
+                        as="div"
+                        class="checkbox-block"
+                        :value="true"
+                        type="checkbox"
+                        v-slot="{ field, meta }"
+                    >
+                        <label class="mt-3 d-flex align-items-center gap-2">
+                            <input
+                                class="form-check-input"
+                                :class="{
+                                    'is-invalid': !meta.valid && meta.touched,
+                                }"
+                                type="checkbox"
+                                :value="true"
+                                v-bind="field"
+                            />
+                            <span> Виден ли акт клиенту </span>
+                        </label>
+                    </Field>
+                    <Field
+                        name="hasOriginal"
+                        as="div"
+                        class="checkbox-block"
+                        :value="true"
+                        type="checkbox"
+                        v-slot="{ field, meta }"
+                    >
+                        <label class="mt-3 d-flex align-items-center gap-2">
+                            <input
+                                class="form-check-input"
+                                :class="{
+                                    'is-invalid': !meta.valid && meta.touched,
+                                }"
+                                type="checkbox"
+                                :value="true"
+                                v-bind="field"
+                            />
+                            <span>
+                                {{ $t("Documents.HasOriginal") }}
+                            </span>
+                        </label>
+                    </Field>
                 </BCol>
             </BRow>
         </div>
@@ -330,21 +381,25 @@ const saveInvoice = handleSubmit(async (values) => {
     flex-direction: column;
     gap: 1rem;
 }
+
 @media (min-width: 500px) {
     .invoice-edit-item {
         min-width: 500px;
     }
 }
+
 #edit-invoice .modal-header h3 {
     text-align: center;
     width: 100%;
 }
+
 .invoice-document {
     display: grid;
     align-items: center;
     gap: 0.25rem;
     grid-template-columns: 1fr 1fr;
 }
+
 .invoice-edit-main {
     display: grid;
     grid-template-columns: 1fr;
@@ -354,20 +409,25 @@ const saveInvoice = handleSubmit(async (values) => {
 .invoice-document .badge {
     text-wrap: normal;
 }
+
 .invoice-document-type {
     font-size: 0.75rem;
 }
+
 .invoice-document .dropdown-toggle-split {
     width: 50px;
 }
+
 .invoice-document-link {
     border: 0;
     color: var(--link);
 }
+
 .invoice-document-link:hover {
     color: white;
     background-color: var(--link);
 }
+
 .invoice-document-link,
 .invoice-document-remove {
     padding-left: 0;
@@ -375,10 +435,12 @@ const saveInvoice = handleSubmit(async (values) => {
     grid-row-start: 3;
     margin-left: auto;
 }
+
 .invoice-document-link svg,
 .invoice-document-remove svg {
     min-width: 20px;
 }
+
 .invoice-document input[type="file"] {
     grid-row-start: 2;
     grid-column: 2 span;
@@ -389,17 +451,21 @@ const saveInvoice = handleSubmit(async (values) => {
     .invoice-document-remove {
         grid-row-start: auto;
     }
+
     .invoice-document input[type="file"] {
         grid-row-start: auto;
         grid-column: auto;
     }
+
     .invoice-edit-main {
         grid-template-columns: 1fr 1fr;
     }
+
     .invoice-document {
         grid-template-columns: 150px 1fr 1fr 26px 26px;
         gap: 1rem;
     }
+
     .invoice-edit-item {
         row-gap: 2rem;
     }

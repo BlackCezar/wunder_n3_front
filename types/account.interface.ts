@@ -41,6 +41,7 @@ export type CreateAccountPayload = Pick<
     | "externalRegion"
 > & {
     system: string;
+    contractId: number;
 };
 
 export type AccountTableRow = {

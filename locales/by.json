@@ -4,6 +4,8 @@
     },
     "login": {
         "Email": "E-mail",
+        "Role": "Роль",
+        "CreatedAt": "Дата создания",
         "Password": "Пароль",
         "Login": "Войти",
         "NotAMember": "Еще нет аккаунта?",
@@ -85,6 +87,7 @@
         "PivotTable": "Сводная таблица",
         "PivotReport": "Отчет сводной таблицы",
         "customerCandidates": "Потенциальные клиенты",
+        "Users": "Пользователи",
         "Rates": "Валюты",
         "generatePFToken": "Сгенерировать новый токен для PlanFix"
     },
@@ -192,9 +195,9 @@
         "MinSum": "Минимальная сумма к зачислению: %{variable} BYN без НДС",
         "Comission": "Агентская комиссия составляет: %{variable} BYN",
         "Discount": "Агентская скидка составляет: %{variable} BYN",
-        "YourSum": "Ваша сумма к зачислению на аккаунт без НДС: %{variable} BYN",
+        "YourSum": "Ваша сумма: %{variable} BYN",
         "SumWithoutVat": "Итого без НДС: %{variable} BYN",
-        "SumWithVat": "Сумма к оплате с НДС: %{variable} BYN",
+        "SumMinusVat": "Сумма без НДС: %{variable} BYN",
         "CurrencyEquivalents": "Что на сегодня составляет: %{amount}",
         "ChoseAccount": "Выберите аккаунт",
         "AccountDeleteConfirmation": "Вы действительно хотите удалить аккаунт?",

@@ -6,22 +6,48 @@ import type { TableItem } from "bootstrap-vue-next";
 export type ICustomerUser = {
     id: number;
     customer: ICustomer;
-    role: ICustomerRole.CUSTOMER;
+    role: IUserRole.CUSTOMER;
+    secret: string;
     email: string;
     contracts: IContract[];
 };
 export type IAdminUser = {
     id: number;
-    role: ICustomerRole.ADMIN;
+    role: IUserRole.ADMIN;
     email: string;
+    secret: string;
     contracts: [];
 };
 
-export type IUser = ICustomerUser | IAdminUser;
+export type ICustomerGroup = {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
+    companyName: string;
+    companyEmail: string;
+    departments: ICustomer[];
+};
 
-export const enum ICustomerRole {
+export type ICustomerGroupUser = {
+    id: number;
+    role: IUserRole.GROUP;
+    email: string;
+    secret: string;
+    group: ICustomerGroup | null;
+};
+
+export type IUser = ICustomerUser | IAdminUser | ICustomerGroupUser;
+
+export type IUserCreatePayload = Omit<
+    IUser,
+    "id" | "createdAt" | "updatedAt" | "contracts" | "customer"
+>;
+
+export enum IUserRole {
     CUSTOMER = "CUSTOMER",
     ADMIN = "ADMIN",
+    GROUP = "GROUP",
 }
 
 export interface ICustomer extends ICustomerCandidate {

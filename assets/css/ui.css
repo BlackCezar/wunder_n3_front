@@ -235,3 +235,7 @@ video {
 input:disabled {
     background-color: rgb(220 220 220 / 30%);
 }
+
+.modal-body {
+    padding: 0 0 0 0;
+}

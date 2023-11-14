@@ -110,11 +110,11 @@ function setValuesFromProps() {
                 );
                 const systemAccounts = account
                     ? [
-                          {
-                              id: account.id,
-                              sum: 0,
-                          },
-                      ]
+                        {
+                            id: account.id,
+                            sum: 0,
+                        },
+                    ]
                     : [];
 
                 return {
@@ -141,7 +141,15 @@ const billItemsNumber = computed(
 
 const processForm = handleSubmit(async (values) => {
     console.log("VALUES", values);
-    const activeList = values.topUpAccounts.filter((item) => item.isActive);
+    const activeList = values.topUpAccounts.filter((item) => item.isActive).map(line => {
+        return {
+            ...line,
+            accounts: line.accounts.map(acc => ({
+                ...acc,
+                name: accounts.value.find(a => a.id === acc.id)?.accountName ?? ''
+            }))
+        }
+    })
     if (!getActiveContract.value) {
         useNuxtApp().$toast.error("Активный договор не найден");
         return;
@@ -200,37 +208,20 @@ watch(
         <div class="top-up-tabs">
             <div class="top-up-tabs__wrapper">
                 <div class="top-up-tabs__items">
-                    <template
-                        v-for="(system, index) in enabledSystems"
-                        :key="system.id"
-                    >
-                        <button
-                            type="button"
-                            class="top-up-tab select-system-tab border-0"
-                            :class="{
-                                active:
-                                    selectedSystemForTopUp ===
-                                    system.systemName,
-                                disable: !hasActiveAccount(system.systemName),
-                            }"
-                            :disabled="!hasActiveAccount(system.systemName)"
-                            @click="selectSystemForTopUp(system.systemName)"
-                        >
-                            <img
-                                :src="systemsToImg.get(system.systemName)"
-                                :alt="system.systemName"
-                            />
-                            <div
-                                v-if="isActiveItem(index)"
-                                class="round-indicator-wrapper"
-                            >
-                                <div
-                                    class="round-indicator"
-                                    :class="{
-                                        green: isValidItem(index),
-                                        red: !isValidItem(index),
-                                    }"
-                                />
+                    <template v-for="(system, index) in enabledSystems" :key="system.id">
+                        <button type="button" class="top-up-tab select-system-tab border-0" :class="{
+                            active:
+                                selectedSystemForTopUp ===
+                                system.systemName,
+                            disable: !hasActiveAccount(system.systemName),
+                        }" :disabled="!hasActiveAccount(system.systemName)"
+                            @click="selectSystemForTopUp(system.systemName)">
+                            <img :src="systemsToImg.get(system.systemName)" :alt="system.systemName" />
+                            <div v-if="isActiveItem(index)" class="round-indicator-wrapper">
+                                <div class="round-indicator" :class="{
+                                    green: isValidItem(index),
+                                    red: !isValidItem(index),
+                                }" />
                             </div>
                         </button>
                     </template>
@@ -240,47 +231,23 @@ watch(
                         {{ $t("AccountManagement.NoActiveAccounts") }}
                     </div>
                     <div v-else>
-                        <template
-                            v-for="(system, index) in enabledSystems"
-                            :key="system.id"
-                        >
-                            <TopUpFormItem
-                                v-show="
-                                    system.systemName === selectedSystemForTopUp
-                                "
-                                :system="system"
-                                :index="index"
-                            />
+                        <template v-for="(system, index) in enabledSystems" :key="system.id">
+                            <TopUpFormItem v-show="system.systemName === selectedSystemForTopUp
+                                " :system="system" :index="index" />
                         </template>
 
-                        <Field
-                            name="publicAgree"
-                            as="div"
-                            class="checkbox-block"
-                            :value="true"
-                            type="checkbox"
-                            v-slot="{ field, meta }"
-                        >
+                        <Field name="publicAgree" as="div" class="checkbox-block" :value="true" type="checkbox"
+                            v-slot="{ field, meta }">
                             <label class="mt-3">
-                                <input
-                                    class="form-check-input"
-                                    :class="{
-                                        'is-invalid':
-                                            !meta.valid && meta.touched,
-                                    }"
-                                    type="checkbox"
-                                    :value="true"
-                                    v-bind="field"
-                                />
+                                <input class="form-check-input" :class="{
+                                    'is-invalid':
+                                        !meta.valid && meta.touched,
+                                }" type="checkbox" :value="true" v-bind="field" />
                                 <span>
                                     {{ $t(`registration.agreeWith`) }}
-                                    <a
-                                        class="a-link"
-                                        :href="globalSettings?.publicContract"
-                                        >{{
-                                            $t(`registration.publicContract`)
-                                        }}</a
-                                    >
+                                    <a class="a-link" :href="globalSettings?.publicContract">{{
+                                        $t(`registration.publicContract`)
+                                    }}</a>
                                 </span>
                             </label>
                         </Field>
@@ -294,12 +261,8 @@ watch(
             </div>
             <b-row class="h-100 m-0">
                 <b-col style="padding: 0 1px 0 0">
-                    <b-button
-                        type="submit"
-                        :disabled="isSubmitting || billItemsNumber === 0"
-                        class="m-0 w-100 h-100"
-                        variant="danger"
-                    >
+                    <b-button type="submit" :disabled="isSubmitting || billItemsNumber === 0" class="m-0 w-100 h-100"
+                        variant="danger">
                         <template v-if="isSubmitting">
                             {{ $t("AccountManagement.GenerateBill") }}
                             <b-spinner variant="light" class="ml-3" />
@@ -310,11 +273,7 @@ watch(
                     </b-button>
                 </b-col>
                 <b-col class="p-0">
-                    <b-button
-                        @click="cancel"
-                        class="m-0 w-100 h-100 cancel"
-                        variant="outline-danger"
-                    >
+                    <b-button @click="cancel" class="m-0 w-100 h-100 cancel" variant="outline-danger">
                         {{ $t("AccountManagement.Cansel") }}
                     </b-button>
                 </b-col>

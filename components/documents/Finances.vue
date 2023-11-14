@@ -136,11 +136,11 @@ const bills = computed(() => {
                 (item) => item.type === InvoiceDocumentType.SIGNED_BILL,
             )
                 ? invoice.invoiceDocument.find(
-                      (item) => item.type === InvoiceDocumentType.SIGNED_BILL,
-                  )
+                    (item) => item.type === InvoiceDocumentType.SIGNED_BILL,
+                )
                 : invoice.invoiceDocument.find(
-                      (item) => item.type === InvoiceDocumentType.BILL,
-                  );
+                    (item) => item.type === InvoiceDocumentType.BILL,
+                );
             return {
                 documentType: invoice.invoiceNumber,
                 documentDate: date.toLocaleDateString(),
@@ -217,26 +217,21 @@ const fields = markRaw([
 onMounted(() => {
     loadInvoices();
 });
+watch(() => props.filters, () => {
+    loadInvoices();
+}, {
+    deep: true,
+    immediate: true
+})
 </script>
 
 <template>
     <div class="finances">
         <div class="finances-table">
-            <DocumentsTableWrapper
-                :is-loading="isLoading"
-                :items="bills"
-                :fields="fields"
-            />
+            <DocumentsTableWrapper :is-loading="isLoading" :items="bills" :fields="fields" />
         </div>
-        <b-pagination
-            class="mt-3"
-            align="center"
-            v-model="page"
-            v-if="bills && bills.length"
-            :total-rows="totalInvoices"
-            :per-page="10"
-            aria-controls="my-table"
-        />
+        <b-pagination class="mt-3" align="center" v-model="page" v-if="bills && bills.length" :total-rows="totalInvoices"
+            :per-page="10" aria-controls="my-table" />
     </div>
 </template>
 

@@ -13,7 +13,7 @@ const isValid = computed(() => {
 
 <template>
     <Field
-        v-slot="{ field, errorMessage }"
+        v-slot="{ field, errorMessage, value, handleChange }"
         :name="name"
         type="checkbox"
         :value="true"
@@ -23,9 +23,8 @@ const isValid = computed(() => {
                 :id="name"
                 class="form-checkbox"
                 :state="isValid"
-                :value="true"
-                :name="name"
-                v-bind="field"
+                :model-value="value"
+                @update:model-value="handleChange"
             >
                 <slot />
             </b-form-checkbox>

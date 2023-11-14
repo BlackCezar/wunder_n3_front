@@ -4,7 +4,9 @@ import { useRegionStore } from "~/store/regions";
 import { useCustomerStore } from "~/store/customers";
 import { useAccountStore } from "~/store/accounts";
 import { useListen } from "~/composables/useEventBus";
-import type { ISystem } from "~/types/region.interface";
+import { SystemName, type ISystem } from "~/types/region.interface";
+import { CustomerEditTabs } from "~/types/common";
+import AdminCustomersClientTable from "~/components/admin/customers/tables/ClientTable.vue";
 
 const customerStore = useCustomerStore();
 const accountStore = useAccountStore();
@@ -57,7 +59,6 @@ const editClientModal = ref(false);
 const editAccountModal = ref(false);
 
 useListen("modal:edit-documents", (ev) => {
-    console.log("ev", ev);
     editDocumentsModal.value = !editDocumentsModal.value;
 });
 useListen("modal:activate-account", (event) => {
@@ -73,6 +74,7 @@ useListen("modal:edit-account", (payload) => {
     const account = accountStore.accounts.find(
         (acc) => acc.id === payload.accountId,
     );
+    console.log("found account", account);
     accountStore.setForm({
         id: payload.accountId,
         customerId: payload.customerId,
@@ -83,15 +85,35 @@ useListen("modal:edit-account", (payload) => {
 useListen("modal-close:edit-account", () => {
     editAccountModal.value = false;
 });
-useListen("modal-close:edit-client", () => {
+useListen("modal-close:edit-client", (customer) => {
     editClientModal.value = false;
+    if (customer?.contracts?.length === 0) {
+        editContractsModal.value = true;
+    }
 });
 useListen("modal-close:edit-contracts", () => {
     editContractsModal.value = false;
 });
 
-onMounted(() => {
-    if (route.query["editClient"]) {
+watchEffect(() => {
+    // Effect for open account edit modal
+    if (
+        !accountStore.isLoading &&
+        accountStore.accounts.length &&
+        route.query["account"] &&
+        route.query["customer"]
+    ) {
+        useEvent("modal:edit-account", {
+            accountId: Number(route.query.account),
+            customerId: Number(route.query.customer),
+            system: SystemName.GoogleAds,
+        });
+        router.replace({ query: null });
+    }
+});
+
+watchEffect(() => {
+    if (route.query["editClient"] && clients.value?.length) {
         const customer = clients.value?.find(
             (c) => c.id === Number(route.query["editClient"]),
         );
@@ -103,8 +125,10 @@ onMounted(() => {
                 regData4: 3,
                 accountData: 4,
             };
+            const tabsIndex = (route.query["tab"]?.toString() ??
+                "regData") as keyof typeof tabs;
             customerStore.setActiveCustomer({
-                tab: tabs[route.query["tab"] ?? "regData"],
+                tab: tabs[tabsIndex],
                 id: customer.id,
                 client: customer,
             });
@@ -113,6 +137,26 @@ onMounted(() => {
         }
     }
 });
+
+watchEffect(() => {
+    if (
+        route.query["customer"] &&
+        clients.value?.length &&
+        route.query["invoice"]
+    ) {
+        const client = clients.value.find(
+            (c) => c.id === Number(route.query.customer),
+        );
+        if (!client) return;
+        customerStore.setActiveCustomer({
+            id: Number(route.query.customer),
+            client,
+            tab: CustomerEditTabs.Invoices,
+        });
+        editDocumentsModal.value = !editDocumentsModal.value;
+    }
+});
+
 definePageMeta({
     middleware: ["admin"],
 });

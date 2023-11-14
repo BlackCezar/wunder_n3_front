@@ -75,12 +75,16 @@ import { useContractStore } from "@/store/contracts";
 import SystemsTab from "./tabs/SystemsTab.vue";
 import { PayType } from "@/types/region.interface";
 import moment from "moment";
+import { useRegionStore } from "~/store/regions";
+import { storeToRefs } from "pinia";
 
 const props = defineProps<{
     contract: IContract;
 }>();
 
 const { t } = useI18n();
+const regionStore = useRegionStore();
+const { globalSettings } = storeToRefs(regionStore);
 
 const contractStore = useContractStore();
 
@@ -89,8 +93,8 @@ const schema = Yup.object().shape({
     isActive: Yup.bool().required(t("Validation.required")),
     contractNumber: Yup.string().optional().nullable(),
     contractService: Yup.string().optional(),
-    startDate: Yup.date().required(t("Validation.required")),
-    expireDate: Yup.date().optional().nullable(),
+    startDate: Yup.string().min(10).required(t("Validation.required")),
+    expireDate: Yup.string().optional().nullable(),
     settings: Yup.object().shape({
         ratesAdds: Yup.number().optional(),
         freeHours: Yup.number().optional(),
@@ -143,13 +147,19 @@ const {
             payType: PayType.PREPAY,
             allowTransfer: true,
             isEDNActive: false,
+            freeHours: globalSettings.value?.freeHours,
+            hourCost: globalSettings.value?.hourCost,
+            freeTimes: globalSettings.value?.freeTimes,
+            projectId: globalSettings.value?.projectId,
+            ratesAdds: globalSettings.value?.ratesAdds,
+            vat: globalSettings.value?.vat,
         },
         systemSettings: [],
         contractType: ContractType.STANDARD,
         isActive: false,
         contractService: "Зачисление средств",
         startDate: "",
-        expireDate: "",
+        expireDate: null,
         contractNumber: "",
     },
 });
@@ -158,12 +168,12 @@ watch(
     () => props.contract,
     () => {
         setValues(props.contract);
-        if (props.contract.startDate) {
+        if (props.contract.startDate?.toString().trim()) {
             console.log("moment payload", props.contract.startDate);
             const date = moment(props.contract.startDate).format("YYYY-MM-DD");
             setFieldValue("startDate", date);
         }
-        if (props.contract.expireDate) {
+        if (props.contract.expireDate?.toString().trim()) {
             console.log("moment payload expireDate", props.contract.expireDate);
             const date = moment(props.contract.expireDate).format("YYYY-MM-DD");
             setFieldValue("expireDate", date);
@@ -212,24 +222,29 @@ const saveContract = handleSubmit(async (values) => {
     .admin-contract-modal .documents-row {
         flex-direction: column;
     }
+
     .admin-contract-modal .documents-row > .col-9 {
         max-width: unset;
     }
+
     .admin-contract-modal .documents-row .row:last-child .col-5 {
         max-width: unset;
         flex: 1;
         padding-right: calc(1rem + 15px);
         padding-left: 20px;
     }
+
     .admin-contract-modal .documents-row .row.mt-2.mb-2 {
         width: 100%;
         margin: 0;
         display: grid;
         grid-template-columns: auto 1fr 1fr;
     }
+
     .admin-contract-modal .system-settings-container {
         grid-template-columns: 1fr;
     }
+
     .admin-contract-modal
         .system-settings-container
         .system-setting
@@ -237,6 +252,7 @@ const saveContract = handleSubmit(async (values) => {
         display: grid;
         padding-left: 3rem;
     }
+
     .admin-contract-modal .system-settings-container .system-settings-amount {
         display: grid;
         grid-gap: 10px;
@@ -262,6 +278,7 @@ const saveContract = handleSubmit(async (values) => {
     width: 100%;
     height: 59px;
 }
+
 .modal-btn .btn-content {
     display: flex;
     align-items: center;

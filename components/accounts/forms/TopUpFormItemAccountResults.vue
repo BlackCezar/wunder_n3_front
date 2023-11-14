@@ -32,9 +32,12 @@ const activeSystemSettings = computed(
         null,
 );
 
-const getTotalWithVat = computed(() => {
+const getTotalWithOutVat = computed(() => {
     if (!getSettings.value) return 0;
-    return (sum.value * (100 + getSettings.value.vat)) / 100;
+    return (
+        (sum.value * (100 - getSettings.value.vat)) /
+        (100 + getSettings.value.vat)
+    );
 });
 
 const getSumComission = computed(() => {
@@ -115,8 +118,8 @@ const totalCurrencyEquivalent = computed(() => {
     <div class="mt-3" v-if="value.isActive">
         <div class="gray" v-if="isValidAmount">
             {{
-                $t("AccountManagement.SumWithVat", {
-                    variable: formatter.format(getTotalWithVat),
+                $t("AccountManagement.SumMinusVat", {
+                    variable: formatter.format(getTotalWithOutVat),
                 })
             }}
         </div>

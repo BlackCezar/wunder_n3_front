@@ -13,7 +13,7 @@
                 <template #cell(actions)="data">
                     <b-button
                         variant="secondary"
-                        @click="
+                        @click.prevent="
                         useEvent('modal:show-customer-candidate', data.item)
                         "
                         size="sm"

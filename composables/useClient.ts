@@ -2,9 +2,20 @@ import type { $Fetch, FetchRequest, FetchOptions } from "ofetch";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "~/store/auth";
 import type { Tokens } from "~/types/auth.interface";
+
+class BadRequestError extends Error {
+    public readonly payload: any;
+
+    constructor(message: string, payload: any) {
+        super(message)
+        this.payload = payload
+    }
+}
+
 export const useClient = () => {
     const authStore = useAuthStore();
     const { tokens } = storeToRefs(authStore);
+
 
     const apiClient = $fetch.create({
         baseURL: "/api",
@@ -29,6 +40,9 @@ export const useClient = () => {
                 });
                 authStore.setTokens(result);
             }
+            // if (context.response.status === 400) {
+            //     context.error = new BadRequestError(context.response._data.message.toString(), context.response._data)
+            // }
         },
         retry: 2,
         retryStatusCodes: [401, 403],
@@ -38,7 +52,7 @@ export const useClient = () => {
         return apiClient(url, {
             body,
             method: "POST",
-        });
+        })
     };
     apiClient.put = async (url, body) => {
         return apiClient(url, {

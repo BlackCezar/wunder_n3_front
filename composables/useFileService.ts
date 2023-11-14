@@ -1,4 +1,4 @@
-import { IInvoiceDocument } from "~/types/invoice.interface";
+import type { IInvoiceDocument } from "~/types/invoice.interface";
 
 type DocumentTypes = "contracts" | "sign" | "bills" | "acts" | "documents";
 export const useFileService = () => {
@@ -59,7 +59,10 @@ export const useFileService = () => {
         fm.append("name", data.name);
         fm.append("invoiceId", data.invoiceId.toString());
 
-        return apiClient.post("/invoices/documents/upload", fm);
+        return apiClient.post(
+            "/invoices/documents/upload?type=" + data.type,
+            fm,
+        );
     };
 
     const downloadFile = async (filename: string, type: DocumentTypes) => {

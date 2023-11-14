@@ -17,10 +17,10 @@ export default defineNuxtConfig({
         tsConfig: {
             include: ["../store/*.ts"],
             compilerOptions: {
-                lib: ["dom"],
+                lib: ["dom", "esnext"],
                 types: [
+                    "@types/node",
                     "~/types/*.ts",
-                    "bun-types",
                     "@nuxt/types",
                     "vue3-toastify/global",
                     "unplugin-icons/types/vue",
