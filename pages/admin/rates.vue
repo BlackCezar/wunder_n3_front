@@ -1,6 +1,14 @@
 <template>
     <div>
-        <h3 class="page-header-3">{{ $t("Rates.Rates") }}</h3>
+        <div class="d-flex justify-content-between">
+            <h3 class="page-header-3">{{ $t("Rates.Rates") }}</h3>
+            <b-button
+                @click="fetchRates"
+                class="w-auto mb-auto"
+                variant="primary"
+                >Обновить вручную</b-button
+            >
+        </div>
         <div class="rates__content">
             <AdminRatesList :is-loading="isLoading" :list="normalizedItems" />
         </div>
@@ -19,10 +27,15 @@
 <script setup lang="ts">
 import { useRatesStore } from "@/store/rates";
 import { storeToRefs } from "pinia";
+import { toast } from "vue3-toastify";
 
 const ratesStore = useRatesStore();
 const { isLoading, filters, list, totalItems } = storeToRefs(ratesStore);
 
+const fetchRates = async () => {
+    await ratesStore.fetchRates();
+    toast.success("Успешно");
+};
 watch(
     filters,
     () => {
@@ -30,7 +43,7 @@ watch(
     },
     {
         deep: true,
-    }
+    },
 );
 
 onMounted(() => {
