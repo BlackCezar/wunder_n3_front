@@ -33,6 +33,16 @@ export const useRatesStore = defineStore("rates", {
         },
     }),
     actions: {
+        async fetchRates() {
+            try {
+                const { apiClient } = useClient();
+                await apiClient.get("/rates/fetch");
+            } catch (e: any) {
+                if (process.server) return;
+                console.error(e);
+                useNuxtApp().$toast.error(e.message);
+            }
+        },
         async getList() {
             try {
                 const { apiClient } = useClient();
