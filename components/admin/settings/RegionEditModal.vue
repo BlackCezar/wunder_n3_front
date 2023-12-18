@@ -49,6 +49,8 @@ const schema = yup.object({
             isEDNActive: yup.boolean().optional(),
             allowTransfer: yup.boolean().optional(),
             payType: yup.string().required(),
+            complaintForm: yup.boolean().optional(),
+            complaintEmail: yup.string().required().email()
         }),
     ),
     systemSettings: yup
@@ -115,6 +117,8 @@ const {
                 allowTransfer: false,
                 payType: PayType.PREPAY,
                 balanceUpdateDelay: 0,
+                complaintForm: false,
+                complaintEmail: ''
             },
         ],
         systemSettings: [],
@@ -171,64 +175,29 @@ const submitSettingsUpdate = handleSubmit(async (values) => {
     <div class="settings-modal">
         <b-form @submit.prevent="submitSettingsUpdate">
             <b-tabs content-class="p-4 w-100" fill nav-class="tabs-header">
-                <b-tab
-                    :active="activeTab === 'settings'"
-                    :title="$t('Settings.SettingsTab')"
-                    active-tab-class="active"
-                    title-item-class="top-up-tab"
-                >
+                <b-tab :active="activeTab === 'settings'" :title="$t('Settings.SettingsTab')" active-tab-class="active"
+                    title-item-class="top-up-tab">
                     <SettingsTab :settings="settingsField" />
                 </b-tab>
-                <b-tab
-                    :active="activeTab === 'systems'"
-                    :title="$t('Settings.SystemsTab')"
-                    active-tab-class="active"
-                    title-item-class="top-up-tab"
-                >
-                    <SystemsTab
-                        :list="values.systemSettings"
-                        :reset-lines="resetField"
-                    />
+                <b-tab :active="activeTab === 'systems'" :title="$t('Settings.SystemsTab')" active-tab-class="active"
+                    title-item-class="top-up-tab">
+                    <SystemsTab :list="values.systemSettings" :reset-lines="resetField" />
                 </b-tab>
-                <b-tab
-                    :active="activeTab === 'contacts'"
-                    :title="$t('Settings.ContactsTab')"
-                    active-tab-class="active"
-                    title-item-class="top-up-tab"
-                >
+                <b-tab :active="activeTab === 'contacts'" :title="$t('Settings.ContactsTab')" active-tab-class="active"
+                    title-item-class="top-up-tab">
                     <ContactsTab />
                 </b-tab>
-                <b-tab
-                    :active="activeTab === 'sign'"
-                    :title="$t('Settings.SignTab')"
-                    active-tab-class="active"
-                    title-item-class="top-up-tab"
-                >
-                    <SignTab
-                        v-if="region"
-                        :region-id="region.id"
-                        :sign="region.sign"
-                        :sign-value="values.sign"
-                    />
+                <b-tab :active="activeTab === 'sign'" :title="$t('Settings.SignTab')" active-tab-class="active"
+                    title-item-class="top-up-tab">
+                    <SignTab v-if="region" :region-id="region.id" :sign="region.sign" :sign-value="values.sign" />
                 </b-tab>
             </b-tabs>
-            <b-button
-                class="modal-close"
-                variant="outline-danger"
-                @click="useEvent('modal-close:edit-region')"
-            >
+            <b-button class="modal-close" variant="outline-danger" @click="useEvent('modal-close:edit-region')">
                 {{ $t("common.cancel") }}
             </b-button>
 
-            <b-button
-                :disabled="isSubmitting"
-                block
-                class="general-button mt-3"
-                type="submit"
-                variant="danger"
-            >
-                <template v-if="isSubmitting"
-                    >{{ $t("Settings.Save") }}
+            <b-button :disabled="isSubmitting" block class="general-button mt-3" type="submit" variant="danger">
+                <template v-if="isSubmitting">{{ $t("Settings.Save") }}
                     <b-spinner variant="light" class="ms-3" />
                 </template>
                 <template v-else>{{ $t("Settings.Save") }}</template>
@@ -252,9 +221,11 @@ const submitSettingsUpdate = handleSubmit(async (values) => {
     align-items: center;
     flex-wrap: nowrap;
 }
+
 .tabs-header .top-up-tab {
     margin-top: 0;
 }
+
 .tabs-header .top-up-tab button {
     height: 100%;
     border-radius: 0;
@@ -273,26 +244,31 @@ const submitSettingsUpdate = handleSubmit(async (values) => {
     grid-template-columns: repeat(2, auto);
     grid-gap: 24px;
 }
+
 .settings-rows .custom-row {
     display: flex;
     flex-direction: row-reverse;
 }
+
 @media (max-width: 992px) {
     .settings-rows {
         grid-template-columns: 1fr;
     }
 }
+
 @media (max-width: 768px) {
-    .settings-rows > div {
+    .settings-rows>div {
         padding-left: 0;
     }
-    .settings-rows > div label {
+
+    .settings-rows>div label {
         width: 50%;
         padding-right: 13px;
         text-align: right;
     }
-    .settings-rows > div label::after,
-    .settings-rows > div label::before {
+
+    .settings-rows>div label::after,
+    .settings-rows>div label::before {
         left: calc(100% + 15px);
     }
 }

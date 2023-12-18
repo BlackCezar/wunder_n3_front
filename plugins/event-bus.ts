@@ -50,6 +50,8 @@ export type ApplicationEvents = {
     // new objects
     "new-account": IAccount;
     'delete:user': number;
+    'delete:discount': number;
+    'delete:customer-candidate': number;
 };
 
 export default defineNuxtPlugin(() => {

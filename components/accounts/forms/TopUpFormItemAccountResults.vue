@@ -34,10 +34,9 @@ const activeSystemSettings = computed(
 
 const getTotalWithOutVat = computed(() => {
     if (!getSettings.value) return 0;
-    return (
-        (sum.value * (100 - getSettings.value.vat)) /
-        (100 + getSettings.value.vat)
-    );
+    const vatAmount =
+        (sum.value * getSettings.value.vat) / (100 + getSettings.value.vat);
+    return sum.value - vatAmount;
 });
 
 const getSumComission = computed(() => {
@@ -67,7 +66,9 @@ const getSumDiscount = computed(() => {
 });
 
 const total = computed(() => {
-    return sum.value - getSumComission.value + getSumDiscount.value;
+    return (
+        getTotalWithOutVat.value - getSumComission.value + getSumDiscount.value
+    );
 });
 
 const totalCurrencyEquivalent = computed(() => {

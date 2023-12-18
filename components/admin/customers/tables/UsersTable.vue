@@ -34,6 +34,11 @@ const fields = markRaw([
         sortable: true,
     },
     {
+        key: "customer.customerGroup.companyName",
+        label: "Род. группа",
+        sortable: true,
+    },
+    {
         key: "actions",
         label: t("AccountManagement.AdminActions"),
         sortable: false,
@@ -55,13 +60,7 @@ const { handleSubmit, values, setValues, handleReset } = useForm<IUser>({
         email: yup.string().email().required(),
         secret: yup.string().required(),
         role: yup.string().required(),
-        group: yup
-            .object()
-            .shape({
-                isActive: yup.boolean().nonNullable(),
-                companyName: yup.string().required(),
-            })
-            .nullable(),
+        group: yup.mixed().nullable(),
     }),
     initialValues: {
         role: IUserRole.CUSTOMER,
@@ -71,8 +70,13 @@ const { handleSubmit, values, setValues, handleReset } = useForm<IUser>({
 });
 
 const onEdit = (user: IUser) => {
+    console.log("on edit", user);
     showEditModal.value = true;
     setValues(user);
+
+    nextTick(() => {
+        setValues(user);
+    });
 };
 
 const onSave = handleSubmit(async (values) => {
@@ -94,7 +98,9 @@ const onSave = handleSubmit(async (values) => {
                         ? "Администратор"
                         : data.value === IUserRole.GROUP
                         ? "Группа"
-                        : "Пользователь"
+                        : data.item.secret
+                        ? "Пользователь"
+                        : "Кандидат"
                 }}</b-badge>
             </template>
             <template #cell(createdAt)="data">

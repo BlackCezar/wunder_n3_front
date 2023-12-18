@@ -1,35 +1,21 @@
 <template>
     <div>
-        <div
-            class="page-header-3 align-items-center d-flex justify-content-between"
-        >
-            <h3>
+        <div class=" align-items-center d-flex justify-content-between">
+            <h3 class="page-header-3">
                 {{ $t("Navigation.Users").toUpperCase() }}
             </h3>
-            <b-button @click="openCreateUserModal" class="w-auto" variant="dark"
-                ><IBiPlus /> <span>Добавить пользователя</span></b-button
-            >
+            <b-button @click="openCreateUserModal" class="w-auto" variant="dark">
+                <IBiPlus /> <span>Добавить пользователя</span>
+            </b-button>
         </div>
 
         <div>
             <UsersTable :is-loading="busy" :list="usersList" />
-            <b-pagination
-                v-if="users"
-                class="mt-3"
-                :align="'center' as AlignmentJustifyContent"
-                :total-rows="usersTotal"
-                :model-value="Number(params.page)"
-                @update:model-value="params.page = $event"
-                :per-page="10"
-                aria-controls="users-table"
-            />
+            <b-pagination v-if="users" class="mt-3" :align="'center' as AlignmentJustifyContent" :total-rows="usersTotal"
+                :model-value="Number(params.page)" @update:model-value="params.page = $event" :per-page="10"
+                aria-controls="users-table" />
         </div>
-        <b-modal
-            hide-footer
-            hide-header
-            id="create-user"
-            v-model="isShowCreateUser"
-        >
+        <b-modal hide-footer hide-header id="create-user" v-model="isShowCreateUser">
             <CreateUserModal />
         </b-modal>
     </div>

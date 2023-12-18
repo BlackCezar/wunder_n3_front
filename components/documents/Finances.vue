@@ -55,7 +55,11 @@ const getSumDiscount = (
     return 0;
 };
 
-const getEnrolledTable = (lines: IInvoiceLine[], bill: IInvoice) => {
+const getEnrolledTable = (
+    lines: IInvoiceLine[],
+    bill: IInvoice,
+    nds: number,
+) => {
     const enrolledTable: { items: any[]; fields: any[] } = {
         items: [],
         fields: [
@@ -86,7 +90,7 @@ const getEnrolledTable = (lines: IInvoiceLine[], bill: IInvoice) => {
         for (const account of line.accounts) {
             const commission = getSumCommission(system.lines, account.sum);
             const discount = getSumDiscount(system.lines, account.sum);
-            let sum = account.sum - commission + discount;
+            let sum = account.sum - nds - commission + discount;
             let currency = regionCurrency.value;
 
             if (bill.rates) {
@@ -125,22 +129,27 @@ const bills = computed(() => {
             if (!contract) return {};
 
             const date = new Date(invoice.createdAt);
-            const lines = getEnrolledTable(invoice.lines, invoice);
             let amount = invoice.lines.reduce(
                 (acc, next) =>
                     (acc += next.accounts.reduce((a, ac) => (a += ac.sum), 0)),
                 0,
             );
-            amount += (amount * contract.settings.vat) / 100;
+            const nds =
+                (amount * contract.settings.vat) / 100 + contract.settings.vat;
+
+            const lines = getEnrolledTable(invoice.lines, invoice, nds);
+
             const document = invoice.invoiceDocument.find(
                 (item) => item.type === InvoiceDocumentType.SIGNED_BILL,
             )
                 ? invoice.invoiceDocument.find(
-                    (item) => item.type === InvoiceDocumentType.SIGNED_BILL,
-                )
+                      (item) => item.type === InvoiceDocumentType.SIGNED_BILL,
+                  )
                 : invoice.invoiceDocument.find(
-                    (item) => item.type === InvoiceDocumentType.BILL,
-                );
+                      (item) => item.type === InvoiceDocumentType.BILL,
+                  );
+
+            console.log("document", document);
             return {
                 documentType: invoice.invoiceNumber,
                 documentDate: date.toLocaleDateString(),
@@ -217,21 +226,36 @@ const fields = markRaw([
 onMounted(() => {
     loadInvoices();
 });
-watch(() => props.filters, () => {
-    loadInvoices();
-}, {
-    deep: true,
-    immediate: true
-})
+watch(
+    () => props.filters,
+    () => {
+        loadInvoices();
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 </script>
 
 <template>
     <div class="finances">
         <div class="finances-table">
-            <DocumentsTableWrapper :is-loading="isLoading" :items="bills" :fields="fields" />
+            <DocumentsTableWrapper
+                :is-loading="isLoading"
+                :items="bills"
+                :fields="fields"
+            />
         </div>
-        <b-pagination class="mt-3" align="center" v-model="page" v-if="bills && bills.length" :total-rows="totalInvoices"
-            :per-page="10" aria-controls="my-table" />
+        <b-pagination
+            class="mt-3"
+            align="center"
+            v-model="page"
+            v-if="bills && bills.length"
+            :total-rows="totalInvoices"
+            :per-page="10"
+            aria-controls="my-table"
+        />
     </div>
 </template>
 

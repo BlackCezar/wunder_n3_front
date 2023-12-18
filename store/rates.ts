@@ -43,6 +43,19 @@ export const useRatesStore = defineStore("rates", {
                 useNuxtApp().$toast.error(e.message);
             }
         },
+        async addRecord(data: any) {
+            try {
+                const { apiClient } = useClient();
+                const result = await apiClient.post("/rates", data);
+                console.log('[addRecord] result', result)
+                this.list.push(result)
+                this.totalItems++;
+            } catch (e: any) {
+                if (process.server) return;
+                console.error(e);
+                useNuxtApp().$toast.error(e.message);
+            }
+        },
         async getList() {
             try {
                 const { apiClient } = useClient();

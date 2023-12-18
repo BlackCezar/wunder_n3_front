@@ -1,63 +1,33 @@
 <template>
     <form class="admin-contract-modal" @submit.prevent="saveContract">
         <b-tabs content-class="p-4 w-100" fill nav-class="tabs-header">
-            <b-tab
-                :title="
-                    contract.id
-                        ? $t('EditClient.EditContract')
-                        : $t('EditClient.NewContract')
-                "
-                active-tab-class="active"
-                title-item-class="top-up-tab"
-            >
+            <b-tab :title="contract.id
+                ? $t('EditClient.EditContract')
+                : $t('EditClient.NewContract')
+                " active-tab-class="active" title-item-class="top-up-tab">
                 <ContractTab :contract-type="values.contractType" />
             </b-tab>
-            <b-tab
-                :title="$t('Documents.Documents')"
-                active-tab-class="active"
-                title-item-class="top-up-tab"
-            >
-                <DocumentsTab
-                    :contract="contract"
-                    :contract-type="values.contractType"
-                />
+            <b-tab :title="$t('Documents.Documents')" active-tab-class="active" title-item-class="top-up-tab">
+                <DocumentsTab :contract="contract" :contract-type="values.contractType" />
             </b-tab>
-            <b-tab
-                :title="$t('EditClient.Settings')"
-                active-tab-class="active"
-                title-item-class="top-up-tab"
-            >
+            <b-tab :title="$t('EditClient.Settings')" active-tab-class="active" title-item-class="top-up-tab">
                 <SettingsTab :contract-type="values.contractType" />
             </b-tab>
-            <b-tab
-                :title="$t('EditClient.Systems')"
-                active-tab-class="active"
-                title-item-class="top-up-tab"
-            >
-                <SystemsTab
-                    :contract="contract"
-                    :contract-type="values.contractType"
-                />
+            <b-tab :title="$t('EditClient.Systems')" active-tab-class="active" title-item-class="top-up-tab">
+                <SystemsTab :contract="contract" :contract-type="values.contractType" />
+            </b-tab>
+            <b-tab title="Накопительная скидка" active-tab-class="active" title-item-class="top-up-tab">
+                <DiscountsTab :contract="contract" />
             </b-tab>
         </b-tabs>
-        <b-button
-            class="modal-close"
-            variant="outline-danger"
-            @click="useEvent('modal-close:edit-contract')"
-        >
+        <b-button class="modal-close" variant="outline-danger" @click="useEvent('modal-close:edit-contract')">
             {{ $t("common.cancel") }}
         </b-button>
-        <b-button
-            :disabled="isSubmitting"
-            class="modal-btn"
-            type="submit"
-            variant="danger"
-            @click="saveContract"
-        >
+        <b-button :disabled="isSubmitting" class="modal-btn" type="submit" variant="danger" @click="saveContract">
             {{
                 contract.id
-                    ? $t("AccountManagement.Save")
-                    : $t("EditClient.AddContract")
+                ? $t("AccountManagement.Save")
+                : $t("EditClient.AddContract")
             }}
             <b-spinner v-if="isSubmitting" class="ms-3" variant="info" />
         </b-button>
@@ -71,6 +41,7 @@ import * as Yup from "yup";
 import ContractTab from "./tabs/ContractTab.vue";
 import DocumentsTab from "./tabs/DocumentsTab.vue";
 import SettingsTab from "./tabs/SettingsTab.vue";
+import DiscountsTab from './tabs/DiscountsTab.vue';
 import { useContractStore } from "@/store/contracts";
 import SystemsTab from "./tabs/SystemsTab.vue";
 import { PayType } from "@/types/region.interface";
@@ -223,7 +194,7 @@ const saveContract = handleSubmit(async (values) => {
         flex-direction: column;
     }
 
-    .admin-contract-modal .documents-row > .col-9 {
+    .admin-contract-modal .documents-row>.col-9 {
         max-width: unset;
     }
 
@@ -245,10 +216,7 @@ const saveContract = handleSubmit(async (values) => {
         grid-template-columns: 1fr;
     }
 
-    .admin-contract-modal
-        .system-settings-container
-        .system-setting
-        .custom-switch {
+    .admin-contract-modal .system-settings-container .system-setting .custom-switch {
         display: grid;
         padding-left: 3rem;
     }

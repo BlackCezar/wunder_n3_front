@@ -1,10 +1,8 @@
 <template>
-    <div class="admin-customer-contracts-list yyy">
+    <div class="admin-customer-contracts-list">
         <b-list-group v-if="contracts && contracts.length">
             <template v-for="contract in contracts" :key="contract.id">
-                <b-list-group-item
-                    class="d-flex justify-content-between align-items-center"
-                >
+                <b-list-group-item class="d-flex justify-content-between align-items-center">
                     <AdminContractsItem :contract="contract" />
                 </b-list-group-item>
             </template>

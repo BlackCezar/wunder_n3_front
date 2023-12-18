@@ -2,35 +2,26 @@
     <div class="float-btns">
         <KnowledgePseudoChat />
         <div class="float-btns-wrapper" v-if="globalSettings">
-            <div class="float-btns-btn" v-if="globalSettings.telegramLink">
-                <a
-                    :href="globalSettings.telegramLink"
-                    class="float-btns-tl"
-                    rel="nofollow"
-                    target="_blank"
-                >
+            <div class="float-btns-btn" v-if="globalSettings?.telegramLink">
+                <a :href="globalSettings.telegramLink" class="float-btns-tl" rel="nofollow" target="_blank">
                     <iconTelegram />
                 </a>
             </div>
-            <div class="float-btns-btn" v-if="globalSettings.telPhone">
+            <div class="float-btns-btn" v-if="globalSettings?.telPhone">
                 <a :href="`tel:${globalSettings.telPhone}`" target="_blank">
                     <PhoneIcon />
                 </a>
             </div>
-            <div class="float-btns-btn" v-if="globalSettings.whatappPhone">
-                <a
-                    :href="`https://api.whatsapp.com/send?phone=${
-                        globalSettings.whatappPhone
-                    }&text=${
-                        globalSettings.whatappPhone
-                            ? encodeURIComponent(globalSettings.whatappPhone)
-                            : ''
-                    }`"
-                    target="_blank"
-                >
+            <div class="float-btns-btn" v-if="globalSettings?.whatappPhone">
+                <a :href="`https://api.whatsapp.com/send?phone=${globalSettings.whatappPhone
+                    }&text=${globalSettings.whatappPhone
+                        ? encodeURIComponent(globalSettings.whatappPhone)
+                        : ''
+                    }`" target="_blank">
                     <iconWhatsapp />
                 </a>
             </div>
+            <OtherComplaintForm v-if=globalSettings?.complaintForm />
         </div>
     </div>
 </template>
@@ -55,6 +46,7 @@ const { globalSettings } = storeToRefs(regionStore);
     pointer-events: none;
     font-size: 0;
 }
+
 .float-btns-wrapper {
     width: fit-content;
     display: grid;
@@ -63,30 +55,37 @@ const { globalSettings } = storeToRefs(regionStore);
     margin-left: auto;
     grid-template-rows: 50px;
 }
-.float-btns > * {
+
+.float-btns>* {
     text-align: left;
 }
+
 .float-btns-btn {
     display: block;
     width: 100%;
     max-width: 50px;
     pointer-events: initial;
 }
+
 .float-btns-btn a {
     display: block;
     width: 100%;
     height: 100%;
 }
+
 .float-btns-btn svg image {
     width: 100%;
     height: 100%;
 }
+
 .float-btns-tl {
     transition: opacity 0.1s;
 }
+
 .float-btns-tl:hover {
     opacity: 0.9;
 }
+
 @media (max-width: 599px) {
     .float-btns {
         right: 15px;

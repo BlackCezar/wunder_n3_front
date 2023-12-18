@@ -4,6 +4,7 @@ import { useAccountStore } from "~/store/accounts";
 import { useCustomerStore } from "~/store/customers";
 import { useRegionStore } from "~/store/regions";
 import { ISystem } from "~/types/region.interface";
+import AdminCustomersClientTable from "~/components/admin/customers/tables/ClientTable.vue";
 
 const customerStore = useCustomerStore();
 const { list: clients, filters, listTotal } = storeToRefs(customerStore);
@@ -53,6 +54,7 @@ accountStore.getList();
             v-if="clients && clients.length"
             :clients="clients"
             :systems="systems"
+            group-view
             :clients-to-accounts="clientsToAccounts"
         />
         <div v-else class="no-clients">

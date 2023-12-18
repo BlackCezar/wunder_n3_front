@@ -10,6 +10,7 @@ export default defineNuxtConfig({
         public: {
             gtmId: process.env.GTM_ID,
             gtmEnabled: false,
+            defaultLocale: process.env.DEFAULT_LOCALE,
         },
     },
     typescript: {

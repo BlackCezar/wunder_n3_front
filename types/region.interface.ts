@@ -23,6 +23,8 @@ export interface IRegionSettings extends ISettings {
     balanceUpdateDelay: number;
     publicContract: string;
     personalAgree: string;
+
+    complaintForm?: boolean;
 }
 
 export interface ICustomerSettings extends ISettings {

@@ -21,3 +21,10 @@ export const enum CustomerEditTabs {
     Contracts,
     Invoices,
 }
+
+
+export type IDiscountItem = {
+    amount: number;
+    period: 'week' | 'month' | 'year';
+    discount: number;
+}

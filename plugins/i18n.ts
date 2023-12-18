@@ -4,16 +4,20 @@ import by from "../locales/by.json";
 import kz from "../locales/kz.json";
 
 export default defineNuxtPlugin(({ vueApp }) => {
+    const runtimeConfig = useRuntimeConfig().public;
+
     const i18n = createI18n({
         legacy: false,
         globalInjection: true,
-        locale: process.env.DEFAULT_LOCALE ?? "by",
+        locale: runtimeConfig.defaultLocale ?? "by",
         messages: {
             ru,
             by,
             kz,
         },
     });
+
+    console.log("i18n", i18n.global.locale.value, process.env.DEFAULT_LOCALE);
     vueApp.use(i18n);
     return {
         provide: {

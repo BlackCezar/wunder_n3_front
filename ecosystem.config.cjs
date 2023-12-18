@@ -2,8 +2,7 @@ module.exports = {
     apps: [
         {
             name: "wunder_n3_front",
-            script: "./node_modules/nuxi/bin/nuxi.mjs",
-            args: "start",
+            script: "npm run preview",
         },
     ],
 

@@ -132,83 +132,35 @@ const isValid = computed(() => {
 
 <template>
     <b-form-group class="form-input-question" :label="label ?? ''">
-        <b-form-input
-            v-if="type === 'number' || type === 'tel'"
-            :id="name as string"
-            v-maska
-            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined"
-            :data-maska="maskOptions.mask"
-            :model-value="value as string"
-            :name="name as string"
-            :placeholder="placeholder ?? ''"
-            :state="isValid"
-            :type="type as InputType"
-            class="form-input"
-            @blur="handleBlur"
-            @input="onChange"
-        />
-        <b-form-input
-            v-else-if="type === 'url'"
-            :id="name as string"
-            v-maska
-            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined"
-            data-maska="https://A.A"
-            data-maska-tokens="A:[a-zA-Z]:multiple"
-            :model-value="value as string"
-            :name="name as string"
-            :placeholder="placeholder ?? ''"
-            :state="isValid"
-            type="text"
-            class="form-input"
-            @blur="handleBlur"
-            @input="onChange"
-        />
-        <b-form-select
-            v-else-if="type === 'select'"
-            :id="name as string"
-            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined"
-            :placeholder="placeholder"
-            :state="isValid"
-            :model-value="value"
-            @update:model-value="handleChange"
-            class="form-input"
-            @blur="handleBlur"
-            :options="options"
-        />
-        <b-form-input
-            v-else
-            :id="name as string"
-            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined"
-            :max="max"
-            :max-length="maxLength"
-            :min="min"
-            :min-length="minLength"
-            :name="name as string"
-            :placeholder="placeholder"
-            :state="isValid"
-            :type="type === 'number' ? 'text' : (type as InputType)"
-            :model-value="value"
-            @update:model-value="handleChange"
-            class="form-input"
-            @blur="handleBlur"
-        />
+        <b-form-input v-if="type === 'number' || type === 'tel'" :id="name as string" v-maska
+            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined" :data-maska="maskOptions.mask"
+            :model-value="value as string" :name="name as string" :placeholder="placeholder ?? ''" :state="isValid"
+            :type="type as InputType" class="form-input" @blur="handleBlur" @input="onChange"
+            @update:model-value="handleChange" />
+        <b-form-textarea v-else-if="type === 'textarea'" :id="name as string" rows="3"
+            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined" :model-value="value as string"
+            :name="name as string" :placeholder="placeholder ?? ''" :state="isValid" :type="type as InputType"
+            class="form-input" @blur="handleBlur" @update:model-value="handleChange" />
+        <b-form-input v-else-if="type === 'url'" :id="name as string" v-maska
+            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined" data-maska="https://A.A"
+            data-maska-tokens="A:[a-zA-Z]:multiple" :model-value="value as string" :name="name as string"
+            :placeholder="placeholder ?? ''" :state="isValid" type="text" class="form-input" @blur="handleBlur"
+            @input="onChange" />
+        <b-form-select v-else-if="type === 'select'" :id="name as string"
+            :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined" :placeholder="placeholder" :state="isValid"
+            :model-value="value" @update:model-value="handleChange" class="form-input" @blur="handleBlur"
+            :options="options" />
+        <b-form-input v-else :id="name as string" :autocomplete="Boolean(autocomplete) ? 'autocomplete' : undefined"
+            :max="max" :max-length="maxLength" :min="min" :min-length="minLength" :name="name as string"
+            :placeholder="placeholder" :state="isValid" :type="type === 'number' ? 'text' : (type as InputType)"
+            :model-value="value" @update:model-value="handleChange" class="form-input" @blur="handleBlur" />
         <template v-if="helperText">
-            <IBiQuestionCircle
-                :id="'tooltip-' + name"
-                class="question-helper"
-            />
-            <b-tooltip
-                :target="'tooltip-' + name"
-                triggers="hover"
-                variant="info"
-            >
+            <IBiQuestionCircle :id="'tooltip-' + name" class="question-helper" />
+            <b-tooltip :target="'tooltip-' + name" triggers="hover" variant="info">
                 {{ helperText }}
             </b-tooltip>
         </template>
-        <b-form-invalid-feedback
-            id="input-live-feedback"
-            class="form-input-invalid-feedback"
-        >
+        <b-form-invalid-feedback id="input-live-feedback" class="form-input-invalid-feedback">
             {{ errorMessage }}
         </b-form-invalid-feedback>
     </b-form-group>
@@ -233,5 +185,10 @@ const isValid = computed(() => {
 
 .form-input-question {
     position: relative;
+}
+
+textarea.form-control {
+    height: auto !important;
+    max-height: unset;
 }
 </style>

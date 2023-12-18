@@ -1,9 +1,13 @@
 @layer bootstrap, app, components;
 
-@import url("/node_modules/bootstrap/dist/css/bootstrap.min.css") layer(bootstrap.remote);
-@import url("/node_modules/bootstrap/dist/css/bootstrap-reboot.min.css") layer(bootstrap.remote);
-@import url("/node_modules/bootstrap/dist/css/bootstrap-grid.min.css") layer(bootstrap.remote);
-@import url("/node_modules/bootstrap/dist/css/bootstrap-utilities.min.css") layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap.min.css")
+layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-reboot.min.css")
+layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-grid.min.css")
+layer(bootstrap.remote);
+@import url("/node_modules/bootstrap/dist/css/bootstrap-utilities.min.css")
+layer(bootstrap.remote);
 @import url("_variables.css");
 
 @layer bootstrap.local {
@@ -157,13 +161,13 @@ body {
     align-items: center;
 }
 
-.form-input-period fieldset>div,
-.finances-search-filter fieldset>div {
+.form-input-period fieldset > div,
+.finances-search-filter fieldset > div {
     display: flex;
     align-items: center;
 }
 
-.form-input-search>div {
+.form-input-search > div {
     display: flex;
     align-items: center;
 }
@@ -206,8 +210,11 @@ body {
     text-align: left;
 }
 
-.form-checkbox .was-validated .custom-control-input:valid~.custom-control-label,
-.form-checkbox .custom-control-input.is-valid~.custom-control-label {
+.form-checkbox
+    .was-validated
+    .custom-control-input:valid
+    ~ .custom-control-label,
+.form-checkbox .custom-control-input.is-valid ~ .custom-control-label {
     color: inherit;
 }
 
@@ -294,4 +301,21 @@ body {
 
 .success {
     color: var(--success);
+}
+.gap-4 {
+    gap: 1rem;
+}
+.flex-col {
+    flex-direction: column;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+.mr-1 {
+    margin-right: 0.25em;
+}
+
+.mr-2 {
+    margin-right: 0.5em;
 }

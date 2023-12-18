@@ -48,6 +48,16 @@ export const useCustomerStore = defineStore("customers", {
         setActiveCustomer(data: ICustomerState["forms"]["customers"]) {
             this.forms.customers = data;
         },
+        async removeCustomerCandidate(id: number) {
+            try {
+                const { apiClient } = useClient();
+                await apiClient.delete(`/customers/candidates/${id}`);
+                this.candidates = this.candidates.filter(c => c.id !== id)
+            } catch (e: any) {
+                useNuxtApp().$toast.error(e.message);
+                console.error(e);
+            }
+        },
         async loadCustomers() {
             try {
                 const { apiClient } = useClient();
@@ -90,6 +100,41 @@ export const useCustomerStore = defineStore("customers", {
             try {
                 const { apiClient } = useClient();
                 return await apiClient.get(`/customers/candidates/${id}`);
+            } catch (e: any) {
+                useNuxtApp().$toast.error(e.message);
+                console.error(e);
+            }
+        },
+        async addDiscount(id: number, data: any) {
+            try {
+                const { apiClient } = useClient();
+                return await apiClient.post(`/customers/discounts`, {
+                    ...data,
+                    contractId: id,
+                });
+            } catch (e: any) {
+                useNuxtApp().$toast.error(e.message);
+                console.error(e);
+            }
+        },
+        async removeDiscount(id: number) {
+            try {
+                const { apiClient } = useClient();
+                await apiClient.delete(`/customers/discounts/${id}`);
+                useNuxtApp().$toast.success('Успешно удалено');
+            } catch (e: any) {
+                useNuxtApp().$toast.error(e.message);
+                console.error(e);
+            }
+        },
+        async getDiscounts(id: number, contractId: number) {
+            try {
+                const { apiClient } = useClient();
+                return await apiClient.get(`/customers/${id}/discounts`, {
+                    query: {
+                        contractId
+                    }
+                });
             } catch (e: any) {
                 useNuxtApp().$toast.error(e.message);
                 console.error(e);

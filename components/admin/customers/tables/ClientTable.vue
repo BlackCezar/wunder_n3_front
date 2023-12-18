@@ -12,6 +12,7 @@ import { CustomerEditTabs } from "~/types/common";
 const props = defineProps<{
     clients: ICustomer[];
     systems: ISystem[];
+    groupView?: boolean;
     clientsToAccounts: Map<any, any>;
 }>();
 const { t } = useI18n();
@@ -54,19 +55,28 @@ const fields = markRaw([
         sortable: false,
         tdClass: "gab-column",
     },
-    {
+]);
+if (!props.groupView) {
+    fields.push({
         key: "actions",
         label: t("AccountManagement.AdminActions"),
         sortable: false,
         tdClass: "actions-column",
-    },
-    {
+    });
+    fields.push({
         key: "showAccounts",
         label: t("AccountManagement.ShowAccounts"),
         sortable: false,
         tdClass: "show-accounts-column",
-    },
-]);
+    });
+} else {
+    fields.push({
+        key: "showAccounts",
+        label: t("AccountManagement.ShowAccounts"),
+        sortable: false,
+        tdClass: "show-accounts-column",
+    });
+}
 const clientsTypes = markRaw([
     {
         value: "publicContract",
@@ -202,6 +212,7 @@ const openEditClientModal = (tab: number, customerId: number) => {
             <template #cell(isActive)="data">
                 <div style="display: flex; flex-direction: row">
                     <div
+                        v-if="!groupView"
                         class="action-icon active mr-2"
                         @click="
                             openContractsModal(
@@ -227,6 +238,7 @@ const openEditClientModal = (tab: number, customerId: number) => {
             <template #cell(conditions)="data">
                 <div style="display: flex; flex-direction: row">
                     <div
+                        v-if="!groupView"
                         class="action-icon active mr-2"
                         @click="
                             openContractsModal('contract', data.value.clientId)
@@ -320,6 +332,7 @@ const openEditClientModal = (tab: number, customerId: number) => {
                             :system="systemName"
                             :accounts="accountsInSystem"
                             :admin-version="true"
+                            :group-view="groupView"
                             :allow-transfer="false"
                             :customer-id="row.item.id as number"
                             :is-active="row.item.isActive as boolean"

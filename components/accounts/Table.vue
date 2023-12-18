@@ -12,6 +12,7 @@ const props = defineProps<{
     adminVersion?: boolean;
     customerId: number;
     isActive: boolean;
+    groupView?: boolean;
     allowTransfer: boolean;
     contractType: ContractType;
 }>();
@@ -74,6 +75,7 @@ const fields = markRaw([
         tdClass: "gab-column-4",
     },
 ]);
+
 const adminFields = markRaw([
     {
         key: "accountName",
@@ -109,14 +111,15 @@ const adminFields = markRaw([
         label: "",
         sortable: false,
     },
-    {
+]);
+if (!props.groupView) {
+    adminFields.push({
         key: "actions",
         label: t("AccountManagement.AdminActions"),
         sortable: false,
         tdClass: "actions-column",
-    },
-]);
-
+    });
+}
 const items = ref<AccountTableRow[]>([]);
 
 onMounted(() => {
@@ -256,6 +259,7 @@ const accountEdit = (id: number, customerId: number) => {
                 </template>
                 <template #cell(actions)="data">
                     <div
+                        v-if="!groupView"
                         style="
                             display: flex;
                             flex-direction: row;

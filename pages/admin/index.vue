@@ -50,6 +50,8 @@ const searchFilter = () => {
     customerStore.loadCustomers();
 };
 
+
+watch(() => filters.value.page, searchFilter)
 await customerStore.loadCustomers();
 accountStore.getList();
 
@@ -168,15 +170,8 @@ definePageMeta({
             {{ $t("Navigation.Clients").toUpperCase() }}
         </div>
         <div class="search-filter">
-            <UiFormInput
-                :placeholder="$t('Documents.EnterSearch')"
-                inputId="search"
-                name="customers-search"
-                type="search"
-                :inputModel="filters.query"
-                v-model="filters.query"
-                @input="searchFilter"
-            />
+            <UiFormInput :placeholder="$t('Documents.EnterSearch')" inputId="search" name="customers-search" type="search"
+                :inputModel="filters.query" v-model="filters.query" @input="searchFilter" />
         </div>
         <template v-if="filters.isLoading">
             <div class="text-center">
@@ -184,60 +179,26 @@ definePageMeta({
             </div>
         </template>
         <template v-else>
-            <AdminCustomersClientTable
-                v-if="clients && clients.length"
-                :clients="clients"
-                :systems="systems"
-                :clients-to-accounts="clientsToAccounts"
-            />
+            <AdminCustomersClientTable v-if="clients && clients.length" :clients="clients" :systems="systems"
+                :clients-to-accounts="clientsToAccounts" />
             <div v-else class="no-clients">
                 {{ $t("Navigation.NoClients") }}
             </div>
-            <b-pagination
-                class="mt-3"
-                align="center"
-                v-model="filters.page"
-                v-if="clients && clients.length"
-                :total-rows="listTotal"
-                :per-page="filters.limit"
-                aria-controls="my-table"
-            />
+            <b-pagination class="mt-3" align="center" v-model="filters.page" v-if="clients && clients.length"
+                :total-rows="listTotal" :per-page="filters.limit" aria-controls="my-table" />
         </template>
-        <b-modal
-            hide-footer
-            hide-header
-            size="xl"
-            v-model="editDocumentsModal"
-            id="edit-documents-modal"
-            ref="edit-documents-modal"
-        >
+        <b-modal hide-footer hide-header size="xl" v-model="editDocumentsModal" id="edit-documents-modal"
+            ref="edit-documents-modal">
             <AdminModalsInvoicesList />
         </b-modal>
-        <b-modal
-            hide-footer
-            hide-header
-            id="edit-contracts-modal"
-            ref="edit-contracts-modal"
-            v-model="editContractsModal"
-        >
+        <b-modal hide-footer hide-header id="edit-contracts-modal" ref="edit-contracts-modal" v-model="editContractsModal">
             <AdminModalsContractsWrapper v-if="editContractsModal" />
         </b-modal>
-        <b-modal
-            hide-header
-            hide-footer
-            id="edit-client-modal"
-            ref="edit-client-modal"
-            v-model="editClientModal"
-        >
+        <b-modal hide-header hide-footer id="edit-client-modal" ref="edit-client-modal" v-model="editClientModal">
             <AdminModalsCustomers v-if="editClientModal" />
         </b-modal>
-        <b-modal
-            hide-header
-            hide-footer
-            id="edit-account-modal"
-            @hidden="$emit('resetEditAccount')"
-            v-model="editAccountModal"
-        >
+        <b-modal hide-header hide-footer id="edit-account-modal" @hidden="$emit('resetEditAccount')"
+            v-model="editAccountModal">
             <AdminModalsAccountsEdit />
         </b-modal>
     </div>
