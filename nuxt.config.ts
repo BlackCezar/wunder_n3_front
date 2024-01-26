@@ -62,6 +62,7 @@ export default defineNuxtConfig({
         "@pinia/nuxt",
         "@pinia-plugin-persistedstate/nuxt",
         "@bootstrap-vue-next/nuxt",
+        'nuxt-socket-io',
         [
             "@nuxtjs/google-fonts",
             {
@@ -79,18 +80,14 @@ export default defineNuxtConfig({
         },
         storage: "cookies",
     },
-
-    // io: {
-    // module options
-    // sockets: [
-    //   {
-    //     url: process.env.SOCKET_HOST,
-    //     name: "main",
-    //     default: true,
-    //     namespaces: "main",
-    //   },
-    // ],
-    // },
+    io: {
+        sockets: [{
+            url: process.env.SOCKET_HOST,
+            name: 'main',
+            default: true,
+            namespace: 'main'
+        }]
+    },
     // i18n: {
     //     strategy: "no_prefix",
     //     langDir: "./locales/",

@@ -10,7 +10,6 @@ declare global {
             LOCALE_CODE: string;
             LOCALE_FILE: string;
             LOCALE_DOMAIN: string;
-            BROWSER_API_URL: string;
         }
     }
 }
