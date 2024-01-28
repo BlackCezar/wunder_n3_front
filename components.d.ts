@@ -11,6 +11,7 @@ declare module 'vue' {
     IBiArrowRightCircle: typeof import('~icons/bi/arrow-right-circle')['default']
     IBiBoxArrowInRight: typeof import('~icons/bi/box-arrow-in-right')['default']
     IBiBoxArrowUpRight: typeof import('~icons/bi/box-arrow-up-right')['default']
+    IBiCheck: typeof import('~icons/bi/check')['default']
     IBiCheck2All: typeof import('~icons/bi/check2-all')['default']
     IBiCheckCircle: typeof import('~icons/bi/check-circle')['default']
     IBiChevronUp: typeof import('~icons/bi/chevron-up')['default']

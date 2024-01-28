@@ -93,7 +93,7 @@ useListen("modal:edit-region", (id: number) => {
     justify-content: space-between;
     align-items: center;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .settings-page .page-header-3 {
         flex-direction: column;
         align-items: flex-start;
@@ -104,7 +104,7 @@ useListen("modal:edit-region", (id: number) => {
     display: flex;
     align-items: center;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .settings-page .settings-button-row {
         margin-top: var(--elementMargin);
     }

@@ -256,7 +256,7 @@ const submitSettingsUpdate = handleSubmit(async (values) => {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .settings-rows>div {
         padding-left: 0;
     }

@@ -196,7 +196,7 @@ export default {
     width: 100%;
     align-items: center;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .admin-customer-contracts-item {
         flex-wrap: wrap;
     }
@@ -209,7 +209,7 @@ export default {
     flex-wrap: wrap;
     grid-gap: 10px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .admin-customer-contracts-item .contract-buttons {
         margin-top: 10px;
     }

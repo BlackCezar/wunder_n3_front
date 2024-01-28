@@ -111,7 +111,7 @@ const showNewContractModal = () => {
 </script>
 
 <style scoped lang="css">
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .admin-customer-contracts .top-up-tab {
         padding: 10px;
     }

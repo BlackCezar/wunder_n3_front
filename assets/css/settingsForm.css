@@ -10,7 +10,7 @@
     width: 900px;
     max-width: 900px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     #edit-client-modal .modal-dialog,
     #edit-contract-modal .modal-dialog,
     #edit-contracts-modal .modal-dialog {

@@ -212,7 +212,7 @@ setLocale({
     grid-template-columns: 22.81em 1fr;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .layout-container {
         grid-template-columns: 1fr;
     }
@@ -285,7 +285,7 @@ setLocale({
     padding: 3.5rem 1.5rem 1.5rem;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .page-container {
         padding: 20px;
         min-height: calc(100vh - 90px);
@@ -311,7 +311,7 @@ setLocale({
     margin: 0 0 2.5rem 2.5rem;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .page-header-3 {
         margin: 0 0 2rem 0;
         font-size: 24px;
@@ -326,7 +326,7 @@ setLocale({
 
 @media (max-width: 992px) {
     .main-container {
-        width: 100vw;
+        width: 100%;
         margin-left: 0;
     }
 

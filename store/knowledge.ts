@@ -109,14 +109,17 @@ export const useKnowledgeStore = defineStore("knowledge", {
             try {
                 const { apiClient } = useClient();
 
-                payload.preview = this.file;
+                payload.preview = this.file?.file;
                 const data: ICreatePostResponse = await apiClient.post(
                     "/knowledge/create-post",
                     payload,
-                );
+                )
+                console.log('data', data)
                 this.file = null;
+
+                if (data.message?.length) useNuxtApp().$toast.success(data.message[0])
                 if (!data.toMain) {
-                    this.router.push("/knowledge/post/" + data.postID);
+                    this.router.push("/knowledge/post/" + data.data.postID);
                 } else this.router.push("/knowledge");
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
@@ -139,7 +142,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
 
                 const data: IKnowledgeUpdateCategoriesResponse =
                     await apiClient.post(
-                        "/knowledge/update-categories",
+                        "/knowledge/update-category",
                         payload,
                     );
 
@@ -165,7 +168,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
             try {
                 const { apiClient } = useClient();
 
-                payload.preview = this.file;
+                payload.preview = this.file?.file;
                 const data: IUpdatePostResponse = await apiClient.post(
                     "/knowledge/update-post",
                     payload,

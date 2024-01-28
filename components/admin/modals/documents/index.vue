@@ -205,7 +205,7 @@ export default {
 .local-tabs {
     display: flex;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .local-tabs .top-up-tab {
         padding: 10px;
     }

@@ -12,7 +12,7 @@
 .accounts-buttons-container button:disabled {
     cursor: not-allowed;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .accounts-buttons-container {
         margin-left: 0;
     }
@@ -31,7 +31,7 @@
     margin-right: auto;
     row-gap: var(--elementPadding);
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .system-buttons-container {
         grid-template-columns: 1fr 1fr;
         margin: 0 auto;
@@ -49,7 +49,7 @@
     padding: 10px;
     width: 200px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .select-system-button {
         width: auto;
         max-width: 200px;
@@ -77,7 +77,7 @@
 #create-account-modal___BV_modal_content_ {
     width: fit-content;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     #create-account-modal___BV_modal_content_ {
         width: 100%;
     }
@@ -87,13 +87,13 @@
     padding: var(--elementPadding);
     width: 100%;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .create-account-form-container {
         width: 100%;
     }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 992px) {
     #top-up-modal .modal-dialog {
         max-width: unset;
     }
@@ -107,7 +107,7 @@
     box-shadow: 0 0 54px 0 rgba(0, 0, 0, 0.3);
     width: 739px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     #top-up-modal___BV_modal_content_ {
         width: 100%;
     }
@@ -130,7 +130,7 @@
     height: 100%;
     flex-direction: column;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 992px) {
     .top-up-tabs, .top-up-tabs__wrapper {
         width: fit-content;
     }
@@ -153,7 +153,7 @@
     text-align: center;
     min-width: 170px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .top-up-tab {
         font-size: 16px;
         height: 100%;
@@ -193,7 +193,7 @@
     padding: 28px;
     max-width: 460px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .top-up-form-container {
         padding: 15px;
     }
@@ -209,7 +209,7 @@
     padding: 1em;
     margin-bottom: 16px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .selected-system {
         width: 100%;
     }
@@ -242,7 +242,7 @@
     padding: 0;
     margin-top: 14px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .top-up-form-row {
         display: grid;
         grid-template-columns: 1fr 50px;
@@ -261,7 +261,7 @@
     width: 246px;
     border: 1px solid var(--primary);
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .top-up-form-row select {
         width: 100%;
     }
@@ -315,7 +315,7 @@
     background: var(--white);
     z-index: 1000;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .count-indicator {
         margin-left: 0;
         left: 50%;
@@ -385,7 +385,7 @@
     flex-direction: row;
     justify-content: center;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .transfer-form-container {
         flex-direction: column;
         margin-left: 10px;
@@ -399,7 +399,7 @@
     max-width: 1291px;
     max-height: 321px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     #transfer-modal .modal-dialog {
         width: 100%;
         height: auto;
@@ -443,7 +443,7 @@
     height: 47px;
     margin-bottom: 16px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .transfer-form.left select,
     .transfer-form.right select {
         width: 100%;
@@ -464,7 +464,7 @@
     margin-right: var(--elementMargin);
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .transfer-form.center {
         display: grid;
         grid-template-columns: auto auto;
@@ -477,7 +477,7 @@
     height: 47px;
     margin-bottom: var(--elementMargin);
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .transfer-form.center input {
         height: 44px;
     }
@@ -487,7 +487,7 @@
     width: 105px;
     height: 47px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .transfer-form.center select {
         height: 44px;
     }

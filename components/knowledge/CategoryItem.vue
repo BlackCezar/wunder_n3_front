@@ -3,23 +3,29 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="ui-field">
-                    <input
-                        type="text"
-                        class="ui-input"
-                        v-model.trim="cat.name"
-                        :readonly="!isEditable"
-                    />
+                    <Field name="name"  v-slot="{field}">
+                        <input
+                            type="text"
+                            name="name"
+                            class="ui-input"
+                            :readonly="!isEditable"
+                            v-bind="field"
+                        />
+                    </Field>
                 </div>
             </div>
 
             <div class="col-sm-2">
                 <div class="ui-field">
-                    <input
-                        type="text"
-                        class="ui-input"
-                        v-model.number="cat.sort"
-                        :readonly="!isEditable"
-                    />
+                    <Field name="sort" :readonly="!isEditable" v-slot="{field}">
+                        <input
+                            type="number"
+                            class="ui-input"
+                            name="sort"
+                            :readonly="!isEditable"
+                            v-bind="field"
+                        />
+                    </Field>
                 </div>
             </div>
 
@@ -32,11 +38,8 @@
                     v-b-tooltip.hover
                     title="Отменить"
                 >
-                    <b-icon
-                        icon="x-circle"
-                        font-scale="1.25"
-                        style="color: #bbb"
-                    ></b-icon>
+                    <i-bi-x-circle font-scale="1.25"
+                                   style="color: #bbb" />
                 </a>
                 <a
                     href="#"
@@ -46,7 +49,7 @@
                     v-b-tooltip.hover
                     title="Редактировать"
                 >
-                    <b-icon icon="pencil" font-scale="1.25"></b-icon>
+                    <i-bi-pencil style="color: var(--primary)"  />
                 </a>
                 <a
                     href="#"
@@ -56,67 +59,58 @@
                     v-b-tooltip.hover
                     title="Сохранить"
                 >
-                    <b-icon icon="check-lg" font-scale="1.25"></b-icon>
+                    <i-bi-check style="color: var(--success)" />
                 </a>
                 <a
                     href="#"
                     class="ui-iconed-link"
-                    @click.prevent="deleteCategory(cat.id)"
+                    @click.prevent="knowledgeStore.deleteCategory(category.id)"
                     v-b-tooltip.hover
                     title="Удалить"
                 >
-                    <b-icon
-                        icon="trash"
-                        font-scale="1.25"
-                        variant="danger"
-                    ></b-icon>
+                    <i-bi-trash style="color: var(--accent)" />
                 </a>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-import { mapActions } from "pinia";
+<script setup lang="ts">
 import { useKnowledgeStore } from "@/store/knowledge";
+import type { IKnowledgeCategory } from "~/types/knowledge.interface";
+import * as yup from 'yup'
 
-export default {
-    name: "KnowledgeCategoryItem",
+const props = defineProps<{
+    category: IKnowledgeCategory
+}>()
 
-    props: {
-        category: {
-            type: Object,
-            required: true,
-        },
-    },
+const isEditable = ref(false);
+const knowledgeStore = useKnowledgeStore()
 
-    data() {
-        return {
-            isEditable: false,
-            cat: {
-                name: "",
-                sort: "",
-            },
-        };
-    },
+const {handleSubmit, setValues} = useForm({
+    validationSchema: {
+        name: yup.string().required(),
+        sort: yup.number().required()
+    }, initialValues: {
+        name: '',
+        sort: 500
+    }
+})
 
-    methods: {
-        ...mapActions(useKnowledgeStore, {
-            updateCategory: "knowledge/updateCategory",
-            deleteCategory: "knowledge/deleteCategory",
-        }),
+const editHandler = handleSubmit(async (values) => {
+    await knowledgeStore.updateCategory({
+        id: props.category.id,
+        ...values
+    })
+    isEditable.value = false;
+})
 
-        async editHandler(data) {
-            await this.updateCategory(this.cat);
-            this.isEditable = false;
-            this.cat = { ...this.category };
-        },
-    },
-
-    created() {
-        this.cat = { ...this.category };
-    },
-};
+onMounted(() => {
+    setValues({
+        name: props.category.name,
+        sort: props.category.sort
+    })
+})
 </script>
 
 <style scoped lang="css">

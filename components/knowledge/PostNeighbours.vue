@@ -34,7 +34,7 @@ export default {
     padding-left: 150px;
     font-size: 18px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-neighbours {
         display: flex;
         flex-direction: column;
@@ -48,7 +48,7 @@ export default {
     left: 0;
     max-width: 140px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-neighbours-label {
         display: block;
         position: static;

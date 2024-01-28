@@ -81,7 +81,7 @@ export default {
     padding-right: 270px;
     margin-bottom: 50px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-header {
         padding-right: 0;
     }
@@ -94,7 +94,7 @@ export default {
     font-size: 16px;
     color: #868686;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-date {
         position: static;
     }
@@ -105,7 +105,7 @@ export default {
     margin-top: 0;
     margin-bottom: 20px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-title {
         margin-bottom: 10px;
     }
@@ -132,12 +132,12 @@ export default {
     display: flex;
     justify-content: space-between;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-btns {
         flex-direction: column;
     }
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-btns .ui-btn-red {
         display: flex;
         justify-content: center;
@@ -146,7 +146,7 @@ export default {
 .post-btns-nav {
     padding-left: 25px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-btns-nav {
         padding-left: 0;
     }
@@ -154,7 +154,7 @@ export default {
 .post-btns-nav .ui-btn {
     margin-left: 5px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-btns-nav .ui-btn {
         padding-left: 0;
         width: 100%;

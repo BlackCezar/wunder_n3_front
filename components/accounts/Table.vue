@@ -316,7 +316,7 @@ const accountEdit = (id: number, customerId: number) => {
     flex-direction: row;
     align-items: center;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .table-system-header {
         padding-left: 15px;
         padding-right: 15px;
@@ -339,7 +339,7 @@ const accountEdit = (id: number, customerId: number) => {
     width: 170px;
     height: 40px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .table-system-icon {
         width: 140px;
         height: auto;
@@ -410,7 +410,7 @@ const accountEdit = (id: number, customerId: number) => {
     font-weight: 500;
     color: var(--paragraphColor);
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .public-contract {
         margin-left: 0;
         margin-right: 0;

@@ -13,7 +13,7 @@
     gap: 1rem;
     justify-content: space-between;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .documents > .row {
         margin: 0;
     }
@@ -22,7 +22,7 @@
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .documents .documents-filters {
         width: 100%;
         margin-bottom: 20px;
@@ -59,7 +59,7 @@
 .documents .closure-period-filter fieldset > div .form-input {
     width: 142px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .documents .closure-period-filter fieldset > div .form-input {
         width: 100%;
     }
@@ -67,7 +67,7 @@
 .documents .closure-period-filter fieldset > div .form-input:last-child {
     margin-left: var(--elementMargin);
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .documents .closure-period-filter fieldset > div .form-input:last-child {
         margin-left: 0;
     }

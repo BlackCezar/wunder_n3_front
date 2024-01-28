@@ -49,7 +49,7 @@ const removeDiscount = async () => {
     align-items: center;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .admin-discounts-item {
         display: grid;
         grid-template-columns: 16px auto auto;
@@ -70,7 +70,7 @@ const removeDiscount = async () => {
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .admin-discounts-item .discount-buttons {
         grid-auto-flow: row;
     }

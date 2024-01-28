@@ -202,7 +202,7 @@ const vClickOutside = {
     font-weight: 500;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .select-search {
         max-width: unset;
         width: 100%;

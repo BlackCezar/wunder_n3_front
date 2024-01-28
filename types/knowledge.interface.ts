@@ -13,8 +13,11 @@ export interface IKnowledgeCategory {
 }
 
 export interface ICreatePostResponse {
-    toMain: boolean;
-    postID: number
+    data: {
+        toMain?: boolean;
+        postID: number
+    }
+    message: string[]
 }
 
 export type IFetchMainResponse = IKnowledgePost[]

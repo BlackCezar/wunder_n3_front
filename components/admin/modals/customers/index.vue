@@ -145,7 +145,7 @@ const saveCustomer = handleSubmit(async (values) => {
     padding: 5px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .tabs-header {
         display: grid !important;
         overflow-x: auto;
@@ -166,7 +166,7 @@ const saveCustomer = handleSubmit(async (values) => {
     display: none;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .cancel-btn {
         width: 100%;
         height: 60px;

@@ -399,7 +399,7 @@ const openEditClientModal = (tab: number, customerId: number) => {
     margin: -0.5rem;
     padding: 0.75rem;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 992px) {
     .details-class {
         padding: 5px 15px !important;
     }

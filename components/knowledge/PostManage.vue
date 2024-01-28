@@ -70,7 +70,7 @@ export default {
     margin-top: -20px;
     border-bottom: 1px solid #dee2e6;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .post-manage {
         display: grid;
         grid-gap: 10px;

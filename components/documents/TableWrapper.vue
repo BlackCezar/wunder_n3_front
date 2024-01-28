@@ -337,7 +337,7 @@ const downloadFile = async (fileName: string, type: string) => {
     max-width: unset;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .b-tooltip-white .tooltip-inner {
         max-width: 80vw;
         overflow: auto;

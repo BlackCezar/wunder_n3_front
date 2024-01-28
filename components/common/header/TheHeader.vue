@@ -97,7 +97,7 @@ const loginAsCustomer = (customerId: number) => {
 </template>
 
 <style lang="css">
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .navbar-collapse {
         padding: 0.5rem 0;
     }
@@ -119,7 +119,7 @@ const loginAsCustomer = (customerId: number) => {
     padding-left: 4.18em;
     padding-right: 4.68em;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .my-header {
         padding: 0.5rem 20px;
         min-height: 90px;
@@ -150,7 +150,7 @@ const loginAsCustomer = (customerId: number) => {
     line-height: 1.2;
     text-align: right;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .user-info {
         display: grid;
         grid-template-columns: 1fr 68px;

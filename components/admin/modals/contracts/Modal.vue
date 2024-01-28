@@ -189,7 +189,7 @@ const saveContract = handleSubmit(async (values) => {
     margin-top: 0;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .admin-contract-modal .documents-row {
         flex-direction: column;
     }

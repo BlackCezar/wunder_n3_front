@@ -66,7 +66,7 @@ const startDate = computed(() => {
     width: 100%;
     align-items: center;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .admin-customer-contracts-item {
         display: grid;
         grid-template-columns: 16px auto auto;
@@ -79,7 +79,7 @@ const startDate = computed(() => {
     margin-left: auto;
     grid-template-columns: 1fr 1fr;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .admin-customer-contracts-item .contract-buttons {
         grid-auto-flow: row;
     }

@@ -1,20 +1,41 @@
+<script setup lang="ts">
+import * as yup from 'yup'
+import { useKnowledgeStore } from "~/store/knowledge";
+
+const {handleSubmit, resetForm, meta} = useForm({
+    validationSchema: {
+        name: yup.string().required().min(3).max(64),
+        sort: yup.number().required()
+    }, initialValues: {
+        name: '',
+        sort: 500
+    }
+})
+
+const knowledgeStore = useKnowledgeStore()
+const processForm = handleSubmit(async (values) => {
+    await knowledgeStore.createCategory(values)
+    resetForm()
+    await knowledgeStore.getCategories()
+})
+</script>
 <template>
     <div class="ui-block">
         <div class="ui-block-title">Создание категории</div>
-        <ValidationObserver v-slot="{ invalid }">
-            <form @submit.prevent="createHandler(category)">
+        <form @submit.prevent="processForm">
                 <div class="row ui-last-negative">
                     <div class="col-sm-6">
                         <div class="ui-field">
                             <div class="ui-field-label">Название</div>
-                            <ValidationProvider
-                                rules="required|min:3|max:64"
-                                v-slot="{ errors }"
+                            <Field
+                                name="name"
+                                v-slot="{ errors, field }"
                             >
                                 <input
                                     type="text"
+                                    name="name"
                                     class="ui-input"
-                                    v-model.trim="category.name"
+                                    v-bind="field"
                                     placeholder="Введите название"
                                     :class="{ 'ui-invalid': errors.length }"
                                 />
@@ -24,7 +45,7 @@
                                 >
                                     {{ errors[0] }}
                                 </div>
-                            </ValidationProvider>
+                            </Field>
                         </div>
                     </div>
 
@@ -33,14 +54,15 @@
                             <div class="col-sm-4">
                                 <div class="ui-field">
                                     <div class="ui-field-label">Сортировка</div>
-                                    <ValidationProvider
-                                        rules="integer"
-                                        v-slot="{ errors }"
+                                    <Field
+                                        name="sort"
+                                        v-slot="{ errors, field }"
                                     >
                                         <input
-                                            type="text"
+                                            type="number"
                                             class="ui-input"
-                                            v-model.number="category.sort"
+                                            v-bind="field"
+                                            name="sort"
                                             placeholder="Целое число"
                                         />
                                         <div
@@ -49,7 +71,7 @@
                                         >
                                             {{ errors[0] }}
                                         </div>
-                                    </ValidationProvider>
+                                    </Field>
                                 </div>
                             </div>
 
@@ -57,7 +79,7 @@
                                 <div class="ui-field-label ui-invisible">
                                     Кнопка
                                 </div>
-                                <button class="ui-btn" :disabled="invalid">
+                                <button class="ui-btn" :disabled="!meta.valid">
                                     Создать категорию
                                 </button>
                             </div>
@@ -69,48 +91,16 @@
                         </div>
                     </div>
                 </div>
-                <!--.row-->
             </form>
-        </ValidationObserver>
     </div>
-    <!--.ui-block-->
 </template>
-
-<script>
-import { mapActions } from "pinia";
-
-export default {
-    name: "KnowledgeCreateCategory",
-    data() {
-        return {
-            category: {
-                name: "",
-                sort: 500,
-            },
-        };
-    },
-
-    methods: {
-        ...mapActions({
-            createCategory: "createCategory",
-        }),
-
-        async createHandler(data) {
-            await this.createCategory(data);
-
-            this.category.name = "";
-            this.category.sort = 500;
-        },
-    },
-};
-</script>
 <style scoped lang="css">
 .ui-field-hint {
     margin-top: -30px;
     margin-bottom: 20px;
     max-width: 350px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
     .ui-field-hint {
         margin-top: 0;
     }
