@@ -23,20 +23,19 @@ const activeAccounts = computed(() =>
     <div class="top-up-accounts">
         <FieldArray :name="`topUpAccounts[${props.systemIndex}].accounts`" v-slot="{ push, remove, fields }">
             <div v-for="(field, index) in fields" :key="field.key" class="top-up-account-line">
-                <Field :name="`topUpAccounts[${systemIndex}].accounts[${index}].id`" type="select" v-slot="{ field, meta }">
-                    <select class="form-control" :class="{
+                <Field :name="`topUpAccounts[${systemIndex}].accounts[${index}].id`" v-slot="{ field, meta }">
+                    <select required class="form-control" :name="`topUpAccounts[${systemIndex}].accounts[${index}].id`" :class="{
                         'is-invalid': !meta.valid && meta.touched,
                         'is-valid': meta.valid && meta.touched,
                     }" v-bind="field">
-                        <option selected disabled value="0">{{ t("AccountManagement.SelectAccount") }}</option>
+                        <option selected disabled value="">{{ t("AccountManagement.SelectAccount") }}</option>
                         <template v-for="account of activeAccounts">
                             <option :value="account.id">{{ account.accountName }}</option>
                         </template>
                     </select>
                 </Field>
-                <Field :name="`topUpAccounts[${systemIndex}].accounts[${index}].sum`" step="0.01" min="0"
-                    v-slot="{ meta, field }" :placeholder="$t('AccountManagement.Sum')" type="number">
-                    <input type="number" step="0.01" v-bind="field" class="form-control" :class="{
+                <Field :name="`topUpAccounts[${systemIndex}].accounts[${index}].sum`" v-slot="{ meta, field }">
+                    <input type="number" step="0.01" v-bind="field" class="form-control" :name="`topUpAccounts[${systemIndex}].accounts[${index}].sum`" :placeholder="$t('AccountManagement.Sum')" :class="{
                         'is-invalid': !meta.valid && meta.touched,
                         'is-valid': meta.valid && meta.touched,
                     }" />
@@ -66,5 +65,12 @@ const activeAccounts = computed(() =>
     display: grid;
     grid-template-columns: 1fr 1fr 47px;
     grid-gap: var(--minimalPadding);
+}
+
+select {
+    cursor: pointer;
+}
+select:invalid {
+    color: var(--borderGray);
 }
 </style>

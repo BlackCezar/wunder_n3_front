@@ -18,6 +18,7 @@ const emit = defineEmits(["edit-lines"]);
                 :name="`systemSettings[${index}].isActive`"
                 type="checkbox"
                 :value="true"
+                :unchecked-value="false"
                 v-slot="{ field }"
             >
                 <input

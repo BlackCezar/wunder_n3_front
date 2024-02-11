@@ -66,8 +66,8 @@ const processForm = handleSubmit(async (values: any) => {
             gtm?.trackEvent({
                 event: "auth-step-1",
             });
-        useNuxtApp().$toast.success(t("registration.Success"));
         await router.push("/auth/thanks?id=" + customer.id);
+        useNuxtApp().$toast.success(t("registration.Success"));
     }
 });
 </script>

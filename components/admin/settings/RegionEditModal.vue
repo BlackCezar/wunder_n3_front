@@ -62,6 +62,7 @@ const schema = yup.object({
                 regionId: yup.number(),
                 currency: yup.string(),
                 minSum: yup.string(),
+                isActive: yup.boolean(),
                 lines: yup
                     .array()
                     .of(

@@ -104,6 +104,7 @@ export const useAuthStore = defineStore("auth-custom", {
         },
         async loadUsers(page: number) {
             const { apiClient } = useClient();
+            this.busy = true;
             const result = await apiClient.get<[number, IUser[]]>(
                 "/auth/users",
                 {
@@ -116,6 +117,7 @@ export const useAuthStore = defineStore("auth-custom", {
                 this.usersTotal = result[0];
                 this.users = result[1];
             }
+            this.busy = false;
         },
         async createUser(values: IUserCreatePayload) {
             const { apiClient } = useClient();

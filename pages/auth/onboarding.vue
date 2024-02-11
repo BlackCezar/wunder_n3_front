@@ -60,6 +60,8 @@
                     :helper-text="$t('registration.helperAccountNumber')"
                     :placeholder="$t('registration.AccountNumber')"
                     name="accountNumber"
+                    :type="regionName === 'kz' ? 'number' : 'text'"
+                    :max-length="accountNumberLength"
                 />
                 <UiFormInput
                     :helper-text="$t('registration.helperBankAddress')"
@@ -70,6 +72,8 @@
                     :helper-text="$t('registration.helperBIC')"
                     :placeholder="$t('registration.BIC')"
                     name="BIC"
+                    type="number"
+                    :max-length="bicLength"
                 />
                 <UiFormCheckbox name="personalAgree">
                     {{ $t(`registration.agreeWith`) }}
@@ -115,6 +119,11 @@ const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 
+const bicLength = computed(() => {
+    if (regionName.value === "BY") return 12;
+    if (regionName.value === "KZ") return 8;
+    return 8;
+})
 const accountNumberLength = computed<number>(() => {
     if (regionName.value === "BY") return 28;
     if (regionName.value === "KZ") return 12;

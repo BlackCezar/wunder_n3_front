@@ -41,13 +41,12 @@ const getTotalWithOutVat = computed(() => {
 
 const getSumComission = computed(() => {
     if (!activeSystemSettings.value) return 0;
-
     for (const line of activeSystemSettings.value.lines) {
         if (
             Number(line.fromAmount) <= sum.value &&
             sum.value < Number(line.toAmount)
         )
-            return (sum.value * line.commission) / 100;
+            return (getTotalWithOutVat.value * line.commission) / (100 + line.commission);
     }
     return 0;
 });
@@ -60,7 +59,7 @@ const getSumDiscount = computed(() => {
             Number(line.fromAmount) <= sum.value &&
             sum.value < Number(line.toAmount)
         )
-            return (sum.value * line.discount) / 100;
+            return (getTotalWithOutVat.value * line.discount) / (100 + line.discount);
     }
     return 0;
 });

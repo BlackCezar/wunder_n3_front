@@ -99,8 +99,8 @@ function setValuesFromProps() {
                         systemName: item.systemName,
                         accounts: [
                             {
-                                id: props.accountId,
-                                sum: 0,
+                                id: undefined,
+                                sum: undefined,
                             },
                         ],
                     };

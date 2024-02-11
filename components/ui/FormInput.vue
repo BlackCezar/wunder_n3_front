@@ -88,6 +88,7 @@ const maskOptions = computed(() => {
         for (let i = 0; i < Number(props.maxLength); i++) {
             str += "#";
         }
+        console.log('str', str)
         return {
             mask: str,
         };

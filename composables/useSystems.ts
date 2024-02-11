@@ -13,6 +13,7 @@ import googleAdsSmall from "assets/img/systems-logos/small/ads_small.png";
 import twitterSmall from "assets/img/systems-logos/small/twitter_small.svg";
 import appleSearchSmall from 'assets/img/systems-logos/small/apple-search.svg'
 import telegramSmall from 'assets/img/systems-logos/small/telegram.svg'
+import kaspiSmall from 'assets/img/systems-logos/small/kaspi.png'
 
 import tiktok from "assets/img/systems-logos/tiktok.png";
 import yandexDirect from "assets/img/systems-logos/ya_direct.png";
@@ -27,6 +28,8 @@ import ok from "assets/img/systems-logos/ok.png";
 import twitter from "assets/img/twitter.png";
 import telegram from 'assets/img/systems-logos/telegram.png'
 import appleSearch from 'assets/img/systems-logos/apple-search.png'
+import kaspi from 'assets/img/systems-logos/small/kaspi.png'
+
 
 export const systemsToImg = new Map();
 systemsToImg.set("Google Ads", googleAdsImg);
@@ -43,6 +46,7 @@ systemsToImg.set("OK", ok);
 systemsToImg.set("Twitter", twitter);
 systemsToImg.set("Telegram", telegram);
 systemsToImg.set("Apple Search", appleSearch);
+systemsToImg.set("Kaspi", kaspi);
 
 export const systemsToSmallImg = new Map();
 systemsToSmallImg.set("Google Ads", googleAdsSmall);
@@ -59,3 +63,4 @@ systemsToSmallImg.set("OK", okSmall);
 systemsToSmallImg.set("Twitter", twitterSmall);
 systemsToSmallImg.set("Telegram", telegramSmall);
 systemsToSmallImg.set("Apple Search", appleSearchSmall);
+systemsToSmallImg.set("Kaspi", kaspiSmall);

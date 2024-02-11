@@ -155,7 +155,7 @@ onMounted(() => {
 }
 .helper-head {
     width: 50px;
-    height: 90px;
+    height: 50px;
     transition: width 0.3s;
 }
 .helper-head-icon {
