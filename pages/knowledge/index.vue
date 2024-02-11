@@ -7,16 +7,16 @@
 
         <div class="row">
             <div class="col-md-9">
-                <div v-if="posts && posts.length">
+                <div v-if="main && main.length">
                     <KnowledgePostMain
-                        v-for="item in posts"
+                        v-for="item in main"
                         :key="item.id"
                         :post="item"
                     />
                 </div>
 
                 <div class="ui-block" v-else>
-                    <b-alert show variant="secondary">Нет материалов</b-alert>
+                    <b-alert :model-value="true" variant="secondary">Нет материалов</b-alert>
                 </div>
             </div>
 
@@ -27,37 +27,19 @@
     </div>
 </template>
 
-<script>
-import KnowledgeNav from "../../components/knowledge/Nav";
-import KnowledgePostMain from "../../components/knowledge/PostMain";
+<script setup lang="ts">
+import KnowledgeNav from "../../components/knowledge/Nav.vue";
+import KnowledgePostMain from "../../components/knowledge/PostMain.vue";
 import { useKnowledgeStore } from "@/store/knowledge";
+import { storeToRefs } from "pinia";
 
-export default {
-    components: {
-        KnowledgePostMain,
-        KnowledgeNav,
-    },
-    setup() {
-        const knowledgeStore = useKnowledgeStore();
-        knowledgeStore.fetchMain();
+const knowledgeStore = useKnowledgeStore();
+const {main} = storeToRefs(knowledgeStore)
+useAsyncData(() => knowledgeStore.fetchMain())
 
-        return {
-            knowledgeStore,
-        };
-    },
-    computed: {
-        posts() {
-            return this.knowledgeStore.posts;
-        },
-    },
-    head() {
-        return {
-            title: "База знаний | Wunder Pay",
-        };
-    },
 
-    async asyncData({ store }) {
-        await store.dispatch("knowledge/fetchMain");
-    },
-};
+useHead({
+    title: 'База знаний | Wunder Pay'
+})
+
 </script>

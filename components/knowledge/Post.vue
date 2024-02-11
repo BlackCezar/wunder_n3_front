@@ -18,8 +18,7 @@
                     <nuxt-link
                         :to="'/knowledge/category/' + post.categoryID"
                         class="ui-btn ui-btn-red"
-                        ><b-icon
-                            icon="chevron-left"
+                        ><i-bi-chevron-left
                             style="color: #fff; margin-right: 5px"
                         />Назад в категорию</nuxt-link
                     >
@@ -45,34 +44,26 @@
     </div>
 </template>
 
-<script>
-import KnowledgePostManage from "./PostManage";
-import KnowledgePostNeighbours from "./PostNeighbours";
+<script setup lang="ts">
+import KnowledgePostManage from "./PostManage.vue";
+import KnowledgePostNeighbours from "./PostNeighbours.vue";
+import { IKnowledgePostFull } from "~/types/knowledge.interface";
 
-export default {
-    name: "KnowledgePost",
-    components: { KnowledgePostNeighbours, KnowledgePostManage },
-    props: {
-        post: {
-            required: true,
-            type: Object,
-        },
-    },
+defineProps<{
+    post: IKnowledgePostFull
+}>()
 
-    methods: {
-        dateFormat(dateString) {
-            let loc = "ru-RU";
-            const d = new Date(dateString);
-            d.setTime(d.getTime() + d.getTimezoneOffset() * 60 * 1000);
-            const date = new Intl.DateTimeFormat(loc, {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-            }).format(d);
-            return date;
-        },
-    },
-};
+function dateFormat(dateString: string) {
+    let loc = "ru-RU";
+    const d = new Date(dateString);
+    d.setTime(d.getTime() + d.getTimezoneOffset() * 60 * 1000);
+    const date = new Intl.DateTimeFormat(loc, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    }).format(d);
+    return date;
+}
 </script>
 
 <style lang="css">

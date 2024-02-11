@@ -20,9 +20,8 @@ export default defineNuxtConfig({
             compilerOptions: {
                 lib: ["dom", "esnext"],
                 types: [
-                    "@types/node",
+                    "bun-types",
                     "~/types/*.ts",
-                    "@nuxt/types",
                     "vue3-toastify/global",
                     "unplugin-icons/types/vue",
                 ],
@@ -36,6 +35,9 @@ export default defineNuxtConfig({
         routeRules: {
             "/api/**": {
                 proxy: process.env.BACKEND_HOST + "/api/**", // 配置你要请求的 API 服务器地址
+            },
+            "/public/**": {
+                proxy: process.env.BACKEND_HOST + "/public/**", // 配置你要请求的 API 服务器地址
             },
         },
     },

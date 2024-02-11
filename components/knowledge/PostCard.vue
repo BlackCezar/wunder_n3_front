@@ -10,14 +10,14 @@
                         :src="generateUrl(postCard.preview)"
                         :alt="postCard.title"
                         loading="lazy"
+                        onerror="this.src = '/imgs/no-post.jpeg'"
                     />
                 </nuxt-link>
             </div>
 
             <div class="post-card-category" v-if="isCategory">
-                <b-icon
+                <i-bi-arrow-up-right-square
                     class="post-card-category-icon"
-                    icon="arrow-up-right-square"
                     style="color: #495057"
                 />
                 <nuxt-link :to="'/knowledge/category/' + postCard.categoryID">{{
@@ -34,29 +34,23 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: "KnowledgePostCard",
-    props: {
-        postCard: {
-            required: true,
-            type: Object,
-        },
-        isCategory: {
-            type: Boolean,
-            default: false,
-        },
-    },
+<script setup lang="ts">
 
-    methods: {
-        generateUrl(url) {
-            if (!url) {
-                return "/imgs/no-post.jpeg";
-            }
-            return url;
-        },
-    },
-};
+import { IKnowledgeCard, IKnowledgePost } from "~/types/knowledge.interface";
+
+defineProps<{
+    postCard: IKnowledgeCard
+    isCategory?: boolean
+}>()
+const app = useAppConfig()
+console.log('app', app)
+function generateUrl(url?: string | undefined) {
+    if (!url) {
+        return "/imgs/no-post.jpeg";
+    }
+    console.log()
+    return `${app.publicAssetsUrl}${url}`;
+}
 </script>
 
 <style lang="css" scoped>

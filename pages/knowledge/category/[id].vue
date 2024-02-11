@@ -48,7 +48,7 @@ const knowledgeStore = useKnowledgeStore()
 const route = useRoute()
 const {posts, category} = storeToRefs(knowledgeStore)
 
-if (route.params.categoryID) knowledgeStore.fetchPosts(Number(route.params.categoryID))
+await useAsyncData(() => knowledgeStore.fetchPosts(Number(route.params.id)))
 
 useHead({
   title: `${category.value?.name ?? ''} | База знаний Wunder Pay`

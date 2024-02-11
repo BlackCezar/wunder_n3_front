@@ -1,22 +1,21 @@
 <template>
-    <div class="post-manage" v-if="$auth && $auth.user.role === 'ADMIN'">
+    <div class="post-manage" v-if="isAdmin">
         <nuxt-link
-            :to="'/knowledge/admin/posts/edit/' + postID"
+            :to="'/admin/knowledge/posts/edit/' + postID"
             class="ui-btn ui-btn-bordered"
         >
-            <b-icon icon="pencil" style="margin-right: 5px" />Редактировать
+            <i-bi-pencil style="margin-right: 5px" />Редактировать
         </nuxt-link>
         <a
-            href="javascript:void(0)"
+            href="#"
             class="ui-btn ui-btn-red"
-            @click="$bvModal.show('bv-modal-pdelete')"
+            @click.prevent="deleteModal = true"
         >
-            <b-icon icon="trash" style="margin-right: 5px" />Удалить статью
+            <i-bi-trash icon="trash" style="margin-right: 5px" />Удалить статью
         </a>
 
         <b-modal
-            ref="modal"
-            id="bv-modal-pdelete"
+            v-model="deleteModal"
             hide-footer
             title="Удаление статьи"
         >
@@ -37,30 +36,30 @@
     </div>
 </template>
 
-<script>
-import { useKnowledgeStore } from "@/store/knowledge";
-import { mapActions } from "pinia";
+<script setup lang="ts">
 
-export default {
-    name: "KnowledgePostManage",
-    props: {
-        postID: {
-            required: true,
-            type: Number,
-        },
-    },
-    methods: {
-        ...mapActions(useKnowledgeStore, {
-            deletePost: "deletePost",
-        }),
+import { useKnowledgeStore } from "~/store/knowledge";
+import { useAuthStore } from "~/store/auth";
+import { storeToRefs } from "pinia";
+import { IUserRole } from "~/types/user.interface";
 
-        async deleteHandler(id) {
-            await this.deletePost(id);
+defineProps<{
+    postID: number
+}>()
 
-            this.$refs["modal"].hide();
-        },
-    },
-};
+const knowledgeStore = useKnowledgeStore()
+const authStore = useAuthStore()
+const {user} = storeToRefs(authStore)
+
+const deleteModal = ref(false)
+
+async function deleteHandler(id: number) {
+    await knowledgeStore.deletePost(id);
+
+    deleteModal.value = false;
+}
+
+const isAdmin = computed(() => user.value?.role === IUserRole.ADMIN)
 </script>
 
 <style lang="css" scoped>

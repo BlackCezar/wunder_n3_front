@@ -18,9 +18,8 @@
                     :to="'/knowledge/category/' + item.id"
                 >
                     {{ item.name }}
-                    <b-icon
+                    <i-bi-chevron-down
                         class="knowledge-nav-cat-icon"
-                        icon="chevron-down"
                         style="color: #000"
                     />
                 </nuxt-link>
@@ -49,33 +48,21 @@
     </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { useKnowledgeStore } from "@/store/knowledge";
+import { storeToRefs } from "pinia";
 
-export default {
-    name: "KnowledgeNav",
-    props: {
-        activeCategory: {
-            type: Number,
-            default: 0,
-        },
-    },
-    setup() {
-        const knowledgeStore = useKnowledgeStore();
-        return {
-            knowledgeStore,
-        };
-    },
-    async fetch() {
-        await this.$store.dispatch("knowledge/fetchNav");
-    },
+const knowledgeStore = useKnowledgeStore()
+const {nav} = storeToRefs(knowledgeStore)
 
-    computed: {
-        nav() {
-            return this.knowledgeStore.nav;
-        },
-    },
-};
+withDefaults(defineProps<{
+    activeCategory?: number
+}>(), {
+    activeCategory: 0
+})
+
+useAsyncData('knowledgeNav', () => knowledgeStore.fetchNav())
+
 </script>
 
 <style lang="css" scoped>

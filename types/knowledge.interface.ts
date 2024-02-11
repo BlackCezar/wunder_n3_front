@@ -20,7 +20,6 @@ export interface ICreatePostResponse {
     message: string[]
 }
 
-export type IFetchMainResponse = IKnowledgePost[]
 
 export interface IKnowledgePost {
     id: number;
@@ -29,11 +28,72 @@ export interface IKnowledgePost {
 }
 
 export interface IUpdatePostResponse {
-    toMain: boolean;
-    postID: number
+    data: {
+        toMain: boolean;
+        post: IKnowledgePostFull
+    }
+    message: string[]
 }
 
 export interface IFetchPostsResponse {
-    posts: IKnowledgePost[];
-    category: IKnowledgeCategory;
+    data: {
+        posts: IKnowledgePost[];
+        category: IKnowledgeCategory;
+    }
+}
+
+export interface IFetchNavResponse {
+    data: {
+        id: number
+        name: string
+        sort: number
+        posts: IKnowledgePost[];
+    }[]
+}
+
+export interface IKnowledgePostPayload {
+    title: string
+    toMain: boolean
+    categoryID: number
+    sort: number
+    body: string
+    preview?: string
+}
+export interface IKnowledgePostUpdatePayload {
+    title: string
+    toMain: boolean
+    categoryID: number
+    sort: number
+    body: string
+    preview?: string
+    id: number
+}
+
+export interface IKnowledgeMainResponse {
+    data: Omit<IKnowledgePostFull, 'neighbours' | 'prev' | 'next'>[]
+}
+
+export interface IPostLink {
+    title: string
+    id: number
+}
+export interface IKnowledgePostFull {
+    body: string
+    categoryID: number
+    createdAt: string
+    id: number
+    neighbours: IPostLink[]
+    next: IPostLink | null
+    prev: IPostLink | null
+    preview?: string
+    sort: number
+    title: string
+    toMain: boolean
+    updatedAt: string
+}
+
+export interface IKnowledgeCard extends Omit<IKnowledgePostFull, 'toMain' | 'sort' | 'body' | 'prev' | 'next' | 'neighbours'> {
+    category: {
+        name: string
+    }
 }

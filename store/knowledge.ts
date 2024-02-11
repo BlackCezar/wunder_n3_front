@@ -1,23 +1,29 @@
 import { defineStore } from "pinia";
 import type {
     ICreatePostResponse,
-    IFetchMainResponse,
+    IFetchNavResponse,
     IFetchPostsResponse,
     IKnowledgeCategoriesResponse,
     IKnowledgeCategory,
     IKnowledgePost,
     IKnowledgeUpdateCategoriesResponse,
-    IUpdatePostResponse,
+    IUpdatePostResponse
+} from "~/types/knowledge.interface";
+import {
+    IKnowledgeMainResponse,
+    IKnowledgePostFull,
+    IKnowledgePostPayload,
+    IKnowledgePostUpdatePayload
 } from "~/types/knowledge.interface";
 
 interface IKnowledgeStore {
     categories: IKnowledgeCategory[];
     nav: any[];
-    posts: IKnowledgePost[];
+    posts: IKnowledgePostFull[];
     searchResults: any[];
-    main: IFetchMainResponse;
+    main: Omit<IKnowledgePostFull, 'neighbours' | 'prev' | 'next'>[];
     file: any | null;
-    post: IKnowledgePost | null;
+    post: IKnowledgePostFull | null;
     category: IKnowledgeCategory | null;
 }
 
@@ -105,22 +111,19 @@ export const useKnowledgeStore = defineStore("knowledge", {
                 console.error(err);
             }
         },
-        async createPost(payload) {
+        async createPost(payload: IKnowledgePostPayload) {
             try {
                 const { apiClient } = useClient();
 
-                payload.preview = this.file?.file;
-                const data: ICreatePostResponse = await apiClient.post(
+                if (this.file?.file) payload.preview = this.file?.file;
+                const response: ICreatePostResponse = await apiClient.post(
                     "/knowledge/create-post",
                     payload,
                 )
-                console.log('data', data)
                 this.file = null;
+                if (response?.message?.length) useNuxtApp().$toast.success(response.message[0])
+                await useNuxtApp().$router.push(response.data.toMain ? `/knowledge` : `/knowledge/post/${response.data.postID}`)
 
-                if (data.message?.length) useNuxtApp().$toast.success(data.message[0])
-                if (!data.toMain) {
-                    this.router.push("/knowledge/post/" + data.data.postID);
-                } else this.router.push("/knowledge");
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
                 console.error(err);
@@ -130,7 +133,8 @@ export const useKnowledgeStore = defineStore("knowledge", {
             try {
                 const { apiClient } = useClient();
 
-                this.main = await apiClient.get("/knowledge");
+                const response = await apiClient.get<IKnowledgeMainResponse>("/knowledge");
+                if (response.data.length) this.main = response.data
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
                 console.error(err);
@@ -164,20 +168,19 @@ export const useKnowledgeStore = defineStore("knowledge", {
                 console.error(err);
             }
         },
-        async updatePost(payload: any) {
+        async updatePost(payload: IKnowledgePostUpdatePayload) {
             try {
                 const { apiClient } = useClient();
 
-                payload.preview = this.file?.file;
-                const data: IUpdatePostResponse = await apiClient.post(
+                if (this.file?.file) payload.preview = this.file?.file;
+                const response: IUpdatePostResponse = await apiClient.put(
                     "/knowledge/update-post",
                     payload,
                 );
+                this.posts = this.posts.map(item => item.id == payload.id ? response.data.post : item)
                 this.file = null;
 
-                if (!data.toMain) {
-                    this.router.push("/knowledge/post/" + data.postID);
-                } else this.router.push("/knowledge");
+                await useNuxtApp().$router.push(`/knowledge/post/${response.data.post.id}`);
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
                 console.error(err);
@@ -187,7 +190,8 @@ export const useKnowledgeStore = defineStore("knowledge", {
             try {
                 const { apiClient } = useClient();
 
-                this.nav = await apiClient.get("/knowledge/get-nav");
+                const response = await apiClient.get<IFetchNavResponse>("/knowledge/get-nav")
+                if (response?.data) this.nav = response.data
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
                 console.error(err);
@@ -197,7 +201,11 @@ export const useKnowledgeStore = defineStore("knowledge", {
             try {
                 const { apiClient } = useClient();
 
-                this.post = await apiClient.get("/knowledge/get-post/" + id);
+                const response = await apiClient.get<{
+                    data: IKnowledgePostFull | undefined
+                }>("/knowledge/get-post/" + id);
+                if (response.data) this.post = response.data
+                return response.data
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
                 console.error(err);
@@ -207,11 +215,13 @@ export const useKnowledgeStore = defineStore("knowledge", {
             try {
                 const { apiClient } = useClient();
 
-                const data: IFetchPostsResponse = await apiClient.get(
+                const response: IFetchPostsResponse = await apiClient.get(
                     "/knowledge/get-posts/" + id,
                 );
-                this.posts = data.posts;
-                this.category = data.category;
+                if (response.data) {
+                    this.posts = response.data.posts;
+                    this.category = response.data.category;
+                }
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
                 console.error(err);
@@ -223,7 +233,7 @@ export const useKnowledgeStore = defineStore("knowledge", {
 
                 await apiClient.delete("/knowledge/delete-posts/" + id);
                 this.posts = this.posts.filter((item) => item.id !== id);
-                this.router.push("/knowledge");
+                await useNuxtApp().$router.push('/knowledge')
             } catch (err: any) {
                 useNuxtApp().$toast.error(err.message);
                 console.error(err);

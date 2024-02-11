@@ -8,22 +8,13 @@
     </div>
 </template>
 
-<script>
-import KnowledgePostManage from "./PostManage";
+<script setup lang="ts">
+import KnowledgePostManage from "./PostManage.vue";
+import { IKnowledgePostFull } from "~/types/knowledge.interface";
 
-export default {
-    name: "KnowledgePostMain",
-    components: {
-        KnowledgePostManage,
-    },
-
-    props: {
-        post: {
-            required: true,
-            type: Object,
-        },
-    },
-};
+defineProps<{
+    post: Omit<IKnowledgePostFull, 'neighbours' | 'prev' | 'next'>
+}>()
 </script>
 
 <style lang="css" scoped>

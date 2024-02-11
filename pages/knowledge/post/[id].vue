@@ -28,7 +28,7 @@ const route = useRoute();
 const knowledgeStore = useKnowledgeStore();
 const { post } = storeToRefs(knowledgeStore);
 
-if (route.params.id) knowledgeStore.fetchPost(Number(route.params.id));
+await knowledgeStore.fetchPost(Number(route.params.id))
 
 useHead({
     title: `${post.value?.title ?? ""} | База знаний Wunder Pay`,

@@ -163,9 +163,11 @@ const savePost = handleSubmit(async (data) => {
 
                 <div class="ui-field">
                   <div class="ui-field-label">Содержимое материала</div>
-                      <LazyUiTiny
+                    <ClientOnly>
+                      <UiTiny
                           name="post.body"
                       />
+                    </ClientOnly>
                 </div>
               </div>
 

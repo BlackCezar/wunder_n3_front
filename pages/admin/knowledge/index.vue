@@ -16,7 +16,7 @@ console.log('Hello')
                     <div class="d-flex flex-col gap-4 lg:flex-row">
                         <div class="">
                             <nuxt-link
-                                to="/knowledge/admin/categories"
+                                to="/admin/knowledge/categories"
                                 class="knowledge-manage"
                             >
                                 <div class="knowledge-manage-icon">
@@ -48,12 +48,12 @@ console.log('Hello')
 
                     <div class="row">
                         <div class="col-sm-8">
-                            <b-alert show variant="secondary"
+                            <b-alert :model-value="true" variant="secondary"
                             >Для создания материалов необходимо наличие хотя
                                 бы одной категории (раздела): привязка материала
                                 к категории обязательна</b-alert
                             >
-                            <b-alert show variant="secondary"
+                            <b-alert :model-value="true" variant="secondary"
                             >Редактировать и удалять материалы можно
                                 непосредственно из их карточек</b-alert
                             >
